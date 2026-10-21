@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 0.2.3 — 2026-10-21
+- Mapa: linha da mesma cor do preenchimento veda as frestas entre polígonos municipais simplificados; contornos municipais só no recorte Municípios.
+- Emissão líquida: escala divergente com três classes por lado (terços dos valores absolutos) e faixa neutra perto de zero.
+
 ## 0.2.2 — 2026-10-21
 - Repositório na organização do projeto: `ybyra-br/plataforma`, site em https://ybyra-br.github.io/plataforma/.
 
