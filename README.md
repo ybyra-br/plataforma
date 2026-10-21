@@ -1,10 +1,10 @@
-# Emissões e Remoções de CO₂ — YbYrá-BR · v0.2.1
+# Emissões e Remoções de CO₂ — YbYrá-BR · v0.2.2
 
 Plataforma do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para explorar as emissões e remoções de CO₂ do modelo YbYrá-BR por recorte territorial: Brasil, estados, biomas e municípios.
 
 > **Prévia com dados fictícios.** A estrutura, os cálculos e os formatos de arquivo são os definitivos; os números serão substituídos pelos resultados do modelo.
 
-Site: https://celsohlsj.github.io/ybyra-emissoes/
+Site: https://ybyra-br.github.io/plataforma/
 
 ## Fluxo
 
@@ -48,4 +48,4 @@ web/geo/                               geometrias do mapa
 
 ## Como citar
 
-Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR (prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. https://github.com/celsohlsj/ybyra-emissoes
+Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR (prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. https://github.com/ybyra-br/plataforma

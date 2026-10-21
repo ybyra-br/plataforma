@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.2.2 — 2026-10-21
+- Repositório na organização do projeto: `ybyra-br/plataforma`, site em https://ybyra-br.github.io/plataforma/.
+
 ## 0.2.1 — 2026-10-21
 - Repositório no GitHub com publicação automática da pasta `web/` no GitHub Pages (`.github/workflows/pages.yml`).
 - Link "Código aberto" na barra superior.
