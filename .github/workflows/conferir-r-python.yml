@@ -1,0 +1,22 @@
+# Confere se R/agregar.R reproduz scripts/ybyra_estatisticas_agregar.py (v0.1.0) — rodar manualmente
+name: conferir-r-python
+on: { workflow_dispatch: }
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with: { use-public-rspm: true }
+      - run: Rscript -e 'install.packages(c("data.table","jsonlite","R.utils"))'
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pandas
+      - name: R
+        run: Rscript R/agregar.R dados/brutos/v1_2 /tmp/saida_r v1_2 web/geo/municipios.geojson
+      - name: Python
+        run: |
+          mkdir -p /tmp/csv && for f in dados/brutos/v1_2/*.csv.gz; do gunzip -c "$f" > /tmp/csv/$(basename "${f%.gz}"); done
+          python scripts/ybyra_estatisticas_agregar.py --entrada /tmp/csv --saida /tmp/saida_py --modelo v1_2 --nomes dados_ficticios/nomes
+      - name: Comparar
+        run: python scripts/comparar_saidas.py /tmp/saida_r /tmp/saida_py

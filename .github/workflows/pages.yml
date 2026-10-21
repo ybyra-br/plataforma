@@ -1,4 +1,5 @@
-# Plataforma de Emissões YbYrá-BR — publica a pasta web/ no GitHub Pages a cada envio ao main (v0.1.0)
+# Plataforma YbYrá-BR — agrega os CSV do GEE em R e publica web/ no GitHub Pages (v0.2.0)
+# Dispara a cada envio ao main (inclusive quando novos CSV entram em dados/brutos/).
 name: pages
 on:
   push: { branches: [main] }
@@ -8,11 +9,18 @@ permissions:
   pages: write
   id-token: write
 concurrency: { group: pages, cancel-in-progress: true }
+env: { MODELO: v1_2 }
 jobs:
   montar:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with: { use-public-rspm: true }
+      - name: Pacotes R
+        run: Rscript -e 'install.packages(c("data.table","jsonlite","R.utils"))'
+      - name: Agregar (R)
+        run: Rscript R/agregar.R dados/brutos/$MODELO web/dados/$MODELO $MODELO web/geo/municipios.geojson
       - uses: actions/upload-pages-artifact@v3
         with: { path: web }
   publicar:
