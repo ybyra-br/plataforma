@@ -298,14 +298,15 @@ button,input,select{font:inherit;color:inherit;letter-spacing:inherit}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.2.3
+/* plataforma de emissões YbYrá-BR · v0.2.4
+   0.2.4 (2026-10-21) — relatório: "no Brasil" em vez de "em Brasil" no resumo.
    0.2.3 (2026-10-21) — veda as frestas entre municípios no mapa; escala divergente da emissão líquida em terços por lado.
    0.2.2 (2026-10-21) — repositório na organização ybyra-br (ybyra-br.github.io/plataforma).
    0.2.1 (2026-10-21) — link "Código aberto" para o repositório.
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.2.3", DADOS = "dados/v1_2/";
+const VERSAO = "0.2.4", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -579,7 +580,8 @@ async function relatorio(){
   const proc = PROC.filter(p=>!p.neg).map(p=>[p.n, s[p.k][i]]).sort((a,b)=>b[1]-a[1]);
   const principal = proc[0], partP = bruta[i] ? principal[1]/bruta[i]*100 : 0;
   const pico = ANOS[bruta.indexOf(Math.max(...bruta))], acum = bruta.reduce((a,b)=>a+b,0);
-  const resumo = `Em ${E.ano}, a emissão bruta de CO₂ em ${nome} foi de ${f(bruta[i])} ${e.u}${i>0?`, ${bruta[i]>=bruta[i-1]?"aumento":"queda"} de ${pct(bruta[i],bruta[i-1]).replace("-","")} em relação a ${E.ano-1}`:""}. ${principal[0]} foi o principal processo, com ${nf(partP,0)}% da emissão bruta. A vegetação secundária removeu ${f(rem[i])} ${e.u}, e a emissão líquida ficou em ${f(liq[i])} ${e.u}. Entre ${ANOS[0]} e ${ANOS.at(-1)}, a maior emissão bruta ocorreu em ${pico}, e o total acumulado no período foi de ${fmt(acum,escala(acum,"bruta"))} ${escala(acum,"bruta").u.replace(" ano⁻¹","")}.`;
+  const local = tipo==="brasil" ? "no Brasil" : `em ${nome}`;
+  const resumo = `Em ${E.ano}, a emissão bruta de CO₂ ${local} foi de ${f(bruta[i])} ${e.u}${i>0?`, ${bruta[i]>=bruta[i-1]?"aumento":"queda"} de ${pct(bruta[i],bruta[i-1]).replace("-","")} em relação a ${E.ano-1}`:""}. ${principal[0]} foi o principal processo, com ${nf(partP,0)}% da emissão bruta. A vegetação secundária removeu ${f(rem[i])} ${e.u}, e a emissão líquida ficou em ${f(liq[i])} ${e.u}. Entre ${ANOS[0]} e ${ANOS.at(-1)}, a maior emissão bruta ocorreu em ${pico}, e o total acumulado no período foi de ${fmt(acum,escala(acum,"bruta"))} ${escala(acum,"bruta").u.replace(" ano⁻¹","")}.`;
   const cab = ["Ano", ...PROC.map(p=>p.n), "Bruta", "Líquida"];
   const linhas = ANOS.map((a,k)=>`<tr class="${a===E.ano?"at":""}"><td>${a}</td>${PROC.map(p=>`<td>${f(p.neg?-Math.abs(s[p.k][k]):s[p.k][k])}</td>`).join("")}<td>${f(bruta[k])}</td><td>${f(liq[k])}</td></tr>`).join("");
   const rk = [...$("rank").querySelectorAll("button")].map(b=>`<li>${b.querySelector(".nm span").textContent} — ${b.querySelector(".vl").textContent}</li>`).join("");
