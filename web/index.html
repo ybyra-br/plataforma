@@ -1,0 +1,699 @@
+<title>Emissões YbYrá-BR</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Emissões e remoções de CO₂ por recorte territorial — modelo YbYrá-BR (CNPq 401741/2023-0)">
+<style>
+/* Layout: mapa em tela cheia; painel "Explorar" à esquerda e painel do recorte à direita,
+   flutuando sobre o mapa; no celular, mapa no topo e painéis empilhados abaixo.
+   Mesma linguagem visual da plataforma irmã Alerta de Queimadas por Município. */
+:root{
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --bg:#f2f2f7; --painel:rgba(255,255,255,.86); --cell:#fff; --mapa:#e9ece6; --vazio:#f6f6f2;
+  --label:#000; --label2:rgba(60,60,67,.62); --label3:rgba(60,60,67,.3);
+  --sep:rgba(60,60,67,.18); --fill:rgba(118,118,128,.12); --tint:#007AFF; --seg-on:#fff;
+  --contorno:#1c1c1e; --contorno-mun:rgba(28,28,30,.35); --aviso-bg:#fff4d6; --aviso-fg:#7a4b00;
+  --sobe:#c2410c; --desce:#047857; --sombra:0 8px 30px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06);
+  /* Okabe-Ito: processos */
+  --p-defor:#D55E00; --p-fogo:#E69F00; --p-borda:#CC79A7; --p-madeira:#0072B2; --p-dsec:#56B4E9; --p-rem:#009E73; --p-liq:#1c1c1e;
+  --topo:52px; --largura-esq:340px; --largura-dir:420px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000; --painel:rgba(28,28,30,.86); --cell:#1c1c1e; --mapa:#1a1c1a; --vazio:#2c2c2e;
+  --label:#fff; --label2:rgba(235,235,245,.62); --label3:rgba(235,235,245,.3);
+  --sep:rgba(84,84,88,.6); --fill:rgba(118,118,128,.24); --tint:#0A84FF; --seg-on:#636366;
+  --contorno:#f2f2f7; --contorno-mun:rgba(242,242,247,.28); --aviso-bg:#3a2c00; --aviso-fg:#ffd479;
+  --sobe:#fb923c; --desce:#34d399; --sombra:0 8px 30px rgba(0,0,0,.5),0 0 0 .5px rgba(255,255,255,.08);
+  --p-liq:#f2f2f7; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000; --painel:rgba(28,28,30,.86); --cell:#1c1c1e; --mapa:#1a1c1a; --vazio:#2c2c2e;
+  --label:#fff; --label2:rgba(235,235,245,.62); --label3:rgba(235,235,245,.3);
+  --sep:rgba(84,84,88,.6); --fill:rgba(118,118,128,.24); --tint:#0A84FF; --seg-on:#636366;
+  --contorno:#f2f2f7; --contorno-mun:rgba(242,242,247,.28); --aviso-bg:#3a2c00; --aviso-fg:#ffd479;
+  --sobe:#fb923c; --desce:#34d399; --sombra:0 8px 30px rgba(0,0,0,.5),0 0 0 .5px rgba(255,255,255,.08);
+  --p-liq:#f2f2f7; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--label);font:15px/1.35 var(--font);letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input,select{font:inherit;color:inherit;letter-spacing:inherit}
+:focus-visible{outline:2px solid var(--tint);outline-offset:2px;border-radius:6px}
+.num{font-variant-numeric:tabular-nums}
+
+/* barra do projeto */
+.barra-proj{position:fixed;z-index:20;inset:0 0 auto;height:calc(var(--topo) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:16px;background:var(--painel);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep)}
+.marca-proj{display:flex;align-items:center;gap:10px;min-width:0;color:inherit;text-decoration:none}
+.marca-proj img{height:36px;width:auto}
+.marca-proj .tx{display:flex;flex-direction:column;min-width:0}
+.marca-proj .proj{font-size:12px;line-height:15px;color:var(--label2)}
+.marca-proj .tit{font-size:17px;line-height:21px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.barra-proj .esp{flex:1}
+.barra-proj .links{display:flex;gap:4px}
+.barra-proj .links button{background:none;border:0;cursor:pointer;font-size:14px;font-weight:500;padding:6px 10px;border-radius:8px}
+.barra-proj .links a{color:inherit;text-decoration:none;font-size:14px;font-weight:500;padding:6px 10px;border-radius:8px}
+.barra-proj .links button:hover,.barra-proj .links a:hover{background:var(--fill)}
+.apoio{display:flex;align-items:center;gap:10px}
+.apoio .rot{font-size:11px;line-height:14px;color:var(--label2);text-align:right}
+.apoio img{height:28px;width:auto}
+.apoio .escuro{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .apoio .claro{display:none}:root:not([data-theme="light"]) .apoio .escuro{display:block}}
+:root[data-theme="dark"] .apoio .claro{display:none} :root[data-theme="dark"] .apoio .escuro{display:block}
+
+/* mapa */
+#mapa{position:fixed;inset:calc(var(--topo) + env(safe-area-inset-top,0px)) 0 0 0;background:var(--mapa)}
+.maplibregl-map{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.maplibregl-canvas-container.maplibregl-interactive{cursor:grab}
+.maplibregl-canvas{position:absolute;left:0;top:0}
+.maplibregl-canvas:focus{outline:none}
+#dica{position:fixed;z-index:15;pointer-events:none;background:var(--cell);color:var(--label);border-radius:10px;padding:7px 10px;font-size:13px;box-shadow:var(--sombra);max-width:260px}
+#dica b{display:block;font-weight:600}
+.zoom{position:fixed;z-index:12;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;background:var(--painel);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:10px;box-shadow:var(--sombra);overflow:hidden}
+.zoom button{width:36px;height:36px;border:0;background:none;cursor:pointer;font-size:19px;line-height:1}
+.zoom button+button{border-top:.5px solid var(--sep)}
+.zoom button:hover{background:var(--fill)}
+
+/* painéis */
+.painel{position:fixed;z-index:10;top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);bottom:calc(12px + env(safe-area-inset-bottom,0px));overflow:auto;background:var(--painel);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:16px;box-shadow:var(--sombra);padding:16px;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin}
+#esq{left:calc(12px + env(safe-area-inset-left,0px));width:var(--largura-esq)}
+#dir{right:calc(12px + env(safe-area-inset-right,0px));width:var(--largura-dir)}
+.aviso{display:flex;gap:8px;align-items:flex-start;background:var(--aviso-bg);color:var(--aviso-fg);border-radius:10px;padding:9px 11px;font-size:13px;line-height:17px}
+.aviso b{font-weight:600}
+.rotulo{font-size:12px;line-height:16px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--label2);margin:0 0 6px}
+.grupo{display:flex;flex-direction:column;gap:6px}
+.seg{display:grid;grid-template-columns:repeat(var(--n),1fr);background:var(--fill);border-radius:9px;padding:2px;gap:2px}
+.seg button{border:0;background:none;border-radius:7px;padding:6px 4px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--seg-on);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);font-weight:600}
+.busca{position:relative}
+.busca input{width:100%;background:var(--fill);border:0;border-radius:10px;padding:8px 10px 8px 32px;outline:none;font-size:15px}
+.busca svg{position:absolute;left:10px;top:10px;width:15px;height:15px;fill:var(--label2)}
+.busca ul{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);margin:0;padding:4px;list-style:none;background:var(--cell);border-radius:12px;box-shadow:var(--sombra);max-height:280px;overflow:auto}
+.busca li{padding:7px 10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+.busca li span{color:var(--label2);font-size:12px;white-space:nowrap}
+.busca li[aria-selected="true"],.busca li:hover{background:var(--fill)}
+.vars{display:flex;flex-direction:column;background:var(--cell);border-radius:12px;overflow:hidden}
+.vars .cab{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--label2);padding:8px 12px 3px}
+.vars button{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;padding:7px 12px;cursor:pointer;font-size:14px}
+.vars button:hover{background:var(--fill)}
+.vars button[aria-pressed="true"]{background:var(--fill);font-weight:600}
+.vars i{width:10px;height:10px;border-radius:3px;flex:none}
+.ano{display:flex;align-items:center;gap:10px}
+.ano input{flex:1;accent-color:var(--tint)}
+.ano output{font-size:22px;font-weight:600;min-width:52px;text-align:right}
+.ano button{width:30px;height:30px;border-radius:50%;border:0;background:var(--fill);cursor:pointer;display:grid;place-items:center}
+.ano button svg{width:12px;height:12px;fill:var(--label)}
+.legenda{display:flex;flex-direction:column;gap:4px}
+.legenda .barra{display:grid;grid-template-columns:repeat(var(--n),1fr);height:10px;border-radius:3px;overflow:hidden}
+.legenda .marcas{display:grid;grid-template-columns:repeat(var(--n),1fr);font-size:10.5px;color:var(--label2)}
+.legenda .marcas span{white-space:nowrap;transform:translateX(-50%)}
+.legenda .marcas span:first-child{transform:none}
+.legenda .un{font-size:12px;color:var(--label2)}
+
+/* painel do recorte */
+.cab-rec{display:flex;flex-direction:column;gap:2px}
+.cab-rec .tipo{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--label2)}
+.cab-rec h2{margin:0;font-size:24px;line-height:28px;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.cab-rec .sub{font-size:13px;color:var(--label2)}
+.trilha{display:flex;flex-wrap:wrap;gap:6px}
+.trilha button{border:0;background:var(--fill);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.kpi{background:var(--cell);border-radius:12px;padding:10px 11px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .n{font-size:11.5px;color:var(--label2);line-height:14px}
+.kpi .v{font-size:19px;font-weight:650;letter-spacing:-.02em;white-space:nowrap}
+.kpi .u{font-size:11px;color:var(--label2)}
+.kpi .d{font-size:11.5px;font-weight:600}
+.kpi .d.sobe{color:var(--sobe)} .kpi .d.desce{color:var(--desce)}
+.caixa{background:var(--cell);border-radius:14px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:8px}
+.caixa h3{margin:0;font-size:15px;font-weight:600}
+.caixa .nota{font-size:12px;color:var(--label2);margin:0}
+.grafico{position:relative;height:230px}
+.grafico.peq{height:130px}
+.dois{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dois>div{min-width:0}
+.dois h4{margin:0 0 2px;font-size:12.5px;font-weight:600}
+.dois .u{font-size:11px;color:var(--label2)}
+.chaves{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--label2)}
+.chaves span{display:inline-flex;align-items:center;gap:5px}
+.chaves i{width:9px;height:9px;border-radius:2px}
+.chaves i.linha{height:2px;border-radius:1px}
+.rank{display:flex;flex-direction:column;gap:3px}
+.rank button{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;border:0;background:none;padding:5px 4px;border-radius:8px;cursor:pointer;text-align:left;font-size:13px}
+.rank button:hover{background:var(--fill)}
+.rank .pos{color:var(--label2);font-size:11.5px;text-align:right}
+.rank .nm{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rank .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .bar{height:5px;border-radius:3px;background:var(--fill);overflow:hidden}
+.rank .bar i{display:block;height:100%;border-radius:3px}
+.rank .vl{font-size:12.5px}
+.acoes{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;background:var(--fill);border-radius:10px;padding:8px 12px;font-size:13.5px;font-weight:500;cursor:pointer}
+.btn:hover{filter:brightness(.97)}
+.cit{font-size:12px;color:var(--label2);line-height:16px}
+
+/* método */
+#metodo{position:fixed;z-index:30;inset:0;background:var(--bg);overflow:auto;padding-block:calc(var(--topo) + env(safe-area-inset-top,0px) + 24px) 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#metodo article{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px;font-size:16px;line-height:1.55}
+#metodo h1{font-size:32px;line-height:38px;margin:0;letter-spacing:-.025em;text-wrap:balance}
+#metodo h2{font-size:21px;margin:18px 0 0;letter-spacing:-.015em}
+#metodo p{margin:0}
+#metodo .lead{font-size:18px;color:var(--label2)}
+#metodo table{border-collapse:collapse;width:100%;font-size:14px}
+#metodo .tab{overflow-x:auto;background:var(--cell);border-radius:12px;padding:4px 12px}
+#metodo th,#metodo td{text-align:left;padding:7px 8px 7px 0;border-bottom:.5px solid var(--sep);vertical-align:top}
+#metodo tr:last-child td{border-bottom:0}
+#metodo code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill);padding:1px 5px;border-radius:5px}
+#metodo .fechar{position:sticky;top:0;align-self:flex-end;border:0;background:var(--fill);border-radius:999px;padding:7px 14px;font-weight:600;cursor:pointer}
+.btn-pri{background:var(--tint);color:#fff}
+#relatorio{position:fixed;z-index:35;inset:0;background:var(--bg);overflow:auto;padding-block:calc(env(safe-area-inset-top,0px) + 12px) 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rel-barra{position:sticky;top:0;z-index:2;display:flex;gap:8px;max-width:820px;margin:0 auto 12px;padding:8px 0;background:var(--bg)}
+.rel-barra .esp{flex:1}
+.rel{max-width:820px;margin:0 auto;background:var(--cell);border-radius:16px;padding:36px 40px;display:flex;flex-direction:column;gap:18px;font-size:14.5px;line-height:1.5}
+.rel .cabrel{display:flex;align-items:center;gap:16px;border-bottom:.5px solid var(--sep);padding-bottom:14px}
+.rel .cabrel img.y{height:64px} .rel .cabrel .ap{margin-left:auto;text-align:right;font-size:11px;color:var(--label2)}
+.rel .cabrel .ap img{height:26px;display:block;margin:4px 0 2px auto;background:#fff;border-radius:5px;padding:3px 5px}
+.rel h1{margin:0;font-size:26px;line-height:31px;letter-spacing:-.02em;text-wrap:balance}
+.rel h2{margin:6px 0 0;font-size:17px}
+.rel p{margin:0}
+.rel .meta{color:var(--label2);font-size:13px}
+.rel .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+.rel .kpi{background:var(--bg)}
+.rel .grafico{height:260px}
+.rel .tabw{overflow-x:auto}
+.rel table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+.rel th,.rel td{padding:4px 6px;border-bottom:.5px solid var(--sep);text-align:right;white-space:nowrap}
+.rel th:first-child,.rel td:first-child{text-align:left}
+.rel tr.at td{font-weight:700;background:var(--fill)}
+.rel .lista{columns:2;column-gap:28px;font-size:13px;padding-left:18px;margin:0}
+.rel .rod{font-size:11.5px;color:var(--label2);border-top:.5px solid var(--sep);padding-top:10px}
+@media (max-width:640px){.rel{padding:20px 16px}.rel .lista{columns:1}.rel .kpis{grid-template-columns:1fr}}
+@media print{
+  body{overflow:visible;background:#fff}
+  body>*:not(#relatorio){display:none!important}
+  #relatorio{position:static;padding:0;background:#fff;overflow:visible}
+  .rel-barra{display:none}
+  .rel{max-width:none;border-radius:0;padding:0;background:#fff;color:#000}
+  .rel .grafico{break-inside:avoid}
+  .rel h2{break-after:avoid}
+}
+#carregando{position:fixed;z-index:25;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--cell);border-radius:12px;padding:12px 16px;box-shadow:var(--sombra);font-size:14px}
+
+@media (max-width:900px){
+  body{overflow:auto}
+  .barra-proj .links,.apoio .rot{display:none}
+  .marca-proj .tit{font-size:15px}
+  #mapa{position:relative;inset:auto;margin-top:calc(var(--topo) + env(safe-area-inset-top,0px));height:52vh}
+  .painel{position:static;width:auto!important;margin:12px max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px));overflow:visible;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg);box-shadow:none;padding:4px 4px}
+  .zoom{right:calc(12px + env(safe-area-inset-right,0px));top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);bottom:auto;position:absolute}
+  #dica{display:none}
+}
+@media (max-width:420px){.marca-proj .proj{display:none} .kpi .v{font-size:16px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="barra-proj">
+  <a class="marca-proj" href="#" id="marca">
+    <img src="img/ybyra-simbolo-96.png" srcset="img/ybyra-simbolo-96.png 1x, img/ybyra-simbolo-192.png 2x" alt="Símbolo do projeto YbYrá-BR">
+    <span class="tx"><span class="proj">Projeto <b>YbYrá-BR</b></span><span class="tit">Emissões e Remoções de CO₂</span></span>
+  </a>
+  <span class="esp"></span>
+  <nav class="links" aria-label="Seções"><button type="button" id="abrir-metodo">Método</button><a href="https://github.com/celsohlsj/ybyra-emissoes" target="_blank" rel="noopener">Código aberto</a></nav>
+  <div class="apoio">
+    <span class="rot">Apoio<br>Processo 401741/2023-0</span>
+    <img class="claro" src="img/cnpq-64.png" srcset="img/cnpq-64.png 1x, img/cnpq-128.png 2x" alt="CNPq">
+    <img class="escuro" src="img/cnpq-branco-128.png" alt="CNPq">
+  </div>
+</header>
+
+<div id="mapa" role="application" aria-label="Mapa de emissões por recorte"></div>
+<div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar">+</button><button type="button" id="z-menos" aria-label="Afastar">−</button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Brasil inteiro">⌂</button></div>
+<div id="dica" hidden></div>
+
+<aside class="painel" id="esq" aria-label="Explorar">
+  <div class="aviso"><span>⚠︎</span><span><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
+  <div class="grupo">
+    <p class="rotulo">Recorte do mapa</p>
+    <div class="seg" id="seg-tipo" style="--n:4">
+      <button type="button" data-t="brasil">Brasil</button><button type="button" data-t="uf">Estados</button><button type="button" data-t="bioma">Biomas</button><button type="button" data-t="municipio">Municípios</button>
+    </div>
+  </div>
+  <div class="busca">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 1a5.5 5.5 0 0 1 4.38 8.83l3.65 3.64-1.06 1.06-3.64-3.65A5.5 5.5 0 1 1 6.5 1Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+    <input id="busca" type="search" placeholder="Buscar estado, bioma ou município" autocomplete="off" aria-label="Buscar recorte" aria-controls="sugestoes">
+    <ul id="sugestoes" role="listbox" hidden></ul>
+  </div>
+  <div class="grupo">
+    <p class="rotulo">Variável</p>
+    <div class="vars" id="vars"></div>
+  </div>
+  <div class="grupo">
+    <p class="rotulo">Ano</p>
+    <div class="ano"><button type="button" id="tocar" aria-label="Animar anos"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><input type="range" id="ano" min="2001" max="2024" step="1" aria-label="Ano"><output id="ano-v" class="num"></output></div>
+  </div>
+  <div class="grupo">
+    <p class="rotulo">Mostrar</p>
+    <div class="seg" id="seg-modo" style="--n:2"><button type="button" data-m="total">Total</button><button type="button" data-m="ha">Por hectare</button></div>
+  </div>
+  <div class="legenda" id="legenda"></div>
+</aside>
+
+<aside class="painel" id="dir" aria-label="Recorte selecionado">
+  <div class="cab-rec"><span class="tipo" id="r-tipo"></span><h2 id="r-nome"></h2><span class="sub num" id="r-sub"></span></div>
+  <div class="trilha" id="trilha"></div>
+  <div class="kpis" id="kpis"></div>
+  <section class="caixa">
+    <h3>Emissões e remoções por processo</h3>
+    <div class="chaves" id="chaves"></div>
+    <div class="grafico"><canvas id="g-proc" aria-label="Emissões e remoções por processo e ano"></canvas></div>
+    <p class="nota">Clique numa barra para escolher o ano. Remoções aparecem abaixo de zero.</p>
+  </section>
+  <section class="caixa">
+    <h3>Estoques de carbono acima do solo</h3>
+    <div class="dois">
+      <div><h4>Vegetação secundária</h4><span class="u" id="u-sf"></span><div class="grafico peq"><canvas id="g-sf"></canvas></div></div>
+      <div><h4>Floresta primária</h4><span class="u" id="u-p"></span><div class="grafico peq"><canvas id="g-p"></canvas></div></div>
+    </div>
+  </section>
+  <section class="caixa" id="cx-rank">
+    <h3 id="rank-tit"></h3>
+    <p class="nota" id="rank-nota"></p>
+    <div class="rank" id="rank"></div>
+  </section>
+  <section class="caixa">
+    <h3>Relatório, dados e citação</h3>
+    <div class="acoes"><button type="button" class="btn btn-pri" id="abrir-rel">Gerar relatório</button><button type="button" class="btn" id="copiar">Copiar tabela (CSV)</button><button type="button" class="btn" id="copiar-cit">Copiar citação</button></div>
+    <p class="cit" id="cit"></p>
+    <textarea id="area-copia" hidden aria-hidden="true"></textarea>
+  </section>
+</aside>
+
+<div id="metodo" hidden>
+  <article>
+    <button type="button" class="fechar" id="fechar-metodo">Fechar</button>
+    <h1>Método</h1>
+    <p class="lead">Em preparação.</p>
+  </article>
+</div>
+<div id="relatorio" hidden>
+  <div class="rel-barra"><button type="button" class="btn" id="fechar-rel">Fechar</button><span class="esp"></span><button type="button" class="btn btn-pri" id="imprimir-rel">Imprimir ou salvar PDF</button></div>
+  <article class="rel" id="rel-conteudo"></article>
+</div>
+<div id="carregando">Carregando dados…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script>
+/* plataforma de emissões YbYrá-BR · v0.2.1
+   0.2.1 (2026-10-21) — link "Código aberto" para o repositório.
+   0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
+                        sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
+   0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
+const VERSAO = "0.2.1", DADOS = "dados/v1_2/";
+const $ = id => document.getElementById(id);
+const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
+const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
+const cor = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* variáveis exibidas: base (arquivos) ou derivadas */
+const VARS = [
+  {k:"liquida", n:"Emissão líquida", g:"Saldo", esc:"div", sw:"--p-liq", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]-Math.abs(s.removal_sf_co2[i])), base:["total_primary_co2","defor_sf_co2","removal_sf_co2"]},
+  {k:"bruta", n:"Emissão bruta", g:"Emissões", esc:"emi", sw:"--p-defor", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]), base:["total_primary_co2","defor_sf_co2"]},
+  {k:"defor_co2", n:"Desmatamento de floresta primária", g:"Emissões", esc:"emi", sw:"--p-defor"},
+  {k:"fire_co2", n:"Fogo em floresta", g:"Emissões", esc:"emi", sw:"--p-fogo"},
+  {k:"edge_co2", n:"Efeito de borda", g:"Emissões", esc:"emi", sw:"--p-borda"},
+  {k:"logging_co2", n:"Exploração madeireira", g:"Emissões", esc:"emi", sw:"--p-madeira"},
+  {k:"defor_sf_co2", n:"Desmatamento de vegetação secundária", g:"Emissões", esc:"emi", sw:"--p-dsec"},
+  {k:"removal_sf_co2", n:"Remoção pela vegetação secundária", g:"Remoções", esc:"rem", sw:"--p-rem", f:s=>s.removal_sf_co2.map(v=>Math.abs(v)), base:["removal_sf_co2"]},
+  {k:"agc_sf_co2", n:"Carbono na vegetação secundária", g:"Estoques", esc:"est", sw:"--p-rem", estoque:"CO₂"},
+  {k:"agc0_mgc", n:"Carbono na floresta primária", g:"Estoques", esc:"est", sw:"--p-rem", estoque:"C"},
+];
+const VAR = Object.fromEntries(VARS.map(v=>[v.k,v]));
+const PROC = [
+  {k:"defor_co2", n:"Desmatamento", c:"--p-defor"}, {k:"fire_co2", n:"Fogo", c:"--p-fogo"},
+  {k:"edge_co2", n:"Borda", c:"--p-borda"}, {k:"logging_co2", n:"Exploração madeireira", c:"--p-madeira"},
+  {k:"defor_sf_co2", n:"Desmat. de secundária", c:"--p-dsec"}, {k:"removal_sf_co2", n:"Remoção", c:"--p-rem", neg:true}];
+const RAMPAS = {
+  emi:["#fff1c9","#fdd49e","#fdbb84","#fc8d59","#e34a33","#b30000","#6b0000"],
+  rem:["#edf8fb","#ccece6","#99d8c9","#66c2a4","#41ae76","#238b45","#00441b"],
+  est:["#ffffcc","#d9f0a3","#addd8e","#78c679","#41ab5d","#238443","#004529"],
+  div:["#1b7837","#7fbf7b","#d9f0d3","#f4f1ea","#fddbc7","#ef8a62","#b2182b"]};
+
+/* estado */
+const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}};
+let CAT, ANOS, mapa, GEO, CONT, BBOX = {}, MUN_BIOMA = {};
+const cache = new Map();
+const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
+const nomeDe = (tipo,id) => { const t = CAT.tipos[tipo]; if(!t._nomes) t._nomes = new Map(t.ids.map(o=>[o.id,o.nome]));
+  let n = t._nomes.get(+id) ?? String(id); if(tipo==="uf") n = UF_NOME[id] ?? n; if(tipo==="uf_bioma") n = `${UF_NOME[Math.floor(id/10)]??"?"} · ${CAT.tipos.bioma._nomes?.get(id%10) ?? nomeDe("bioma", id%10)}`; return n; };
+
+/* ---------- formatação ---------- */
+const nf = (x,d=1)=> x.toLocaleString("pt-BR",{maximumFractionDigits:d, minimumFractionDigits:d});
+function escala(maxAbs, varK){
+  const est = VAR[varK]?.estoque, gas = est==="C" ? "C" : "CO₂", fl = est ? "" : " ano⁻¹";
+  if(E.modo==="ha") return {f:1, u:`t ${gas} ha⁻¹${fl}`, d: maxAbs<10?2:1};
+  if(maxAbs>=1e9) return {f:1e9, u:`Gt ${gas}${fl}`, d:2};
+  if(maxAbs>=1e6) return {f:1e6, u:`Mt ${gas}${fl}`, d: maxAbs>=1e8?0:1};
+  if(maxAbs>=1e3) return {f:1e3, u:`kt ${gas}${fl}`, d: maxAbs>=1e5?0:1};
+  return {f:1, u:`t ${gas}${fl}`, d:0};
+}
+const fmt = (x,e)=> nf(x/e.f, e.d);
+
+/* ---------- dados ---------- */
+async function mapaVar(tipo, k){
+  const def = VAR[k]; const base = def.base || [k];
+  const arq = await Promise.all(base.map(b=>j(`mapa/${tipo}/${b}.json`)));
+  const area = E.modo==="ha" ? await j(`mapa/${tipo}/area_ha.json`) : null;
+  const ids = arq[0].ids, out = new Map();
+  const a = String(E.ano);
+  ids.forEach((id,i)=>{
+    const s = Object.fromEntries(base.map((b,q)=>[b,[arq[q].valores[a][i]]]));
+    let v = def.f ? def.f(s)[0] : s[k][0];
+    if(area){ const h = area.valores[a][i]; v = h>0 ? v/h : 0; }
+    out.set(id, v);
+  });
+  return out;
+}
+const lote = (tipo,id)=> CAT.tipos[tipo].lote==="uf" ? (tipo==="municipio" ? Math.floor(id/100000) : Math.floor(id/1000000)) : 0;
+async function serie(tipo,id){ const d = await j(`serie/${tipo}/${lote(tipo,id)}.json`); return d.series[String(id)]; }
+
+/* ---------- mapa ---------- */
+function bbox(coords, b=[180,90,-180,-90]){
+  if(typeof coords[0]==="number"){ const [x,y]=coords; if(x<b[0])b[0]=x; if(y<b[1])b[1]=y; if(x>b[2])b[2]=x; if(y>b[3])b[3]=y; return b; }
+  coords.forEach(c=>bbox(c,b)); return b;
+}
+function padding(){
+  if(innerWidth<=900) return 20;
+  return {top:30, bottom:30, left:$("esq").offsetWidth+40, right:$("dir").offsetWidth+40};
+}
+function iniciarMapa(){
+  mapa = new maplibregl.Map({container:"mapa", attributionControl:false, dragRotate:false, pitchWithRotate:false,
+    style:{version:8, sources:{}, layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}}]},
+    bounds:[[-74,-34],[-28.8,5.3]], fitBoundsOptions:{padding:padding()}, maxBounds:[[-110,-60],[5,25]]});
+  mapa.touchZoomRotate.disableRotation();
+  return new Promise(ok=>mapa.on("load",()=>{
+    mapa.addSource("mun",{type:"geojson", data:GEO, promoteId:"c"});
+    mapa.addSource("cont",{type:"geojson", data:CONT});
+    mapa.addLayer({id:"mun-fill", type:"fill", source:"mun", paint:{"fill-color":corFill(), "fill-antialias":false}});
+    mapa.addLayer({id:"mun-linha", type:"line", source:"mun", paint:{"line-color":cor("--contorno-mun"), "line-width":["interpolate",["linear"],["zoom"],3,.15,6,.4,9,.9]}});
+    mapa.addLayer({id:"cont", type:"line", source:"cont", filter:["==",["get","t"],"uf"], paint:{"line-color":cor("--contorno"), "line-width":["interpolate",["linear"],["zoom"],3,.7,7,1.6], "line-opacity":.85}});
+    mapa.addLayer({id:"sel-mun", type:"line", source:"mun", filter:["==",["get","c"],-1], paint:{"line-color":cor("--contorno"), "line-width":2.6}});
+    mapa.addLayer({id:"sel-cont", type:"line", source:"cont", filter:["==",["get","t"],"x"], paint:{"line-color":cor("--contorno"), "line-width":3}});
+    ok();
+  }));
+}
+function corFill(){
+  const r = RAMPAS[VAR[E.v].esc];
+  return ["match",["coalesce",["feature-state","k"],-1], 0,r[0],1,r[1],2,r[2],3,r[3],4,r[4],5,r[5],6,r[6], 9,cor("--vazio"), cor("--vazio")];
+}
+function grupoDe(tipo, c){ return tipo==="municipio" ? c : tipo==="uf" ? Math.floor(c/100000) : tipo==="bioma" ? MUN_BIOMA[c] : 1; }
+
+function quebras(vals, esc){
+  const xs = vals.filter(v=>esc==="div" ? v!==0 : v>0).sort((a,b)=>a-b);
+  if(!xs.length) return null;
+  const q = p => xs[Math.min(xs.length-1, Math.max(0, Math.round(p*(xs.length-1))))];
+  if(esc==="div"){
+    const ab = xs.map(Math.abs).sort((a,b)=>a-b), qa = p=>ab[Math.min(ab.length-1, Math.round(p*(ab.length-1)))];
+    const t = [qa(.25), qa(.6), qa(.9)];
+    return {div:true, t};
+  }
+  return {lim:[1,2,3,4,5,6].map(i=>q(i/7))};
+}
+function classe(v, qb){
+  if(!qb) return 9;
+  if(qb.div){ const [a,b,c]=qb.t, s=Math.sign(v), m=Math.abs(v);
+    if(m<=a*.15 || v===0) return 3; const k = m<=a?1: m<=b?2:3; return s<0 ? 3-k : 3+k; }
+  if(!(v>0)) return 9;
+  let k=0; while(k<6 && v>qb.lim[k]) k++; return k;
+}
+let VALORES = new Map(), QB = null, ESC = null;
+async function colorir(){
+  VALORES = await mapaVar(E.tipo, E.v);
+  const esc = VAR[E.v].esc; QB = quebras([...VALORES.values()], esc);
+  const maxAbs = Math.max(...[...VALORES.values()].map(Math.abs), 0); ESC = escala(maxAbs, E.v);
+  for(const f of GEO.features){
+    const c = f.properties.c, v = VALORES.get(grupoDe(E.tipo,c));
+    mapa.setFeatureState({source:"mun", id:c}, {k: v===undefined ? 9 : classe(v,QB)});
+  }
+  mapa.setPaintProperty("mun-fill","fill-color",corFill());
+  mapa.setFilter("cont", E.tipo==="municipio" ? ["==",["get","t"],"uf"] : ["==",["get","t"], E.tipo]);
+  mapa.setPaintProperty("mun-linha","line-opacity", E.tipo==="municipio" ? 1 : .35);
+  legenda();
+}
+function legenda(){
+  const r = RAMPAS[VAR[E.v].esc], el = $("legenda");
+  if(!QB){ el.innerHTML = `<span class="un">Sem valores para este ano.</span>`; return; }
+  let marcas;
+  if(QB.div){ const [a,b,c]=QB.t; marcas = ["",`−${fmt(b,ESC)}`,`−${fmt(a,ESC)}`,"","",fmt(a,ESC),fmt(b,ESC)]; }
+  else marcas = ["", ...QB.lim.map(x=>fmt(x,ESC))];
+  el.style.setProperty("--n",7);
+  el.innerHTML = `<div class="barra" style="--n:7">${r.map(c=>`<i style="background:${c}"></i>`).join("")}</div>
+    <div class="marcas num" style="--n:7">${marcas.map(m=>`<span>${m}</span>`).join("")}</div>
+    <span class="un">${VAR[E.v].n}, ${E.ano} · ${ESC.u}${E.tipo!=="brasil"?` · por ${TIPO_NOME[E.tipo].toLowerCase()}`:""}</span>`;
+}
+
+/* dica ao passar o mouse */
+function ligarDica(){
+  const d = $("dica");
+  mapa.on("mousemove","mun-fill",e=>{
+    const p = e.features[0].properties, g = grupoDe(E.tipo,p.c), v = VALORES.get(g);
+    const nome = E.tipo==="municipio" ? `${p.n} (${p.u})` : nomeDe(E.tipo,g);
+    d.innerHTML = `<b>${nome}</b><span class="num">${v===undefined?"sem dado":`${fmt(v,ESC)} ${ESC.u}`}</span>`;
+    d.hidden = false; d.style.left = (e.originalEvent.clientX+14)+"px"; d.style.top = (e.originalEvent.clientY+14)+"px";
+    mapa.getCanvas().style.cursor = "pointer";
+  });
+  mapa.on("mouseleave","mun-fill",()=>{ d.hidden = true; mapa.getCanvas().style.cursor = ""; });
+  mapa.on("click","mun-fill",e=>{ const c = e.features[0].properties.c; selecionar(E.tipo, grupoDe(E.tipo,c), false); });
+}
+function destacar(){
+  const {tipo,id} = E.sel;
+  mapa.setFilter("sel-mun", tipo==="municipio" ? ["==",["get","c"],id] : ["==",["get","c"],-1]);
+  mapa.setFilter("sel-cont", (tipo==="uf"||tipo==="bioma") ? ["all",["==",["get","t"],tipo],["==",["get","id"],id]] : ["==",["get","t"],"x"]);
+}
+function voar(tipo,id){
+  const b = tipo==="municipio" ? BBOX["m"+id] : tipo==="brasil" ? [-74,-34,-28.8,5.3] : BBOX[tipo+id];
+  if(b) mapa.fitBounds([[b[0],b[1]],[b[2],b[3]]], {padding:padding(), maxZoom:9, duration:700});
+}
+
+/* ---------- painel do recorte ---------- */
+let G = {};
+function trilha(){
+  const {tipo,id} = E.sel, el = $("trilha"), itens = [["brasil",1]];
+  if(tipo==="municipio"||tipo==="municipio_bioma"){ const c = tipo==="municipio"?id:Math.floor(id/10); itens.push(["uf",Math.floor(c/100000)]); if(tipo==="municipio_bioma") itens.push(["municipio",c]); }
+  if(tipo==="uf_bioma") itens.push(["bioma", id%10], ["uf", Math.floor(id/10)]);
+  el.innerHTML = itens.filter(([t,i])=>!(t===tipo&&i===id)).map(([t,i])=>`<button type="button" data-t="${t}" data-i="${i}">${nomeDe(t,i)}</button>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>selecionar(b.dataset.t,+b.dataset.i,true));
+}
+async function painel(){
+  const {tipo,id} = E.sel; const s = await serie(tipo,id);
+  const i = ANOS.indexOf(E.ano), area = s.area_ha[i];
+  $("r-tipo").textContent = TIPO_NOME[tipo]; $("r-nome").textContent = nomeDe(tipo,id);
+  $("r-sub").textContent = `Área: ${nf(area/100, 0)} km² · ${E.ano}`;
+  trilha();
+  const bruta = VAR.bruta.f(s), rem = VAR.removal_sf_co2.f(s), liq = VAR.liquida.f(s);
+  const div = E.modo==="ha" ? area : 1;
+  const e = escala(Math.max(...bruta)/div, "bruta");
+  const kpi = (n,ser,inv)=>{ const v = ser[i]/div, a = i>0 ? ser[i-1]/div : null;
+    const dl = a ? (v-a)/Math.abs(a)*100 : null, sobe = dl>0;
+    const cls = dl===null ? "" : (inv ? !sobe : sobe) ? "sobe" : "desce";
+    return `<div class="kpi"><span class="n">${n}</span><span class="v num">${fmt(v,e)}</span><span class="u">${e.u}</span>${dl===null?"":`<span class="d num ${cls}">${dl>0?"▲":"▼"} ${nf(Math.abs(dl),0)}% vs ${E.ano-1}</span>`}</div>`; };
+  $("kpis").innerHTML = kpi("Emissão bruta",bruta) + kpi("Remoção",rem,true) + kpi("Emissão líquida",liq);
+  graficos(s, div); ranking(); citacao(s);
+}
+function opcoesBase(u){
+  const fg = cor("--label2"), sep = cor("--sep");
+  return {responsive:true, maintainAspectRatio:false, animation:false, interaction:{mode:"index", intersect:false},
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${nf(c.parsed.y, Math.abs(c.parsed.y)<10?2:1)} ${u}`}}},
+    scales:{x:{ticks:{color:fg, maxRotation:0, autoSkipPadding:10, font:{size:10.5}}, grid:{display:false}, border:{color:sep}},
+            y:{ticks:{color:fg, font:{size:10.5}, callback:v=>nf(v, Math.abs(v)<10&&v!==0?1:0)}, grid:{color:sep}, border:{display:false}}}};
+}
+function graficos(s, div){
+  const maxBruta = Math.max(...VAR.bruta.f(s))/div, e = escala(maxBruta, "bruta");
+  const conv = x=>x/div/e.f;
+  const sel = ANOS.map(a=>a===E.ano);
+  const ds = PROC.map(p=>({type:"bar", label:p.n, data:s[p.k].map(v=>conv(p.neg?-Math.abs(v):v)), stack:"s",
+      backgroundColor:sel.map(x=>x?cor(p.c):cor(p.c)+"b3"), borderWidth:0, order:2}));
+  ds.push({type:"line", label:"Emissão líquida", data:VAR.liquida.f(s).map(conv), borderColor:cor("--p-liq"), backgroundColor:cor("--p-liq"), borderWidth:1.8, pointRadius:sel.map(x=>x?3.5:0), tension:.25, order:1});
+  $("chaves").innerHTML = PROC.map(p=>`<span><i style="background:${cor(p.c)}"></i>${p.n}</span>`).join("") + `<span><i class="linha" style="background:${cor("--p-liq")}"></i>Líquida</span>`;
+  const o = opcoesBase(e.u); o.scales.x.stacked = true; o.scales.y.stacked = true;
+  o.scales.y.title = {display:true, text:e.u, color:cor("--label2"), font:{size:10.5}};
+  o.onClick = (ev,els)=>{ if(els.length){ mudarAno(ANOS[els[0].index]); } };
+  desenhar("proc", "g-proc", {type:"bar", data:{labels:ANOS, datasets:ds}, options:o});
+  const est = (canv, k, chave, unidEl)=>{
+    const vals = s[k].map(v=>v/div), ee = escala(Math.max(...vals), chave);
+    $(unidEl).textContent = ee.u;
+    const oo = opcoesBase(ee.u); oo.scales.x.ticks.maxTicksLimit = 4;
+    desenhar(canv, "g-"+canv, {type:"line", data:{labels:ANOS, datasets:[{label:VAR[chave].n, data:vals.map(v=>v/ee.f), borderColor:cor("--p-rem"), backgroundColor:cor("--p-rem")+"26", fill:true, borderWidth:1.8, pointRadius:sel.map(x=>x?3:0), tension:.25}]}, options:oo});
+  };
+  est("sf","agc_sf_co2","agc_sf_co2","u-sf"); est("p","agc0_mgc","agc0_mgc","u-p");
+}
+function desenhar(chave, canvasId, cfg){ if(G[chave]) G[chave].destroy(); G[chave] = new Chart($(canvasId), cfg); }
+
+/* ranking dos sub-recortes */
+async function ranking(){
+  const {tipo,id} = E.sel, def = VAR[E.v];
+  let filho, filtro, tit;
+  if(tipo==="brasil"){ filho="uf"; filtro=()=>true; tit="Estados"; }
+  else if(tipo==="uf"){ filho="municipio"; filtro=c=>Math.floor(c/100000)===id; tit="Municípios do estado"; }
+  else if(tipo==="bioma"){ filho="uf_bioma"; filtro=c=>c%10===id; tit="Estados dentro do bioma"; }
+  else if(tipo==="municipio"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/10)===id; tit="Partes do município por bioma"; }
+  else if(tipo==="uf_bioma"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/1000000)===Math.floor(id/10) && c%10===id%10; tit="Municípios nesta parte"; }
+  else { $("cx-rank").hidden = true; return; }
+  $("cx-rank").hidden = false;
+  let lista;
+  if(CAT.tipos[filho].lote==="uf"){
+    const uf = tipo==="uf" ? id : tipo==="municipio" ? Math.floor(id/100000) : Math.floor(id/10);
+    const d = await j(`serie/${filho}/${uf}.json`), a = ANOS.indexOf(E.ano);
+    lista = Object.entries(d.series).filter(([c])=>filtro(+c)).map(([c,s])=>{ let v = def.f ? def.f(s)[a] : s[E.v][a]; if(E.modo==="ha") v = s.area_ha[a]>0 ? v/s.area_ha[a] : 0; return [+c,v]; });
+  } else {
+    const m = await mapaVar(filho, E.v); lista = [...m].filter(([c])=>filtro(c));
+  }
+  lista.sort((a,b)=>b[1]-a[1]);
+  const top = lista.slice(0,10), maxAbs = Math.max(...top.map(x=>Math.abs(x[1])), 1e-9), e = escala(maxAbs, E.v);
+  $("rank-tit").textContent = tit;
+  $("rank-nota").textContent = `${def.n}, ${E.ano} · ${e.u}${lista.length>10?` · 10 maiores de ${lista.length}`:""}`;
+  const c = cor(def.sw);
+  $("rank").innerHTML = top.map(([cid,v],k)=>`<button type="button" data-t="${filho}" data-i="${cid}"><span class="pos num">${k+1}</span><span class="nm"><span>${nomeDe(filho,cid)}</span><span class="bar"><i style="width:${Math.max(2,Math.abs(v)/maxAbs*100)}%;background:${v<0?cor("--p-rem"):c}"></i></span></span><span class="vl num">${fmt(v,e)}</span></button>`).join("") || `<span class="nota">Sem sub-recortes.</span>`;
+  $("rank").querySelectorAll("button").forEach(b=>b.onclick=()=>selecionar(b.dataset.t,+b.dataset.i,true));
+}
+function citacao(s){
+  $("cit").textContent = `Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR, versão ${CAT.versao_modelo} (prévia ${VERSAO}, dados fictícios). Projeto YbYrá-BR, CNPq 401741/2023-0.`;
+}
+async function copiarTexto(txt, botao){
+  const ok = ()=>{ const t = botao.textContent; botao.textContent = "Copiado"; setTimeout(()=>botao.textContent=t,1500); };
+  try{ await navigator.clipboard.writeText(txt); ok(); }
+  catch(e){ const ta = $("area-copia"); ta.hidden = false; ta.value = txt; ta.select(); try{document.execCommand("copy"); ok();}catch(_){} ta.hidden = true; }
+}
+$("copiar").onclick = async ()=>{
+  const {tipo,id} = E.sel, s = await serie(tipo,id), ks = Object.keys(s);
+  const csv = ["recorte,tipo,ano,"+ks.join(",")].concat(ANOS.map((a,i)=>`"${nomeDe(tipo,id)}",${tipo},${a},`+ks.map(k=>s[k][i]).join(","))).join("\n");
+  copiarTexto(csv, $("copiar"));
+};
+$("copiar-cit").onclick = ()=>copiarTexto($("cit").textContent, $("copiar-cit"));
+
+/* ---------- relatório ---------- */
+const NA_PREVIA = /claudeusercontent|claude\.ai/.test(location.hostname);
+async function relatorio(){
+  const {tipo,id} = E.sel, s = await serie(tipo,id), nome = nomeDe(tipo,id), i = ANOS.indexOf(E.ano);
+  const bruta = VAR.bruta.f(s), rem = VAR.removal_sf_co2.f(s), liq = VAR.liquida.f(s);
+  const e = escala(Math.max(...bruta), "bruta"), f = x=>fmt(x,e);
+  const pct = (a,b)=> b ? nf((a-b)/Math.abs(b)*100,0)+"%" : "–";
+  const proc = PROC.filter(p=>!p.neg).map(p=>[p.n, s[p.k][i]]).sort((a,b)=>b[1]-a[1]);
+  const principal = proc[0], partP = bruta[i] ? principal[1]/bruta[i]*100 : 0;
+  const pico = ANOS[bruta.indexOf(Math.max(...bruta))], acum = bruta.reduce((a,b)=>a+b,0);
+  const resumo = `Em ${E.ano}, a emissão bruta de CO₂ em ${nome} foi de ${f(bruta[i])} ${e.u}${i>0?`, ${bruta[i]>=bruta[i-1]?"aumento":"queda"} de ${pct(bruta[i],bruta[i-1]).replace("-","")} em relação a ${E.ano-1}`:""}. ${principal[0]} foi o principal processo, com ${nf(partP,0)}% da emissão bruta. A vegetação secundária removeu ${f(rem[i])} ${e.u}, e a emissão líquida ficou em ${f(liq[i])} ${e.u}. Entre ${ANOS[0]} e ${ANOS.at(-1)}, a maior emissão bruta ocorreu em ${pico}, e o total acumulado no período foi de ${fmt(acum,escala(acum,"bruta"))} ${escala(acum,"bruta").u.replace(" ano⁻¹","")}.`;
+  const cab = ["Ano", ...PROC.map(p=>p.n), "Bruta", "Líquida"];
+  const linhas = ANOS.map((a,k)=>`<tr class="${a===E.ano?"at":""}"><td>${a}</td>${PROC.map(p=>`<td>${f(p.neg?-Math.abs(s[p.k][k]):s[p.k][k])}</td>`).join("")}<td>${f(bruta[k])}</td><td>${f(liq[k])}</td></tr>`).join("");
+  const rk = [...$("rank").querySelectorAll("button")].map(b=>`<li>${b.querySelector(".nm span").textContent} — ${b.querySelector(".vl").textContent}</li>`).join("");
+  const sf = escala(Math.max(...s.agc_sf_co2), "agc_sf_co2"), pr = escala(Math.max(...s.agc0_mgc), "agc0_mgc");
+  $("rel-conteudo").innerHTML = `
+    <div class="cabrel"><img class="y" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
+      <div class="ap">Apoio<img src="img/cnpq-128.png" alt="CNPq">Processo 401741/2023-0</div></div>
+    <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
+    <p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>
+    <p>${resumo}</p>
+    <div class="kpis">${$("kpis").innerHTML}</div>
+    <h2>Emissões e remoções por processo</h2>
+    <div class="chaves">${$("chaves").innerHTML}</div>
+    <div class="grafico"><canvas id="rg-proc"></canvas></div>
+    <h2>Estoques de carbono acima do solo</h2>
+    <div class="dois"><div><h4>Vegetação secundária</h4><span class="u">${sf.u}</span><div class="grafico peq"><canvas id="rg-sf"></canvas></div></div>
+      <div><h4>Floresta primária</h4><span class="u">${pr.u}</span><div class="grafico peq"><canvas id="rg-p"></canvas></div></div></div>
+    <h2>Série anual (${e.u})</h2>
+    <div class="tabw"><table><thead><tr>${cab.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${linhas}</tbody></table></div>
+    ${rk?`<h2>${$("rank-tit").textContent}</h2><p class="meta">${$("rank-nota").textContent}</p><ol class="lista">${rk}</ol>`:""}
+    <p class="rod">Área do recorte: ${nf(s.area_ha[i]/100,0)} km². Fonte: modelo YbYrá-BR, coleção emissions_removals_${CAT.versao_modelo}; somente CO₂. Plataforma versão ${VERSAO}; relatório gerado em ${new Date().toLocaleDateString("pt-BR")}.<br>${$("cit").textContent}</p>`;
+  $("relatorio").hidden = false; $("relatorio").scrollTop = 0;
+  $("imprimir-rel").hidden = NA_PREVIA;
+  // gráficos do relatório reaproveitam as configurações do painel
+  const clone = (orig, canv)=>{ const c = G[orig].config; return new Chart($(canv), {type:c.type, data:structuredClone(c.data), options:{...c.options, onClick:null}}); };
+  ["rproc","rsf","rp"].forEach(k=>{ if(G[k]) G[k].destroy(); });
+  G.rproc = clone("proc","rg-proc"); G.rsf = clone("sf","rg-sf"); G.rp = clone("p","rg-p");
+}
+$("abrir-rel").onclick = relatorio;
+$("fechar-rel").onclick = ()=>{ $("relatorio").hidden = true; };
+$("imprimir-rel").onclick = ()=>window.print();
+
+/* ---------- controles ---------- */
+function marcar(){
+  document.querySelectorAll("#seg-tipo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.t===E.tipo));
+  document.querySelectorAll("#seg-modo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.m===E.modo));
+  document.querySelectorAll("#vars button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===E.v));
+  $("ano").value = E.ano; $("ano-v").textContent = E.ano;
+}
+function montarVars(){
+  let g = "", h = "";
+  for(const v of VARS){ if(v.g!==g){ g=v.g; h += `<span class="cab">${g}</span>`; }
+    h += `<button type="button" data-v="${v.k}"><i style="background:${RAMPAS[v.esc][v.esc==="div"?6:5]}"></i>${v.n}</button>`; }
+  $("vars").innerHTML = h;
+  $("vars").querySelectorAll("button").forEach(b=>b.onclick=()=>{ E.v=b.dataset.v; atualizar(false); });
+}
+async function atualizar(comPainel=true){ marcar(); await colorir(); if(comPainel) await painel(); else ranking(); }
+async function selecionar(tipo,id,voa){
+  E.sel = {tipo,id};
+  if(["uf","bioma","municipio","brasil"].includes(tipo) && tipo!==E.tipo && voa){ E.tipo = tipo; await colorir(); }
+  marcar(); destacar(); await painel();
+  if(voa) voar(tipo==="uf_bioma"?"uf":tipo==="municipio_bioma"?"municipio":tipo, tipo==="uf_bioma"?Math.floor(id/10):tipo==="municipio_bioma"?Math.floor(id/10):id);
+}
+async function mudarAno(a){ E.ano = a; marcar(); await colorir(); await painel(); }
+document.querySelectorAll("#seg-tipo button").forEach(b=>b.onclick=async()=>{ E.tipo=b.dataset.t; await atualizar(false); if(E.tipo==="brasil") selecionar("brasil",1,true); });
+document.querySelectorAll("#seg-modo button").forEach(b=>b.onclick=()=>{ E.modo=b.dataset.m; atualizar(true); });
+let tAno; $("ano").oninput = e=>{ E.ano=+e.target.value; $("ano-v").textContent=E.ano; clearTimeout(tAno); tAno=setTimeout(()=>mudarAno(E.ano),120); };
+let tocando = null;
+$("tocar").onclick = ()=>{
+  if(tocando){ clearInterval(tocando); tocando=null; $("tocar").innerHTML='<svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg>'; return; }
+  $("tocar").innerHTML='<svg viewBox="0 0 12 12"><path d="M2 1h3v10H2zM7 1h3v10H7z"/></svg>';
+  if(E.ano===ANOS.at(-1)) E.ano = ANOS[0]-1;
+  tocando = setInterval(()=>{ if(E.ano>=ANOS.at(-1)){ $("tocar").click(); return; } mudarAno(E.ano+1); }, 900);
+};
+$("z-mais").onclick = ()=>mapa.zoomIn(); $("z-menos").onclick = ()=>mapa.zoomOut();
+$("z-br").onclick = ()=>mapa.fitBounds([[-74,-34],[-28.8,5.3]],{padding:padding(), duration:600});
+$("abrir-metodo").onclick = ()=>{ $("metodo").hidden=false; $("metodo").scrollTop=0; };
+$("fechar-metodo").onclick = ()=>{ $("metodo").hidden=true; };
+$("marca").onclick = e=>{ e.preventDefault(); $("metodo").hidden=true; selecionar("brasil",1,true); };
+addEventListener("keydown",e=>{ if(e.key==="Escape"){ $("metodo").hidden=true; $("relatorio").hidden=true; } });
+
+/* busca */
+let INDICE = [];
+function montarIndice(){
+  INDICE = [["brasil",1,"Brasil"]];
+  for(const t of ["uf","bioma","municipio"]) for(const o of CAT.tipos[t].ids) INDICE.push([t,o.id,nomeDe(t,o.id)]);
+  INDICE.forEach(x=>x.push(x[2].normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()));
+}
+let sugAtual = [], sugI = 0;
+function sugerir(q){
+  const ul = $("sugestoes"); q = q.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+  if(!q){ ul.hidden = true; return; }
+  sugAtual = INDICE.filter(x=>x[3].includes(q)).sort((a,b)=>(a[3].startsWith(q)?0:1)-(b[3].startsWith(q)?0:1) || ["brasil","uf","bioma","municipio"].indexOf(a[0])-["brasil","uf","bioma","municipio"].indexOf(b[0])).slice(0,12);
+  sugI = 0;
+  ul.innerHTML = sugAtual.map((x,k)=>`<li role="option" aria-selected="${k===0}" data-k="${k}">${x[2]}<span>${TIPO_NOME[x[0]]}</span></li>`).join("") || `<li aria-disabled="true">Nada encontrado</li>`;
+  ul.hidden = false;
+  ul.querySelectorAll("li[data-k]").forEach(li=>li.onmousedown=e=>{ e.preventDefault(); escolher(+li.dataset.k); });
+}
+function escolher(k){ const x = sugAtual[k]; if(!x) return; $("busca").value = ""; $("sugestoes").hidden = true; selecionar(x[0], x[1], true); }
+$("busca").oninput = e=>sugerir(e.target.value);
+$("busca").onkeydown = e=>{
+  const lis = [...$("sugestoes").querySelectorAll("li[data-k]")];
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); sugI = (sugI + (e.key==="ArrowDown"?1:-1) + lis.length) % Math.max(lis.length,1); lis.forEach((li,k)=>li.setAttribute("aria-selected",k===sugI)); }
+  else if(e.key==="Enter"){ e.preventDefault(); escolher(sugI); }
+  else if(e.key==="Escape"){ $("sugestoes").hidden = true; }
+};
+$("busca").onblur = ()=>setTimeout(()=>$("sugestoes").hidden=true,150);
+
+/* tema: refaz cores do mapa e gráficos */
+function aoMudarTema(){ if(!mapa) return; mapa.setPaintProperty("fundo","background-color",cor("--mapa"));
+  ["cont","sel-mun","sel-cont"].forEach(l=>mapa.setPaintProperty(l,"line-color",cor("--contorno"))); mapa.setPaintProperty("mun-linha","line-color",cor("--contorno-mun"));
+  mapa.setPaintProperty("mun-fill","fill-color",corFill()); painel(); }
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aoMudarTema);
+new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:true, attributeFilter:["data-theme"]});
+
+/* ---------- início ---------- */
+(async function(){
+  try{
+    const [cat, geo, cont] = await Promise.all([j("catalogo.json"), fetch("geo/municipios.geojson").then(r=>r.json()), fetch("geo/contornos.geojson").then(r=>r.json())]);
+    CAT = cat; GEO = geo; CONT = cont; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
+    $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
+    nomeDe("bioma",1);
+    for(const f of GEO.features){ MUN_BIOMA[f.properties.c] = f.properties.b; BBOX["m"+f.properties.c] = bbox(f.geometry.coordinates); }
+    for(const f of CONT.features){ BBOX[f.properties.t+f.properties.id] = bbox(f.geometry.coordinates); }
+    montarVars(); montarIndice(); marcar();
+    await iniciarMapa(); ligarDica();
+    await colorir(); destacar(); await painel();
+    $("carregando").remove();
+  }catch(err){ console.error(err); $("carregando").textContent = "Não foi possível carregar os dados. Recarregue a página."; }
+})();
+</script>

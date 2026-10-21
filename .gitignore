@@ -1,0 +1,5 @@
+dados_ficticios/csv/
+dados_ficticios/estatisticas.csv.gz
+__pycache__/
+*.pyc
+.DS_Store
