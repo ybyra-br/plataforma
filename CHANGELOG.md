@@ -1,6 +1,7 @@
 # Histórico de versões
 
 ## 0.5.3 — 2026-10-21
+- Correção: os comandos do botão de camadas tinham ido parar dentro da função que atualiza os controles (eram recriados a cada mudança e o Esc não fechava o painel).
 - Correção: o painel de camadas ficava sempre aberto. Faltava a regra global `[hidden]{display:none!important}` (o ambiente de prévia a incluía, o GitHub Pages não); a caixa de ranking tinha o mesmo problema.
 
 ## 0.5.2 — 2026-10-21
