@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <link rel="icon" type="image/png" href="img/ybyra-simbolo-96.png">
 <link rel="apple-touch-icon" href="img/ybyra-simbolo-192.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.css">
 <title>Emissões YbYrá-BR</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Emissões e remoções de CO₂ por recorte territorial — modelo YbYrá-BR (CNPq 401741/2023-0)">
@@ -19,7 +20,7 @@
   --bg:#f2f2f7; --painel:rgba(255,255,255,.86); --cell:#fff; --mapa:#e9ece6; --vazio:#f6f6f2;
   --label:#000; --label2:rgba(60,60,67,.62); --label3:rgba(60,60,67,.3);
   --sep:rgba(60,60,67,.18); --fill:rgba(118,118,128,.12); --fill2:rgba(118,118,128,.24); --tint:#007AFF; --seg-on:#fff;
-  --vidro:rgba(255,255,255,.72); --material:rgba(255,255,255,.94);
+  --vidro:rgba(255,255,255,.72); --material:rgba(255,255,255,.94); --espaco:#dfe5ec; --halo:#f4f7fb;
   --contorno:#1c1c1e; --contorno-mun:rgba(28,28,30,.35); --aviso-bg:#fff4d6; --aviso-fg:#7a4b00;
   --sobe:#c2410c; --desce:#047857; --sombra:0 8px 30px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06);
   /* Okabe-Ito: processos */
@@ -30,7 +31,7 @@
   --bg:#000; --painel:rgba(28,28,30,.86); --cell:#1c1c1e; --mapa:#1a1c1a; --vazio:#2c2c2e;
   --label:#fff; --label2:rgba(235,235,245,.62); --label3:rgba(235,235,245,.3);
   --sep:rgba(84,84,88,.6); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.4); --tint:#0A84FF; --seg-on:#636366;
-  --vidro:rgba(30,30,32,.7); --material:rgba(28,28,30,.95);
+  --vidro:rgba(30,30,32,.7); --material:rgba(28,28,30,.95); --espaco:#05070b; --halo:#1b2633; --espaco:#05070b; --halo:#1b2633;
   --contorno:#f2f2f7; --contorno-mun:rgba(242,242,247,.28); --aviso-bg:#3a2c00; --aviso-fg:#ffd479;
   --sobe:#fb923c; --desce:#34d399; --sombra:0 8px 30px rgba(0,0,0,.5),0 0 0 .5px rgba(255,255,255,.08);
   --p-liq:#f2f2f7; color-scheme:dark}}
@@ -71,19 +72,33 @@ button{-webkit-tap-highlight-color:transparent}
 .apoio{display:flex;align-items:center;gap:10px}
 .apoio .rot{font-size:0.6875rem;line-height:14px;color:var(--label2);text-align:right}
 .apoio img{height:28px;width:auto}
-.apoio .escuro{display:none}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .apoio .claro{display:none}:root:not([data-theme="light"]) .apoio .escuro{display:block}}
-:root[data-theme="dark"] .apoio .claro{display:none} :root[data-theme="dark"] .apoio .escuro{display:block}
+.escuro{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .claro{display:none}:root:not([data-theme="light"]) .escuro{display:block}}
+:root[data-theme="dark"] .claro{display:none} :root[data-theme="dark"] .escuro{display:block}
+@media print{.escuro{display:none!important}.claro{display:block!important}}
 
 /* mapa */
-#mapa{position:fixed;inset:0;background:var(--mapa)}
+#area-mapa{position:fixed;inset:0;background:var(--espaco)}
+#mapa{position:absolute;inset:0}
+.maplibregl-map{font:inherit}
+.sobre-mapa{position:absolute;z-index:3}
+.vidro{background:var(--vidro);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--sombra)}
+.info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:14px;padding:6px 12px 6px 6px}
+.norte{width:36px;height:36px;display:grid;place-items:center}
+.norte svg{width:26px;height:26px}
+.norte .seta-n{fill:var(--sobe)} .norte .seta-s{fill:var(--label3)} .norte text{fill:var(--label);font:600 8px var(--font)}
+.escala{display:flex;flex-direction:column;gap:2px;font-size:0.6875rem;color:var(--label2)}
+.escala .barra-esc{height:6px;border:1.5px solid var(--label);border-top:0}
+.creditos{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:0.6875rem;line-height:1.3;color:var(--label2);pointer-events:none}
+.creditos span{display:inline-block;background:var(--vidro);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:8px;padding:2px 8px;pointer-events:auto}
+.creditos a{color:inherit}
 .maplibregl-map{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab}
 .maplibregl-canvas{position:absolute;left:0;top:0}
 .maplibregl-canvas:focus{outline:none}
 #dica{position:fixed;z-index:15;pointer-events:none;background:var(--cell);color:var(--label);border-radius:10px;padding:7px 10px;font-size:0.8125rem;box-shadow:var(--sombra);max-width:260px}
 #dica b{display:block;font-weight:600}
-.zoom{position:fixed;z-index:12;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;background:var(--vidro);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-radius:12px;box-shadow:var(--sombra);overflow:hidden}
+.zoom{position:absolute;z-index:3;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;background:var(--vidro);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-radius:12px;box-shadow:var(--sombra);overflow:hidden}
 .zoom button{width:36px;height:36px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
 .zoom svg{width:16px;height:16px;fill:none;stroke:var(--label);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .zoom button+button{border-top:.5px solid var(--sep)}
@@ -110,6 +125,12 @@ button{-webkit-tap-highlight-color:transparent}
 .busca li{padding:7px 10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
 .busca li span{color:var(--label2);font-size:0.75rem;white-space:nowrap}
 .busca li[aria-selected="true"],.busca li:hover{background:var(--fill)}
+.sel-var{position:relative;display:flex;align-items:center}
+.sel-var select{appearance:none;-webkit-appearance:none;width:100%;min-height:40px;background:var(--cell);border:0;border-radius:10px;padding:8px 36px 8px 34px;font-size:0.9375rem;font-weight:600;cursor:pointer;box-shadow:0 0 0 .5px var(--sep)}
+.sel-var select:focus-visible{outline:2px solid var(--tint);outline-offset:0}
+.sel-var i{position:absolute;left:12px;width:12px;height:12px;border-radius:3px;pointer-events:none}
+.sel-var svg{position:absolute;right:12px;width:12px;height:12px;fill:none;stroke:var(--label2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.sel-var .grupo-var{position:absolute;left:34px;top:-1px;font-size:0.6875rem;color:var(--label2);display:none}
 .vars{display:flex;flex-direction:column;background:var(--cell);border-radius:10px;overflow:hidden}
 .vars .cab{font-size:0.75rem;font-weight:600;color:var(--label2);padding:10px 12px 2px}
 .vars button{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;padding:7px 12px;min-height:34px;cursor:pointer;font-size:0.875rem}
@@ -233,14 +254,16 @@ button{-webkit-tap-highlight-color:transparent}
   body{overflow:auto}
   .barra-proj .links,.apoio .rot{display:none}
   .marca-proj .tit{font-size:0.9375rem}
-  #mapa{position:relative;inset:auto;margin-top:calc(var(--topo) + env(safe-area-inset-top,0px));height:52vh}
+  #area-mapa{position:relative;inset:auto;margin-top:calc(var(--topo) + env(safe-area-inset-top,0px));height:56vh}
+  .info-mapa{left:12px;bottom:30px} .creditos{left:8px;right:8px}
   .barra-proj{background:var(--material)}
   .painel{position:static;width:auto!important;margin:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));overflow:visible;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)!important;box-shadow:none;padding:0;border-radius:0}
-  .zoom{right:calc(12px + env(safe-area-inset-right,0px));top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);bottom:auto;position:absolute}
+  .zoom{right:12px;top:12px;bottom:auto}
   #dica{display:none}
 }
 @media (max-width:420px){.marca-proj .proj{display:none} .kpi .v{font-size:1rem}}
 @media (pointer: coarse){
+  .sel-var select{min-height:44px}
   .seg button,.vars button,.rank button,.btn,.busca input,.busca li{min-height:44px}
   .trilha button{min-height:36px} .btn-ic{width:44px}
   .zoom button,.ano button{width:44px;height:44px}
@@ -253,7 +276,7 @@ button{-webkit-tap-highlight-color:transparent}
 
 <header class="barra-proj">
   <a class="marca-proj" href="#" id="marca">
-    <img src="img/ybyra-simbolo-96.png" srcset="img/ybyra-simbolo-96.png 1x, img/ybyra-simbolo-192.png 2x" alt="Símbolo do projeto YbYrá-BR">
+    <img class="claro" src="img/ybyra-simbolo-96.png" srcset="img/ybyra-simbolo-96.png 1x, img/ybyra-simbolo-192.png 2x" alt="Símbolo do projeto YbYrá-BR"><img class="escuro" src="img/ybyra-simbolo-branco-96.png" srcset="img/ybyra-simbolo-branco-96.png 1x, img/ybyra-simbolo-branco-192.png 2x" alt="Símbolo do projeto YbYrá-BR">
     <span class="tx"><span class="proj">Projeto <b>YbYrá-BR</b></span><span class="tit">Emissões e Remoções de CO₂</span></span>
   </a>
   <span class="esp"></span>
@@ -265,8 +288,12 @@ button{-webkit-tap-highlight-color:transparent}
   </div>
 </header>
 
+<div id="area-mapa">
 <div id="mapa" role="application" aria-label="Mapa de emissões por recorte"></div>
+<div class="sobre-mapa vidro info-mapa" aria-hidden="true"><div class="norte" id="norte" title="Norte"><svg viewBox="0 0 26 26"><path class="seta-n" d="M13 2 17 13H9Z"/><path class="seta-s" d="M13 24 9 13h8Z"/><text x="13" y="11.2" text-anchor="middle">N</text></svg></div><div class="escala"><span id="escala-txt" class="num">500 km</span><div class="barra-esc" id="escala-barra" style="width:80px"></div></div></div>
+<div class="sobre-mapa creditos" id="creditos"></div>
 <div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar" title="Aproximar"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></button><button type="button" id="z-menos" aria-label="Afastar" title="Afastar"><svg viewBox="0 0 16 16"><path d="M3 8h10"/></svg></button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Ver o Brasil inteiro"><svg viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button></div>
+</div>
 <div id="dica" hidden></div>
 
 <aside class="painel" id="esq" aria-label="Explorar">
@@ -283,8 +310,8 @@ button{-webkit-tap-highlight-color:transparent}
     <ul id="sugestoes" role="listbox" hidden></ul>
   </div>
   <div class="grupo">
-    <p class="rotulo">Variável</p>
-    <div class="vars" id="vars"></div>
+    <label class="rotulo" for="sel-var">Variável</label>
+    <div class="sel-var"><i id="var-cor" aria-hidden="true"></i><select id="sel-var"></select><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></div>
   </div>
   <div class="grupo">
     <p class="rotulo">Ano</p>
@@ -295,6 +322,14 @@ button{-webkit-tap-highlight-color:transparent}
     <div class="seg" id="seg-modo" style="--n:2"><button type="button" data-m="total">Total</button><button type="button" data-m="ha">Por hectare</button></div>
   </div>
   <div class="legenda" id="legenda"></div>
+  <div class="grupo">
+    <p class="rotulo">Mapa de fundo</p>
+    <div class="seg" id="seg-base" style="--n:3"><button type="button" data-b="claro">Mapa</button><button type="button" data-b="satelite">Satélite</button><button type="button" data-b="nenhum">Nenhum</button></div>
+  </div>
+  <div class="grupo">
+    <p class="rotulo">Projeção</p>
+    <div class="seg" id="seg-proj" style="--n:2"><button type="button" data-p="globe">Globo</button><button type="button" data-p="mercator">Plano</button></div>
+  </div>
 </aside>
 
 <aside class="painel" id="dir" aria-label="Recorte selecionado">
@@ -340,10 +375,14 @@ button{-webkit-tap-highlight-color:transparent}
 </div>
 <div id="carregando" role="status"><i aria-hidden="true"></i><span>Carregando dados…</span></div>
 
-<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.4.1
+/* plataforma de emissões YbYrá-BR · v0.5.0
+   (0.5.0 inclui) marca do YbYrá-BR toda branca no tema escuro, como a do CNPq; impressão sempre colorida.
+   0.5.0 (2026-10-21) — mapa em globo (MapLibre 5.6.0) com atmosfera e opção plana; mapa de fundo (CARTO
+                        claro/escuro com rótulos, satélite Sentinel-2 cloudless/EOX, ou nenhum); seta de norte e
+                        barra de escala; créditos no rodapé do mapa; variáveis em lista suspensa agrupada.
    0.4.1 (2026-10-21) — documento HTML completo (doctype, lang, charset, viewport, ícones): no celular
                         a página era desenhada com 980 px de largura.
    0.4.0 (2026-10-21) — revisão pelas Apple HIG: mapa sob a barra de vidro; painel de controles em vidro e de
@@ -359,7 +398,7 @@ button{-webkit-tap-highlight-color:transparent}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.4.1", DADOS = "dados/v1_2/";
+const VERSAO = "0.5.0", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -391,7 +430,7 @@ const RAMPAS = {
   div:["#00594f","#3fa594","#b9e3d9","#f3f1ec","#fdd49e","#e34a33","#8c0d0d"]};
 
 /* estado */
-const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}};
+const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}, base:"claro", proj:"globe"};
 let CAT, ANOS, mapa, GEO, CONT, BBOX = {}, MUN_BIOMA = {};
 const cache = new Map();
 const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
@@ -434,14 +473,53 @@ function bbox(coords, b=[180,90,-180,-90]){
   coords.forEach(c=>bbox(c,b)); return b;
 }
 function padding(){
-  if(innerWidth<=900) return 20;
+  if(innerWidth<=900) return {top:20, bottom:60, left:20, right:60};
   const topo = document.querySelector(".barra-proj").offsetHeight;
-  return {top:topo+30, bottom:30, left:$("esq").offsetWidth+40, right:$("dir").offsetWidth+40};
+  return {top:topo+30, bottom:70, left:$("esq").offsetWidth+40, right:$("dir").offsetWidth+40};
+}
+const escuro = ()=> document.documentElement.dataset.theme==="dark" || (document.documentElement.dataset.theme!=="light" && matchMedia("(prefers-color-scheme: dark)").matches);
+const CARTO = (estilo)=> ["a","b","c","d"].map(l=>`https://${l}.basemaps.cartocdn.com/${estilo}/{z}/{x}/{y}@2x.png`);
+const FONTES_BASE = {
+  "base-claro": {type:"raster", tiles:CARTO("light_nolabels"), tileSize:256, maxzoom:19},
+  "base-escuro": {type:"raster", tiles:CARTO("dark_nolabels"), tileSize:256, maxzoom:19},
+  "rot-claro": {type:"raster", tiles:CARTO("light_only_labels"), tileSize:256, maxzoom:19},
+  "rot-escuro": {type:"raster", tiles:CARTO("dark_only_labels"), tileSize:256, maxzoom:19},
+  "base-sat": {type:"raster", tiles:["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg"], tileSize:256, maxzoom:15}};
+function creditos(){
+  const base = E.base==="satelite" ? `<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless</a> © EOX IT Services (dados Copernicus Sentinel 2020 modificados) · rótulos © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>`
+    : E.base==="claro" ? `Fundo © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>` : "";
+  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas © IBGE · Dados: modelo YbYrá-BR</span>`;
+}
+function aplicarBase(){
+  if(!mapa) return;
+  const vis = (id,v)=> mapa.setLayoutProperty(id,"visibility", v?"visible":"none");
+  const e = escuro();
+  vis("base-claro", E.base==="claro" && !e); vis("base-escuro", E.base==="claro" && e); vis("base-sat", E.base==="satelite");
+  vis("rot-claro", E.base==="claro" && !e); vis("rot-escuro", (E.base==="claro" && e) || E.base==="satelite");
+  mapa.setPaintProperty("mun-fill","fill-opacity", E.base==="nenhum" ? 1 : .86);
+  creditos();
+}
+function aplicarProjecao(){ if(mapa) mapa.setProjection({type:E.proj}); }
+/* escala e norte */
+function haversine(a,b){ const r=6371008.8, t=Math.PI/180, d1=(b.lat-a.lat)*t, d2=(b.lng-a.lng)*t;
+  const h=Math.sin(d1/2)**2+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(d2/2)**2; return 2*r*Math.asin(Math.sqrt(h)); }
+function escalaMapa(){
+  const c = mapa.getContainer(), pad = padding(), x0 = typeof pad==="number" ? c.clientWidth/2 : (pad.left + (c.clientWidth-pad.right))/2, y = c.clientHeight*0.6;
+  const a = mapa.unproject([x0-60,y]), b = mapa.unproject([x0+60,y]); const m120 = haversine(a,b);
+  if(!isFinite(m120) || m120<=0) return;
+  const porPx = m120/120, alvo = porPx*100, pot = 10**Math.floor(Math.log10(alvo)), d = alvo/pot;
+  const nice = (d>=5?5:d>=2?2:1)*pot;
+  $("escala-barra").style.width = Math.round(nice/porPx)+"px";
+  $("escala-txt").textContent = nice>=1000 ? `${nf(nice/1000,0)} km` : `${nf(nice,0)} m`;
+  $("norte").style.transform = `rotate(${-mapa.getBearing()}deg)`;
 }
 function iniciarMapa(){
-  mapa = new maplibregl.Map({container:"mapa", attributionControl:false, dragRotate:false, pitchWithRotate:false,
-    style:{version:8, sources:{}, layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}}]},
-    bounds:[[-74,-34],[-28.8,5.3]], fitBoundsOptions:{padding:padding()}, maxBounds:[[-110,-60],[5,25]]});
+  mapa = new maplibregl.Map({container:"mapa", attributionControl:false, dragRotate:false, pitchWithRotate:false, renderWorldCopies:false,
+    style:{version:8, projection:{type:E.proj}, sources:FONTES_BASE,
+      sky:{"atmosphere-blend":["interpolate",["linear"],["zoom"],0,1,5,1,7,0]},
+      layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}},
+        ...["base-claro","base-escuro","base-sat"].map(id=>({id, type:"raster", source:id, layout:{visibility:"none"}, paint:{"raster-opacity":1}}))]},
+    center:[-53,-14], zoom:2.6});
   mapa.touchZoomRotate.disableRotation();
   return new Promise(ok=>mapa.on("load",()=>{
     mapa.addSource("mun",{type:"geojson", data:GEO, promoteId:"c"});
@@ -452,6 +530,10 @@ function iniciarMapa(){
     mapa.addLayer({id:"cont", type:"line", source:"cont", filter:["==",["get","t"],"uf"], paint:{"line-color":cor("--contorno"), "line-width":["interpolate",["linear"],["zoom"],3,.7,7,1.6], "line-opacity":.85}});
     mapa.addLayer({id:"sel-mun", type:"line", source:"mun", filter:["==",["get","c"],-1], paint:{"line-color":cor("--contorno"), "line-width":2.6}});
     mapa.addLayer({id:"sel-cont", type:"line", source:"cont", filter:["==",["get","t"],"x"], paint:{"line-color":cor("--contorno"), "line-width":3}});
+    for(const id of ["rot-claro","rot-escuro"]) mapa.addLayer({id, type:"raster", source:id, layout:{visibility:"none"}, paint:{"raster-opacity":.95}});
+    aplicarBase();
+    mapa.fitBounds([[-74,-34],[-28.8,5.3]],{padding:padding(), duration:0});
+    mapa.on("move", escalaMapa); escalaMapa();
     ok();
   }));
 }
@@ -644,7 +726,7 @@ async function relatorio(){
   const rk = [...$("rank").querySelectorAll("button")].map(b=>`<li>${b.querySelector(".nm span").textContent} — ${b.querySelector(".vl").textContent}</li>`).join("");
   const sf = escala(Math.max(...s.agc_sf_co2), "agc_sf_co2"), pr = escala(Math.max(...s.agc0_mgc), "agc0_mgc");
   $("rel-conteudo").innerHTML = `
-    <div class="cabrel"><img class="y" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
+    <div class="cabrel"><img class="y claro" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><img class="y escuro" src="img/ybyra-logo-branco-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
       <div class="ap">Apoio<img src="img/cnpq-128.png" alt="CNPq">Processo 401741/2023-0</div></div>
     <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
     <p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>
@@ -674,16 +756,18 @@ $("imprimir-rel").onclick = ()=>window.print();
 /* ---------- controles ---------- */
 function marcar(){
   document.querySelectorAll("#seg-tipo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.t===E.tipo));
-  document.querySelectorAll("#seg-modo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.m===E.modo));
-  document.querySelectorAll("#vars button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===E.v));
+  document.querySelectorAll("#seg-base button").forEach(b=>b.onclick=()=>{ E.base=b.dataset.b; marcar(); aplicarBase(); try{localStorage.setItem("ybyra-base",E.base);}catch(e){} });
+document.querySelectorAll("#seg-proj button").forEach(b=>b.onclick=()=>{ E.proj=b.dataset.p; marcar(); aplicarProjecao(); try{localStorage.setItem("ybyra-proj",E.proj);}catch(e){} });
+document.querySelectorAll("#seg-modo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.m===E.modo));
+  $("sel-var").value = E.v; $("var-cor").style.background = RAMPAS[VAR[E.v].esc][VAR[E.v].esc==="div"?6:5];
+  document.querySelectorAll("#seg-base button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.b===E.base));
+  document.querySelectorAll("#seg-proj button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===E.proj));
   $("ano").value = E.ano; $("ano-v").textContent = E.ano;
 }
 function montarVars(){
-  let g = "", h = "";
-  for(const v of VARS){ if(v.g!==g){ g=v.g; h += `<span class="cab">${g}</span>`; }
-    h += `<button type="button" data-v="${v.k}"><i style="background:${RAMPAS[v.esc][v.esc==="div"?6:5]}"></i><span>${v.n}</span><svg class="ok" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg></button>`; }
-  $("vars").innerHTML = h;
-  $("vars").querySelectorAll("button").forEach(b=>b.onclick=()=>{ E.v=b.dataset.v; atualizar(false); });
+  const grupos = [...new Set(VARS.map(v=>v.g))];
+  $("sel-var").innerHTML = grupos.map(g=>`<optgroup label="${g}">${VARS.filter(v=>v.g===g).map(v=>`<option value="${v.k}">${v.n}</option>`).join("")}</optgroup>`).join("");
+  $("sel-var").onchange = e=>{ E.v = e.target.value; atualizar(false); };
 }
 async function atualizar(comPainel=true){ marcar(); await colorir(); if(comPainel) await painel(); else ranking(); }
 async function selecionar(tipo,id,voa){
@@ -745,7 +829,7 @@ $("busca").onblur = ()=>setTimeout(()=>abrirLista(false),150);
 /* tema: refaz cores do mapa e gráficos */
 function aoMudarTema(){ if(!mapa) return; mapa.setPaintProperty("fundo","background-color",cor("--mapa"));
   ["cont","sel-mun","sel-cont"].forEach(l=>mapa.setPaintProperty(l,"line-color",cor("--contorno"))); mapa.setPaintProperty("mun-linha","line-color",cor("--contorno-mun"));
-  mapa.setPaintProperty("mun-fill","fill-color",corFill()); mapa.setPaintProperty("mun-veda","line-color",corFill()); painel(); }
+  mapa.setPaintProperty("mun-fill","fill-color",corFill()); mapa.setPaintProperty("mun-veda","line-color",corFill()); aplicarBase(); painel(); }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aoMudarTema);
 new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:true, attributeFilter:["data-theme"]});
 
@@ -753,6 +837,7 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
 (async function(){
   try{
     const [cat, geo, cont] = await Promise.all([j("catalogo.json"), fetch("geo/municipios.geojson").then(r=>r.json()), fetch("geo/contornos.geojson").then(r=>r.json())]);
+    try{ E.base = localStorage.getItem("ybyra-base") || E.base; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
     CAT = cat; GEO = geo; CONT = cont; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
     nomeDe("bioma",1);

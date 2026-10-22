@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.5.0 — 2026-10-21
+- **Globo**: mapa em projeção de globo com atmosfera (MapLibre GL JS 5.6.0), com opção de mapa plano; a escolha fica salva no navegador.
+- **Mapa de fundo**: Mapa (CARTO claro ou escuro conforme o tema, com rótulos por cima dos recortes), Satélite (Sentinel-2 cloudless, EOX) ou Nenhum.
+- **Elementos cartográficos**: seta de norte e barra de escala que se ajusta ao zoom e à latitude.
+- **Créditos no rodapé do mapa**: MapLibre, mapa de fundo (OpenStreetMap/CARTO ou EOX/Copernicus), malhas do IBGE e dados do modelo YbYrá-BR.
+- **Variáveis em lista suspensa**, agrupada em Saldo, Emissões, Remoções e Estoques, com a cor da escala ao lado.
+- **Marca do YbYrá-BR toda branca no tema escuro** (barra superior e relatório), como a do CNPq; na impressão, sempre a versão colorida.
+
 ## 0.4.1 — 2026-10-21
 - Documento HTML completo (`<!doctype>`, `lang="pt-BR"`, `charset`, `viewport`, `theme-color`, ícone): sem a meta viewport o celular desenhava a página com 980 px de largura e o mapa ficava escondido atrás dos painéis.
 
