@@ -1,5 +1,5 @@
 /**
- * ybyra_estatisticas.js · v0.3.0
+ * ybyra_estatisticas.js · v0.3.1
  * =============================================================================
  * Estatísticas por recorte territorial dos assets de emissões e remoções do modelo
  * YbYrá-BR (projeto CNPq 401741/2023-0) para a plataforma
@@ -34,6 +34,9 @@
  *   agc_sf_ha, agc0_state  Mg C ha⁻¹                            → × área (ha) → Mg C
  *
  * Histórico de versões
+ *   0.3.1 (2026-10-22) — shapefiles só com polígonos: algumas feições das malhas do MapBiomas são
+ *                        coleções com pedaços de linha (erro "Shapefiles cannot contain multiple
+ *                        geometry types"); feições sem parte poligonal são descartadas.
  *   0.3.0 (2026-10-22) — todos os recortes ligados (TI, UC, quilombos, Amazônia Legal, MATOPIBA,
  *                        bacias DHN250 níveis 1 e 2); modo 'tudo' cria de uma vez as tarefas de
  *                        estatística e de shapefile; 13 anos por tarefa (3 tarefas por recorte).
@@ -182,6 +185,22 @@ function comIdBioma(fc) {
   });
 }
 
+// Mantém só as partes poligonais (Polygon/MultiPolygon) de uma geometria, como MultiPolygon.
+function soPoligonos(g) {
+  g = ee.Geometry(g);
+  var tipos = ee.List(['Polygon', 'MultiPolygon']);
+  var partes = g.geometries().map(function (p) {
+    p = ee.Geometry(p);
+    return ee.Algorithms.If(tipos.contains(p.type()), p, null);
+  }, true);
+  var coords = ee.List(partes.iterate(function (p, acc) {
+    p = ee.Geometry(p);
+    var c = ee.Algorithms.If(ee.String(p.type()).equals('Polygon'), ee.List([p.coordinates()]), p.coordinates());
+    return ee.List(acc).cat(ee.List(c));
+  }, ee.List([])));
+  return ee.Geometry.MultiPolygon(coords, g.projection(), false);
+}
+
 function rasterIds(fc) {
   return ee.Image().int64().paint(fc, 'id_num').rename('zona');
 }
@@ -257,7 +276,7 @@ function lotes(xs, k) {
 // ----------------------------------------------------------------------------
 // Execução
 // ----------------------------------------------------------------------------
-print('ybyra_estatisticas.js v0.3.0 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
+print('ybyra_estatisticas.js v0.3.1 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
 
 if (MODO === 'inspecionar') {
   print('Imagens:', col.size(), 'Anos:', anos);
@@ -300,11 +319,13 @@ if (MODO === 'geometrias' || MODO === 'tudo') {
     var atrNome = primeiroPresente(cols, CANDIDATOS_NOME);
     var atrUf = primeiroPresente(cols, ['SIGLA_UF', 'sigla_uf', 'SG_UF']);
     var saida = fc.map(function (f) {
-      var g = SIMPLIFICAR_M > 0 ? f.geometry().simplify(SIMPLIFICAR_M) : f.geometry();
-      var props = {id: f.get('id_num'), nome: atrNome ? f.get(atrNome) : ''};
+      var g = soPoligonos(f.geometry());
+      g = SIMPLIFICAR_M > 0 ? g.simplify(SIMPLIFICAR_M) : g;
+      var props = {id: f.get('id_num'), nome: atrNome ? f.get(atrNome) : '',
+                   n_partes: ee.List(g.coordinates()).length()};
       if (atrUf) props.sigla_uf = f.get(atrUf);
       return ee.Feature(g, props);
-    });
+    }).filter(ee.Filter.gt('n_partes', 0));
     var desc = 'ybyra_geometria_' + nome;
     Export.table.toDrive({collection: saida, description: desc, folder: PASTA_GEOMETRIAS,
                           fileNamePrefix: desc, fileFormat: 'SHP'});

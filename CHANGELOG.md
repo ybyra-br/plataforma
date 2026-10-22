@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.6.3 — 2026-10-22
+- `gee/ybyra_estatisticas.js` v0.3.1: shapefiles só com as partes poligonais de cada feição; algumas feições das malhas do MapBiomas (estados, quilombos, bacias) misturam polígonos e linhas, e o shapefile não aceita os dois tipos juntos.
+
 ## 0.6.2 — 2026-10-22
 - `gee/ybyra_estatisticas.js` v0.3.0: todos os recortes ligados (terras indígenas, unidades de conservação, quilombos, Amazônia Legal, MATOPIBA, bacias DHN250 níveis 1 e 2), além de município × bioma; novo modo `tudo`, que cria numa só execução as tarefas de estatística e as de shapefile; 13 anos por tarefa.
 
