@@ -83,14 +83,14 @@ button{-webkit-tap-highlight-color:transparent}
 .maplibregl-map{font:inherit}
 .sobre-mapa{position:absolute;z-index:3}
 .vidro{background:var(--vidro);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--sombra)}
-.info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:14px;padding:6px 12px 6px 6px}
+.info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:14px;padding:6px 12px 6px 6px}
 .norte{width:36px;height:36px;display:grid;place-items:center}
 .norte svg{width:26px;height:26px}
 .norte .seta-n{fill:var(--sobe)} .norte .seta-s{fill:var(--label3)} .norte text{fill:var(--label);font:600 8px var(--font)}
 .escala{display:flex;flex-direction:column;gap:2px;font-size:0.6875rem;color:var(--label2)}
 .escala .barra-esc{height:6px;border:1.5px solid var(--label);border-top:0}
 .creditos{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:0.6875rem;line-height:1.3;color:var(--label2);pointer-events:none}
-.creditos span{display:inline-block;background:var(--vidro);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:8px;padding:2px 8px;pointer-events:auto}
+.creditos span{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;background:var(--vidro);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:8px;padding:2px 8px;pointer-events:auto}
 .creditos a{color:inherit}
 .maplibregl-map{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
 .maplibregl-canvas-container.maplibregl-interactive{cursor:grab}
@@ -380,8 +380,8 @@ button{-webkit-tap-highlight-color:transparent}
 <script>
 /* plataforma de emissões YbYrá-BR · v0.5.0
    (0.5.0 inclui) marca do YbYrá-BR toda branca no tema escuro, como a do CNPq; impressão sempre colorida.
-   0.5.0 (2026-10-21) — mapa em globo (MapLibre 5.6.0) com atmosfera e opção plana; mapa de fundo (CARTO
-                        claro/escuro com rótulos, satélite Sentinel-2 cloudless/EOX, ou nenhum); seta de norte e
+   0.5.0 (2026-10-21) — mapa em globo (MapLibre 5.6.0) com atmosfera e opção plana; mapa de fundo (Esri
+                        cinza claro/escuro com rótulos, satélite Sentinel-2 cloudless/EOX, ou nenhum); seta de norte e
                         barra de escala; créditos no rodapé do mapa; variáveis em lista suspensa agrupada.
    0.4.1 (2026-10-21) — documento HTML completo (doctype, lang, charset, viewport, ícones): no celular
                         a página era desenhada com 980 px de largura.
@@ -478,17 +478,19 @@ function padding(){
   return {top:topo+30, bottom:70, left:$("esq").offsetWidth+40, right:$("dir").offsetWidth+40};
 }
 const escuro = ()=> document.documentElement.dataset.theme==="dark" || (document.documentElement.dataset.theme!=="light" && matchMedia("(prefers-color-scheme: dark)").matches);
-const CARTO = (estilo)=> ["a","b","c","d"].map(l=>`https://${l}.basemaps.cartocdn.com/${estilo}/{z}/{x}/{y}@2x.png`);
+const ESRI = (servico)=> [`https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/${servico}/MapServer/tile/{z}/{y}/{x}`];
 const FONTES_BASE = {
-  "base-claro": {type:"raster", tiles:CARTO("light_nolabels"), tileSize:256, maxzoom:19},
-  "base-escuro": {type:"raster", tiles:CARTO("dark_nolabels"), tileSize:256, maxzoom:19},
-  "rot-claro": {type:"raster", tiles:CARTO("light_only_labels"), tileSize:256, maxzoom:19},
-  "rot-escuro": {type:"raster", tiles:CARTO("dark_only_labels"), tileSize:256, maxzoom:19},
+  "base-claro": {type:"raster", tiles:ESRI("World_Light_Gray_Base"), tileSize:256, maxzoom:16},
+  "base-escuro": {type:"raster", tiles:ESRI("World_Dark_Gray_Base"), tileSize:256, maxzoom:16},
+  "rot-claro": {type:"raster", tiles:ESRI("World_Light_Gray_Reference"), tileSize:256, maxzoom:16},
+  "rot-escuro": {type:"raster", tiles:ESRI("World_Dark_Gray_Reference"), tileSize:256, maxzoom:16},
   "base-sat": {type:"raster", tiles:["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg"], tileSize:256, maxzoom:15}};
 function creditos(){
-  const base = E.base==="satelite" ? `<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless</a> © EOX IT Services (dados Copernicus Sentinel 2020 modificados) · rótulos © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>`
-    : E.base==="claro" ? `Fundo © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>` : "";
+  const esri = `<a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>`;
+  const base = E.base==="satelite" ? `<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless</a> © EOX (dados Copernicus Sentinel 2020 modificados) · rótulos: ${esri}`
+    : E.base==="claro" ? `Fundo: ${esri}` : "";
   $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas © IBGE · Dados: modelo YbYrá-BR</span>`;
+  $("creditos").title = $("creditos").textContent;
 }
 function aplicarBase(){
   if(!mapa) return;
