@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.6.4 — 2026-10-22
+- `gee/ybyra_estatisticas.js` v0.4.0: rasters de zonas gravados uma vez como assets (`MODO = 'rasterizar'`, na grade de 30 m do modelo) e só lidos nas exportações; terras indígenas, UCs e quilombos, que se sobrepõem, passam a usar `image.reduceRegions` (uma redução por ano para todas as feições) no lugar do cálculo feição a feição.
+
 ## 0.6.3 — 2026-10-22
 - `gee/ybyra_estatisticas.js` v0.3.1: shapefiles só com as partes poligonais de cada feição; algumas feições das malhas do MapBiomas (estados, quilombos, bacias) misturam polígonos e linhas, e o shapefile não aceita os dois tipos juntos.
 

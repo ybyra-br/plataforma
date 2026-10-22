@@ -1,5 +1,5 @@
 /**
- * ybyra_estatisticas.js · v0.3.1
+ * ybyra_estatisticas.js · v0.4.0
  * =============================================================================
  * Estatísticas por recorte territorial dos assets de emissões e remoções do modelo
  * YbYrá-BR (projeto CNPq 401741/2023-0) para a plataforma
@@ -7,7 +7,8 @@
  * projeto ee-redd-brazil.
  *
  * Método (padrão das estatísticas do MapBiomas, user-toolkit calculate-area*.js):
- *   1. o recorte vira um RASTER de identificadores inteiros (ee.Image.paint);
+ *   1. o recorte vira um RASTER de identificadores inteiros (ee.Image.paint), salvo uma vez
+ *      como asset na grade de 30 m do modelo (MODO 'rasterizar') e só lido nas exportações;
  *   2. empilha-se [área do pixel] + [bandas Mg CO₂ pixel⁻¹] + [densidades × área] + [id];
  *   3. uma reduceRegion com ee.Reducer.sum().repeat(n).group() soma tudo por id de uma vez;
  *   4. o resultado vira tabela (zona, ano, área e bandas) e é exportado em CSV para o Drive.
@@ -15,9 +16,14 @@
  * UF, bioma, UF × bioma e Brasil são somados depois, em R (R/agregar.R), no GitHub.
  * O país é processado numa grade de 4° × 4° (cada pixel cai numa só célula); as
  * parciais das células são somadas no R.
+ * Recortes cujas feições se sobrepõem (TI, UC, quilombos) não cabem num raster de códigos:
+ * usam image.reduceRegions, que soma todas as feições numa só redução por ano, com a mesma
+ * regra de pixel (centro do pixel dentro do polígono; redutor sem ponderação).
  *
  * Como usar
- *   1. MODO = 'inspecionar' → Run: confere bandas, anos, unidades e o raster de zonas.
+ *   0. MODO = 'rasterizar'  → Run uma vez: grava os rasters de zonas como assets em
+ *      ybyra-br-model/ (clique RUN nas tarefas; espere terminar antes de exportar).
+ *   1. MODO = 'inspecionar' → Run: confere bandas, anos, malhas, atributos e rasters de zonas.
  *   2. MODO = 'teste'       → Run: uma célula pequena (Ilha do Maranhão), resultado no Console.
  *   3. MODO = 'exportar'    → Run: cria as tarefas; clique RUN em cada uma na aba Tasks.
  *   3b. MODO = 'geometrias' → Run: exporta as malhas em shapefile (pasta YBYRA-GEOMETRIAS)
@@ -34,6 +40,10 @@
  *   agc_sf_ha, agc0_state  Mg C ha⁻¹                            → × área (ha) → Mg C
  *
  * Histórico de versões
+ *   0.4.0 (2026-10-22) — rasters de zonas salvos como assets (MODO 'rasterizar', int32 ou double
+ *                        conforme o maior código) e lidos nas exportações; recortes sobrepostos
+ *                        (TI, UC, quilombos) com image.reduceRegions (uma redução por ano, sem
+ *                        ponderação) no lugar do cálculo feição a feição.
  *   0.3.1 (2026-10-22) — shapefiles só com polígonos: algumas feições das malhas do MapBiomas são
  *                        coleções com pedaços de linha (erro "Shapefiles cannot contain multiple
  *                        geometry types"); feições sem parte poligonal são descartadas.
@@ -54,11 +64,14 @@
 // ----------------------------------------------------------------------------
 // Configuração
 // ----------------------------------------------------------------------------
-var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar' | 'geometrias' | 'tudo'
+var MODO = 'inspecionar';           // 'rasterizar' | 'inspecionar' | 'teste' | 'exportar' | 'geometrias' | 'tudo'
 
 var ASSET_MODELO = 'projects/ee-redd-brazil/assets/ybyra-br-model/emissions_removals_v1_2';
 var VERSAO_MODELO = 'v1_2';
 var PASTA_DRIVE = 'YBYRA-ESTATISTICAS';
+// Rasters de zonas (MODO 'rasterizar'): um asset por recorte, alinhado à grade do modelo
+var PREFIXO_ZONAS = 'projects/ee-redd-brazil/assets/ybyra-br-model/zonas_';
+var VERSAO_ZONAS = 'v1';            // mude se trocar as malhas, para não misturar rasters antigos
 
 var ANOS = null;                    // null = anos de system:time_start; ou ex.: [2020, 2021]
 var ANOS_POR_TAREFA = 13;           // anos por tarefa (39 anos → 3 tarefas por recorte); se uma tarefa falhar
@@ -89,7 +102,7 @@ var CANDIDATOS_ID = ['FEATURE_ID', 'feature_id', 'ID', 'id'];
 // nome normalizado (minúsculas, sem acento) → código IBGE do bioma
 var CODIGO_BIOMA = {amazonia: 1, amazon: 1, caatinga: 2, cerrado: 3, 'mata atlantica': 4, 'atlantic forest': 4, pampa: 5, pantanal: 6};
 
-// Recortes independentes. sobrepoe = feições que se sobrepõem entre si (calcula feição a feição).
+// Recortes independentes. sobrepoe = feições que se sobrepõem entre si (reduceRegions, sem raster de zonas).
 // atributo null = detectar entre CANDIDATOS_ID. ativo: false pula o recorte nos modos exportar/tudo.
 var RECORTES_EXTRA = {
   terra_indigena:        {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/TERRAS_INDIGENAS_FUNAI_2026_F7F13F79/8b94c232-c551-4dd1-ac0c-2b40145db021', atributo: null, sobrepoe: true,  ativo: true},
@@ -228,10 +241,29 @@ function reduzir(empilhado, zona, geometria) {
   }));
 }
 
-function zonaMunicipioBioma() {
+function zonaMunicipioBiomaVetor() {
   var mun = rasterIds(comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun));
   var bio = rasterIds(comIdBioma(ee.FeatureCollection(ASSET_BIOMAS))).unmask(0);  // 0 = sem bioma
   return mun.multiply(10).add(bio).rename('zona');
+}
+
+function caminhoZonas(nome) { return PREFIXO_ZONAS + nome + '_' + VERSAO_ZONAS; }
+
+function existeAsset(caminho) {
+  try { return ee.data.getInfo(caminho) !== null; } catch (e) { return false; }
+}
+
+// Raster de zonas: lê o asset gravado por MODO 'rasterizar'; sem ele, rasteriza na hora (mais lento).
+var avisados = {};
+function zonasDe(nome, vetor) {
+  var caminho = caminhoZonas(nome);
+  if (existeAsset(caminho)) return ee.Image(caminho).toInt64().rename('zona');
+  if (!avisados[nome]) { print('AVISO — ' + caminho + ' não existe; rasterizando "' + nome + '" na hora (rode MODO = \'rasterizar\').'); avisados[nome] = true; }
+  return vetor();
+}
+
+function zonaMunicipioBioma() {
+  return zonasDe('municipio_bioma', zonaMunicipioBiomaVetor);
 }
 
 function tabelaMunicipioBioma(anosLote, celulas) {
@@ -244,20 +276,45 @@ function tabelaMunicipioBioma(anosLote, celulas) {
   })).flatten();
 }
 
-function tabelaRecorteExtra(nome, anosLote) {
+function fcExtra(nome) {
   var cfg = RECORTES_EXTRA[nome];
   var atrib = cfg.atributo || primeiroPresente(colunas(cfg.asset), CANDIDATOS_ID);
-  var fc = comIdNumerico(ee.FeatureCollection(cfg.asset), atrib);
+  return comIdNumerico(ee.FeatureCollection(cfg.asset), atrib);
+}
+
+function tabelaRecorteExtra(nome, anosLote) {
+  var cfg = RECORTES_EXTRA[nome];
+  var fc = fcExtra(nome);
+  if (cfg.sobrepoe) {
+    // feições sobrepostas: uma reduceRegions por ano soma todas as feições de uma vez
+    var alvo = fc.select(['id_num']);
+    return ee.FeatureCollection(anosLote.map(function (ano) {
+      return imagemAno(ano).reduceRegions({collection: alvo, reducer: ee.Reducer.sum().unweighted(),
+                                           crs: CRS, crsTransform: TRANSFORM, tileScale: TILE_SCALE})
+        .map(function (f) {
+          return ee.Feature(null, f.toDictionary(NOMES_SAIDA)).set('zona', f.get('id_num'), 'ano', ano);
+        });
+    })).flatten();
+  }
+  var zona = zonasDe(nome, function () { return rasterIds(fc); });
   return ee.FeatureCollection(anosLote.map(function (ano) {
-    var emp = imagemAno(ano), out;
-    if (cfg.sobrepoe) {
-      out = fc.map(function (f) { return reduzir(emp, rasterIds(ee.FeatureCollection([f])), f.geometry()); }).flatten();
-    } else {
-      var zona = rasterIds(fc);
-      out = gradeBrasil().map(function (c) { return reduzir(emp, zona, c.geometry()); }).flatten();
-    }
-    return out.map(function (f) { return f.set('ano', ano); });
+    var emp = imagemAno(ano);
+    return gradeBrasil().map(function (c) { return reduzir(emp, zona, c.geometry()); }).flatten()
+      .map(function (f) { return f.set('ano', ano); });
   })).flatten();
+}
+
+// Grava um raster de zonas como asset, na grade (CRS e transformação) do modelo
+function gravarZonas(nome, imagem, maiorCodigo) {
+  var cabeInt32 = maiorCodigo < 2147483647;
+  var img = cabeInt32 ? imagem.toInt32() : imagem.toDouble();
+  var regiao = ee.Geometry.Rectangle(BBOX_BRASIL, 'EPSG:4326', false);
+  var id = caminhoZonas(nome);
+  Export.image.toAsset({image: img.rename('zona'), description: 'ybyra_zonas_' + nome + '_' + VERSAO_ZONAS,
+                        assetId: id, region: regiao, crs: CRS, crsTransform: TRANSFORM,
+                        maxPixels: MAX_PIXELS, pyramidingPolicy: {'.default': 'mode'}});
+  print(nome + ' → ' + id + ' (' + (cabeInt32 ? 'int32' : 'double') + '; maior código ' + maiorCodigo + ')' +
+        (existeAsset(id) ? ' — ATENÇÃO: o asset já existe; apague-o antes de rodar a tarefa' : ''));
 }
 
 function exportar(nome, fc, anosLote) {
@@ -276,7 +333,19 @@ function lotes(xs, k) {
 // ----------------------------------------------------------------------------
 // Execução
 // ----------------------------------------------------------------------------
-print('ybyra_estatisticas.js v0.3.1 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
+print('ybyra_estatisticas.js v0.4.0 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
+
+if (MODO === 'rasterizar') {
+  gravarZonas('municipio_bioma', zonaMunicipioBiomaVetor(),
+              comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun).aggregate_max('id_num').getInfo() * 10 + 9);
+  Object.keys(RECORTES_EXTRA).forEach(function (nome) {
+    var cfg = RECORTES_EXTRA[nome];
+    if (!cfg.ativo || cfg.sobrepoe) return;      // sobrepostos não usam raster de zonas
+    var fc = fcExtra(nome);
+    gravarZonas(nome, rasterIds(fc), fc.aggregate_max('id_num').getInfo());
+  });
+  print('Tarefas de rasterização criadas. Clique RUN em cada uma e espere terminar antes do MODO exportar/tudo.');
+}
 
 if (MODO === 'inspecionar') {
   print('Imagens:', col.size(), 'Anos:', anos);
@@ -294,6 +363,11 @@ if (MODO === 'inspecionar') {
     var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
     print(nome + ' — atributo: ' + (cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID)) + (cfg.ativo ? ' (ativo)' : ' (desligado)') + ' · nº de feições:',
           ee.FeatureCollection(cfg.asset).size(), 'Colunas:', cols);
+  });
+  print('Raster de zonas município × bioma: ' + caminhoZonas('municipio_bioma') + (existeAsset(caminhoZonas('municipio_bioma')) ? ' (pronto)' : ' (ainda não gravado)'));
+  Object.keys(RECORTES_EXTRA).forEach(function (nome) {
+    if (RECORTES_EXTRA[nome].sobrepoe) return;
+    print('Raster de zonas ' + nome + ': ' + (existeAsset(caminhoZonas(nome)) ? 'pronto' : 'ainda não gravado'));
   });
   Map.setCenter(-52, -12, 4);
   Map.addLayer(zonaMunicipioBioma().randomVisualizer(), {}, 'Zonas município × bioma');
