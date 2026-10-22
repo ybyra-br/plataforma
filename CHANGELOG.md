@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.4.0 — 2026-10-21
+Revisão da interface pelas Apple Human Interface Guidelines:
+- **Camadas**: o mapa passa por baixo da barra superior em vidro; o painel de controles (Explorar) é vidro e o painel de conteúdo (recorte) usa material regular, mais opaco, para leitura de gráficos e números.
+- **Alvos e estados**: 44 px em telas de toque (segmentos, variáveis, ranking, botões, zoom, busca); estado pressionado em todos os botões.
+- **Tipografia**: tamanhos em rem, que acompanham o tamanho de texto do navegador; 17 px de base em telas de toque; nada abaixo de 11 px (legenda e eixos dos gráficos).
+- **Cor e acessibilidade**: emissão líquida em escala verde-azulado ↔ vermelho (sem o par vermelho-verde); remoções em verde-azulado; modos de alto contraste e de transparência reduzida; movimento reduzido também nas animações do mapa; descrição textual dos gráficos para leitores de tela; busca como combobox acessível.
+- **Componentes**: cantos concêntricos (painel 22 px com margem de 12 px → cartões de 10 px); símbolos no zoom e no fechar; relatório e método como folhas, com fechar no início e ação principal no fim; marca de seleção na lista de variáveis; setas de navegação no ranking e na trilha; atalhos `/` e ⌘K para a busca; indicador de carregamento.
+
 ## 0.3.0 — 2026-10-21
 - **GEE em JavaScript**: `gee/ybyra_estatisticas.js` v0.1.0 (Code Editor) substitui o script em Python; modos inspecionar, teste e exportar; tarefas por lotes de anos.
 - **Agregação em R no GitHub Actions**: `R/agregar.R` v0.1.0 lê `dados/brutos/v1_2/*.csv[.gz]`, agrega, confere e grava os arquivos do site a cada envio; `web/dados/` deixa de ser versionado.
