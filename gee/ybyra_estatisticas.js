@@ -92,12 +92,13 @@ var RECORTES_EXTRA = {
   bacia_nivel1:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_1/DHN250_LEVEL_1_v2', atributo: null, sobrepoe: false, ativo: false},
   bacia_nivel2:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_2/DHN250_LEVEL_2_v3', atributo: null, sobrepoe: false, ativo: false}
 };
-// Só para conferência no modo inspecionar (o script deriva estados e Brasil dos municípios):
 // Exportação das geometrias (MODO = 'geometrias')
 var PASTA_GEOMETRIAS = 'YBYRA-GEOMETRIAS';
 var SIMPLIFICAR_M = 0;              // 0 = geometria original; ex.: 100 simplifica com erro máx. de 100 m (arquivos bem menores)
 var CANDIDATOS_NOME = ['NM_MUN', 'NM_UF', 'NM_BIOMA', 'Bioma', 'NAME', 'name', 'NOME', 'nome', 'NM_TI', 'terrai_nom', 'nome_uc', 'NOME_UC1', 'nm_comunid', 'NM_COMUNID'];
 var CANDIDATOS_UF = ['CD_UF', 'cd_uf', 'COD_UF'];
+// Estados: conferência no modo inspecionar e shapefile no modo geometrias (as estatísticas
+// de estado e do Brasil saem da soma dos municípios)
 var ASSET_ESTADOS = MB + 'PLATFORM/demo/mapbiomas/brazil/territories/ESTADOS_IBGE_2025_F7EAF953/3f95fd9d-4b26-4243-8612-37b9d5b12a55';
 
 // ----------------------------------------------------------------------------
