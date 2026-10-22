@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.6.2 — 2026-10-22
+- `gee/ybyra_estatisticas.js` v0.3.0: todos os recortes ligados (terras indígenas, unidades de conservação, quilombos, Amazônia Legal, MATOPIBA, bacias DHN250 níveis 1 e 2), além de município × bioma; novo modo `tudo`, que cria numa só execução as tarefas de estatística e as de shapefile; 13 anos por tarefa.
+
 ## 0.6.1 — 2026-10-22
 - `gee/ybyra_estatisticas.js` v0.2.0: malhas territoriais públicas do MapBiomas (`projects/mapbiomas-territories`, as mesmas do user-toolkit) no lugar dos caminhos provisórios: municípios e estados IBGE 2025, biomas IBGE 2025, terras indígenas FUNAI 2026, unidades de conservação CNUC 2026, quilombos INCRA 2026, Amazônia Legal, MATOPIBA e bacias DHN250 níveis 1 e 2. Atributos detectados no próprio asset e listados no modo `inspecionar`.
 - Novo modo `geometrias`: exporta todas as malhas em shapefile (colunas `id`, `nome` e, nos municípios, `sigla_uf`), com simplificação opcional, para o mapa da plataforma.

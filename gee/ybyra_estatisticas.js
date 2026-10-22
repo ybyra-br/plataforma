@@ -1,5 +1,5 @@
 /**
- * ybyra_estatisticas.js · v0.2.0
+ * ybyra_estatisticas.js · v0.3.0
  * =============================================================================
  * Estatísticas por recorte territorial dos assets de emissões e remoções do modelo
  * YbYrá-BR (projeto CNPq 401741/2023-0) para a plataforma
@@ -22,6 +22,7 @@
  *   3. MODO = 'exportar'    → Run: cria as tarefas; clique RUN em cada uma na aba Tasks.
  *   3b. MODO = 'geometrias' → Run: exporta as malhas em shapefile (pasta YBYRA-GEOMETRIAS)
  *      com colunas id (o mesmo da tabela) e nome, para o mapa da plataforma.
+ *   3c. MODO = 'tudo'       → Run: 'exportar' + 'geometrias' numa só execução.
  *   4. Baixe os CSV da pasta YBYRA-ESTATISTICAS do Drive e envie para a pasta
  *      dados/brutos/v1_2/ do repositório ybyra-br/plataforma (pode ser pelo site do
  *      GitHub: Add file → Upload files). O GitHub Actions agrega e publica o site.
@@ -33,6 +34,9 @@
  *   agc_sf_ha, agc0_state  Mg C ha⁻¹                            → × área (ha) → Mg C
  *
  * Histórico de versões
+ *   0.3.0 (2026-10-22) — todos os recortes ligados (TI, UC, quilombos, Amazônia Legal, MATOPIBA,
+ *                        bacias DHN250 níveis 1 e 2); modo 'tudo' cria de uma vez as tarefas de
+ *                        estatística e de shapefile; 13 anos por tarefa (3 tarefas por recorte).
  *   0.2.0 (2026-10-22) — malhas públicas do MapBiomas (projects/mapbiomas-territories, as mesmas
  *                        do user-toolkit): municípios e estados IBGE 2025, biomas IBGE 2025, TI FUNAI
  *                        2026, UC CNUC 2026, quilombos INCRA 2026, Amazônia Legal, MATOPIBA e bacias
@@ -47,14 +51,15 @@
 // ----------------------------------------------------------------------------
 // Configuração
 // ----------------------------------------------------------------------------
-var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar' | 'geometrias'
+var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar' | 'geometrias' | 'tudo'
 
 var ASSET_MODELO = 'projects/ee-redd-brazil/assets/ybyra-br-model/emissions_removals_v1_2';
 var VERSAO_MODELO = 'v1_2';
 var PASTA_DRIVE = 'YBYRA-ESTATISTICAS';
 
 var ANOS = null;                    // null = anos de system:time_start; ou ex.: [2020, 2021]
-var ANOS_POR_TAREFA = 8;            // anos por tarefa de exportação (menos cliques; tarefas maiores)
+var ANOS_POR_TAREFA = 13;           // anos por tarefa (39 anos → 3 tarefas por recorte); se uma tarefa falhar
+                                    // por memória ou tempo, reduza (ex.: 5) e rode de novo só aquele recorte
 
 var BANDAS_POR_PIXEL = null;        // null = todas as bandas terminadas em "_co2"
 var BANDAS_DENSIDADE = {agc_sf_ha: 'agc_sf_mgc', agc0_state: 'agc0_mgc'};  // Mg C ha⁻¹ × área → Mg C
@@ -82,15 +87,15 @@ var CANDIDATOS_ID = ['FEATURE_ID', 'feature_id', 'ID', 'id'];
 var CODIGO_BIOMA = {amazonia: 1, amazon: 1, caatinga: 2, cerrado: 3, 'mata atlantica': 4, 'atlantic forest': 4, pampa: 5, pantanal: 6};
 
 // Recortes independentes. sobrepoe = feições que se sobrepõem entre si (calcula feição a feição).
-// atributo null = detectar entre CANDIDATOS_ID. Ligue "ativo" quando a plataforma passar a exibi-los.
+// atributo null = detectar entre CANDIDATOS_ID. ativo: false pula o recorte nos modos exportar/tudo.
 var RECORTES_EXTRA = {
-  terra_indigena:        {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/TERRAS_INDIGENAS_FUNAI_2026_F7F13F79/8b94c232-c551-4dd1-ac0c-2b40145db021', atributo: null, sobrepoe: true,  ativo: false},
-  unidade_conservacao:   {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/UNIDADES_DE_CONSERVACAO_XNUC_2026_8DCD0C0B/ea04ccaf-0ff1-445a-9a29-a551015b0868', atributo: null, sobrepoe: true, ativo: false},
-  territorio_quilombola: {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/QUILOMBOS_INCRA_2026_C57B5884/ff433ee4-7137-4845-aa3d-42f66d2b7823', atributo: null, sobrepoe: true, ativo: false},
-  amazonia_legal:        {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/LEGAL_AMAZON/LEGAL_AMAZON_v3', atributo: null, sobrepoe: false, ativo: false},
-  matopiba:              {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/MATOPIBA/MATOPIBA_v3', atributo: null, sobrepoe: false, ativo: false},
-  bacia_nivel1:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_1/DHN250_LEVEL_1_v2', atributo: null, sobrepoe: false, ativo: false},
-  bacia_nivel2:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_2/DHN250_LEVEL_2_v3', atributo: null, sobrepoe: false, ativo: false}
+  terra_indigena:        {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/TERRAS_INDIGENAS_FUNAI_2026_F7F13F79/8b94c232-c551-4dd1-ac0c-2b40145db021', atributo: null, sobrepoe: true,  ativo: true},
+  unidade_conservacao:   {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/UNIDADES_DE_CONSERVACAO_XNUC_2026_8DCD0C0B/ea04ccaf-0ff1-445a-9a29-a551015b0868', atributo: null, sobrepoe: true, ativo: true},
+  territorio_quilombola: {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/QUILOMBOS_INCRA_2026_C57B5884/ff433ee4-7137-4845-aa3d-42f66d2b7823', atributo: null, sobrepoe: true, ativo: true},
+  amazonia_legal:        {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/LEGAL_AMAZON/LEGAL_AMAZON_v3', atributo: null, sobrepoe: false, ativo: true},
+  matopiba:              {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/MATOPIBA/MATOPIBA_v3', atributo: null, sobrepoe: false, ativo: true},
+  bacia_nivel1:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_1/DHN250_LEVEL_1_v2', atributo: null, sobrepoe: false, ativo: true},
+  bacia_nivel2:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_2/DHN250_LEVEL_2_v3', atributo: null, sobrepoe: false, ativo: true}
 };
 // Exportação das geometrias (MODO = 'geometrias')
 var PASTA_GEOMETRIAS = 'YBYRA-GEOMETRIAS';
@@ -252,7 +257,7 @@ function lotes(xs, k) {
 // ----------------------------------------------------------------------------
 // Execução
 // ----------------------------------------------------------------------------
-print('ybyra_estatisticas.js v0.2.0 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
+print('ybyra_estatisticas.js v0.3.0 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
 
 if (MODO === 'inspecionar') {
   print('Imagens:', col.size(), 'Anos:', anos);
@@ -288,7 +293,7 @@ if (MODO === 'teste') {
   Map.addLayer(celula, {color: 'red'}, 'Célula de teste');
 }
 
-if (MODO === 'geometrias') {
+if (MODO === 'geometrias' || MODO === 'tudo') {
   // Cada malha sai como shapefile com: id (mesmo identificador das tabelas de estatística), nome
   // e, nos municípios, sigla_uf. Nomes de coluna curtos (limite de 10 caracteres do shapefile).
   var exportarGeo = function (nome, fc, cols) {
@@ -314,17 +319,18 @@ if (MODO === 'geometrias') {
   Object.keys(RECORTES_EXTRA).forEach(function (nome) {
     var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
     var atrib = cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID);
-    exportarGeo(nome, comIdNumerico(ee.FeatureCollection(cfg.asset), atrib), cols);
+    if (cfg.ativo) exportarGeo(nome, comIdNumerico(ee.FeatureCollection(cfg.asset), atrib), cols);
   });
   print('Tarefas de geometria criadas (pasta do Drive: ' + PASTA_GEOMETRIAS + '). Clique RUN em cada uma na aba Tasks.');
 }
 
-if (MODO === 'exportar') {
+if (MODO === 'exportar' || MODO === 'tudo') {
   var grupos = lotes(anos, ANOS_POR_TAREFA);
   grupos.forEach(function (g) { exportar('municipio_bioma', tabelaMunicipioBioma(g), g); });
   Object.keys(RECORTES_EXTRA).forEach(function (nome) {
     if (!RECORTES_EXTRA[nome].ativo) return;
     grupos.forEach(function (g) { exportar(nome, tabelaRecorteExtra(nome, g), g); });
   });
-  print('Tarefas criadas. Clique RUN em cada uma na aba Tasks (pasta do Drive: ' + PASTA_DRIVE + ').');
+  var nExtras = Object.keys(RECORTES_EXTRA).filter(function (k) { return RECORTES_EXTRA[k].ativo; }).length;
+  print('Tarefas de estatística criadas: ' + grupos.length * (1 + nExtras) + ' (pasta do Drive: ' + PASTA_DRIVE + '). Clique RUN em cada uma na aba Tasks.');
 }

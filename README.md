@@ -1,4 +1,4 @@
-# Emissões e Remoções de CO₂ — YbYrá-BR · v0.6.1
+# Emissões e Remoções de CO₂ — YbYrá-BR · v0.6.2
 
 Plataforma do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para explorar as emissões e remoções de CO₂ do modelo YbYrá-BR por recorte territorial: Brasil, estados, biomas e municípios.
 
