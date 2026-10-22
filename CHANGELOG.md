@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.4.1 — 2026-10-21
+- Documento HTML completo (`<!doctype>`, `lang="pt-BR"`, `charset`, `viewport`, `theme-color`, ícone): sem a meta viewport o celular desenhava a página com 980 px de largura e o mapa ficava escondido atrás dos painéis.
+
 ## 0.4.0 — 2026-10-21
 Revisão da interface pelas Apple Human Interface Guidelines:
 - **Camadas**: o mapa passa por baixo da barra superior em vidro; o painel de controles (Explorar) é vidro e o painel de conteúdo (recorte) usa material regular, mais opaco, para leitura de gráficos e números.

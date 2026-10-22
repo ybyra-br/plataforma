@@ -1,3 +1,12 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="img/ybyra-simbolo-96.png">
+<link rel="apple-touch-icon" href="img/ybyra-simbolo-192.png">
 <title>Emissões YbYrá-BR</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Emissões e remoções de CO₂ por recorte territorial — modelo YbYrá-BR (CNPq 401741/2023-0)">
@@ -239,6 +248,8 @@ button{-webkit-tap-highlight-color:transparent}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
+</head>
+<body>
 
 <header class="barra-proj">
   <a class="marca-proj" href="#" id="marca">
@@ -332,7 +343,9 @@ button{-webkit-tap-highlight-color:transparent}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.4.0
+/* plataforma de emissões YbYrá-BR · v0.4.1
+   0.4.1 (2026-10-21) — documento HTML completo (doctype, lang, charset, viewport, ícones): no celular
+                        a página era desenhada com 980 px de largura.
    0.4.0 (2026-10-21) — revisão pelas Apple HIG: mapa sob a barra de vidro; painel de controles em vidro e de
                         conteúdo em material regular; cantos concêntricos; alvos de 44 px no toque e estados
                         pressionados; tipografia em rem (acompanha o tamanho de texto), mínimo de 11 px;
@@ -346,7 +359,7 @@ button{-webkit-tap-highlight-color:transparent}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.4.0", DADOS = "dados/v1_2/";
+const VERSAO = "0.4.1", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -752,3 +765,5 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
   }catch(err){ console.error(err); $("carregando").textContent = "Não foi possível carregar os dados. Recarregue a página."; }
 })();
 </script>
+</body>
+</html>
