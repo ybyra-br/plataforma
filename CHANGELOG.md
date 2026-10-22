@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 0.6.1 — 2026-10-22
+- `gee/ybyra_estatisticas.js` v0.2.0: malhas territoriais públicas do MapBiomas (`projects/mapbiomas-territories`, as mesmas do user-toolkit) no lugar dos caminhos provisórios: municípios e estados IBGE 2025, biomas IBGE 2025, terras indígenas FUNAI 2026, unidades de conservação CNUC 2026, quilombos INCRA 2026, Amazônia Legal, MATOPIBA e bacias DHN250 níveis 1 e 2. Atributos detectados no próprio asset e listados no modo `inspecionar`.
+- Novo modo `geometrias`: exporta todas as malhas em shapefile (colunas `id`, `nome` e, nos municípios, `sigla_uf`), com simplificação opcional, para o mapa da plataforma.
+
 ## 0.6.0 — 2026-10-22
 - **Painéis recolhíveis**, como na plataforma de queimadas: botão de esconder no painel Explorar (‹) e no painel do recorte (›); com o painel escondido, aparecem os botões **Painel** e **Gráficos** no alto do mapa para reabrir. Zoom, camadas, escala e créditos acompanham, e o mapa se reenquadra no espaço livre. A escolha fica salva no navegador. No celular os painéis continuam empilhados sob o mapa.
 - Painel esquerdo ganha o título "Explorar".

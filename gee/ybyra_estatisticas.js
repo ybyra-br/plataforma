@@ -1,5 +1,5 @@
 /**
- * ybyra_estatisticas.js · v0.1.0
+ * ybyra_estatisticas.js · v0.2.0
  * =============================================================================
  * Estatísticas por recorte territorial dos assets de emissões e remoções do modelo
  * YbYrá-BR (projeto CNPq 401741/2023-0) para a plataforma
@@ -20,6 +20,8 @@
  *   1. MODO = 'inspecionar' → Run: confere bandas, anos, unidades e o raster de zonas.
  *   2. MODO = 'teste'       → Run: uma célula pequena (Ilha do Maranhão), resultado no Console.
  *   3. MODO = 'exportar'    → Run: cria as tarefas; clique RUN em cada uma na aba Tasks.
+ *   3b. MODO = 'geometrias' → Run: exporta as malhas em shapefile (pasta YBYRA-GEOMETRIAS)
+ *      com colunas id (o mesmo da tabela) e nome, para o mapa da plataforma.
  *   4. Baixe os CSV da pasta YBYRA-ESTATISTICAS do Drive e envie para a pasta
  *      dados/brutos/v1_2/ do repositório ybyra-br/plataforma (pode ser pelo site do
  *      GitHub: Add file → Upload files). O GitHub Actions agrega e publica o site.
@@ -31,6 +33,12 @@
  *   agc_sf_ha, agc0_state  Mg C ha⁻¹                            → × área (ha) → Mg C
  *
  * Histórico de versões
+ *   0.2.0 (2026-10-22) — malhas públicas do MapBiomas (projects/mapbiomas-territories, as mesmas
+ *                        do user-toolkit): municípios e estados IBGE 2025, biomas IBGE 2025, TI FUNAI
+ *                        2026, UC CNUC 2026, quilombos INCRA 2026, Amazônia Legal, MATOPIBA e bacias
+ *                        DHN250; atributos detectados automaticamente (código IBGE, código ou nome do
+ *                        bioma, FEATURE_ID) e listados no modo inspecionar; modo 'geometrias'
+ *                        exporta as malhas em shapefile (id + nome; simplificação opcional).
  *   0.1.0 (2026-10-21) — porte para JavaScript de ybyra_estatisticas_gee.py v0.1.1;
  *                        tarefas agrupadas por lotes de anos (ANOS_POR_TAREFA) para
  *                        reduzir os cliques em Run; recortes extras com chave "ativo".
@@ -39,7 +47,7 @@
 // ----------------------------------------------------------------------------
 // Configuração
 // ----------------------------------------------------------------------------
-var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar'
+var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar' | 'geometrias'
 
 var ASSET_MODELO = 'projects/ee-redd-brazil/assets/ybyra-br-model/emissions_removals_v1_2';
 var VERSAO_MODELO = 'v1_2';
@@ -57,19 +65,40 @@ var MAX_PIXELS = 1e13;
 var PASSO_GRADE = 4;                // graus
 var BBOX_BRASIL = [-74.5, -34.5, -28.5, 5.5];   // oeste, sul, leste, norte
 
-// Malhas (enviar como assets)  >>> CONFIRMAR caminhos e atributos <<<
-var ASSET_MUNICIPIOS = 'projects/ee-redd-brazil/assets/territorios/BR_Municipios_2025';
-var ATRIB_MUNICIPIO = 'CD_MUN';     // código IBGE de 7 dígitos (texto ou número)
-var ASSET_BIOMAS = 'projects/ee-redd-brazil/assets/territorios/Biomas_250mil_2019';
-var ATRIB_BIOMA = 'CD_Bioma';       // 1 Amazônia · 2 Caatinga · 3 Cerrado · 4 Mata Atlântica · 5 Pampa · 6 Pantanal
+// Malhas territoriais públicas do MapBiomas (mesmas do user-toolkit, data/territories.js).
+// Os atributos são detectados no próprio asset (primeiro candidato encontrado); use
+// MODO = 'inspecionar' para ver as colunas de cada malha e, se preciso, fixe o atributo.
+var MB = 'projects/mapbiomas-territories/assets/';
+var ASSET_MUNICIPIOS = MB + 'PLATFORM/demo/mapbiomas/brazil/territories/MUNICIPIOS_IBGE_2025_637F97E6/0afdffeb-2a5b-4b93-8163-d52f92f555e5';
+var ATRIB_MUNICIPIO = null;         // null = detectar entre CANDIDATOS_MUNICIPIO (código IBGE de 7 dígitos)
+var ASSET_BIOMAS = MB + 'TERRITORIES/BRAZIL/WORKSPACE/BIOMES/BIOMES_v4';            // Biomas (IBGE, 2025)
+var ATRIB_BIOMA = null;             // null = detectar: código (1–6) ou nome do bioma
+
+var CANDIDATOS_MUNICIPIO = ['CD_MUN', 'CD_MUNICIPIO', 'GEOCODIGO', 'geocodigo', 'CD_GEOCMU', 'cod_ibge', 'COD_IBGE'];
+var CANDIDATOS_BIOMA_COD = ['CD_Bioma', 'CD_BIOMA', 'cd_bioma', 'COD_BIOMA', 'cod_bioma'];
+var CANDIDATOS_BIOMA_NOME = ['Bioma', 'BIOMA', 'bioma', 'NM_BIOMA', 'nm_bioma', 'NAME', 'name', 'NAME_PT', 'name_pt'];
+var CANDIDATOS_ID = ['FEATURE_ID', 'feature_id', 'ID', 'id'];
+// nome normalizado (minúsculas, sem acento) → código IBGE do bioma
+var CODIGO_BIOMA = {amazonia: 1, amazon: 1, caatinga: 2, cerrado: 3, 'mata atlantica': 4, 'atlantic forest': 4, pampa: 5, pantanal: 6};
 
 // Recortes independentes. sobrepoe = feições que se sobrepõem entre si (calcula feição a feição).
+// atributo null = detectar entre CANDIDATOS_ID. Ligue "ativo" quando a plataforma passar a exibi-los.
 var RECORTES_EXTRA = {
-  terra_indigena:        {asset: 'projects/ee-redd-brazil/assets/territorios/TI_FUNAI',            atributo: 'terrai_cod', sobrepoe: true,  ativo: false},
-  unidade_conservacao:   {asset: 'projects/ee-redd-brazil/assets/territorios/UC_CNUC',             atributo: 'id_uc',      sobrepoe: true,  ativo: false},
-  territorio_quilombola: {asset: 'projects/ee-redd-brazil/assets/territorios/Quilombolas_INCRA',   atributo: 'id_qui',     sobrepoe: true,  ativo: false},
-  assentamento:          {asset: 'projects/ee-redd-brazil/assets/territorios/Assentamentos_INCRA', atributo: 'id_ass',     sobrepoe: false, ativo: false}
+  terra_indigena:        {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/TERRAS_INDIGENAS_FUNAI_2026_F7F13F79/8b94c232-c551-4dd1-ac0c-2b40145db021', atributo: null, sobrepoe: true,  ativo: false},
+  unidade_conservacao:   {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/UNIDADES_DE_CONSERVACAO_XNUC_2026_8DCD0C0B/ea04ccaf-0ff1-445a-9a29-a551015b0868', atributo: null, sobrepoe: true, ativo: false},
+  territorio_quilombola: {asset: MB + 'PLATFORM/demo/mapbiomas/brazil/territories/QUILOMBOS_INCRA_2026_C57B5884/ff433ee4-7137-4845-aa3d-42f66d2b7823', atributo: null, sobrepoe: true, ativo: false},
+  amazonia_legal:        {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/LEGAL_AMAZON/LEGAL_AMAZON_v3', atributo: null, sobrepoe: false, ativo: false},
+  matopiba:              {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/MATOPIBA/MATOPIBA_v3', atributo: null, sobrepoe: false, ativo: false},
+  bacia_nivel1:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_1/DHN250_LEVEL_1_v2', atributo: null, sobrepoe: false, ativo: false},
+  bacia_nivel2:          {asset: MB + 'TERRITORIES-STAGING/BRAZIL/WORKSPACE/DHN250_LEVEL_2/DHN250_LEVEL_2_v3', atributo: null, sobrepoe: false, ativo: false}
 };
+// Só para conferência no modo inspecionar (o script deriva estados e Brasil dos municípios):
+// Exportação das geometrias (MODO = 'geometrias')
+var PASTA_GEOMETRIAS = 'YBYRA-GEOMETRIAS';
+var SIMPLIFICAR_M = 0;              // 0 = geometria original; ex.: 100 simplifica com erro máx. de 100 m (arquivos bem menores)
+var CANDIDATOS_NOME = ['NM_MUN', 'NM_UF', 'NM_BIOMA', 'Bioma', 'NAME', 'name', 'NOME', 'nome', 'NM_TI', 'terrai_nom', 'nome_uc', 'NOME_UC1', 'nm_comunid', 'NM_COMUNID'];
+var CANDIDATOS_UF = ['CD_UF', 'cd_uf', 'COD_UF'];
+var ASSET_ESTADOS = MB + 'PLATFORM/demo/mapbiomas/brazil/territories/ESTADOS_IBGE_2025_F7EAF953/3f95fd9d-4b26-4243-8612-37b9d5b12a55';
 
 // ----------------------------------------------------------------------------
 // Bandas, anos e projeção (lidos do asset)
@@ -95,6 +124,24 @@ var anos = ANOS || col.aggregate_array('system:time_start')
   .map(function (t) { return ee.Date(t).get('year'); }).distinct().sort().getInfo();
 
 // ----------------------------------------------------------------------------
+// Atributos das malhas (detectados no primeiro registro)
+// ----------------------------------------------------------------------------
+function colunas(asset) {
+  return ee.Feature(ee.FeatureCollection(asset).first()).propertyNames().getInfo();
+}
+function primeiroPresente(cols, candidatos) {
+  for (var i = 0; i < candidatos.length; i++) if (cols.indexOf(candidatos[i]) >= 0) return candidatos[i];
+  return null;
+}
+var colsMun = colunas(ASSET_MUNICIPIOS);
+var atribMun = ATRIB_MUNICIPIO || primeiroPresente(colsMun, CANDIDATOS_MUNICIPIO);
+var colsBio = colunas(ASSET_BIOMAS);
+var atribBioCod = ATRIB_BIOMA || primeiroPresente(colsBio, CANDIDATOS_BIOMA_COD);
+var atribBioNome = atribBioCod ? null : primeiroPresente(colsBio, CANDIDATOS_BIOMA_NOME);
+if (!atribMun) print('ERRO — nenhum atributo de código IBGE encontrado nos municípios. Colunas:', colsMun);
+if (!atribBioCod && !atribBioNome) print('ERRO — nenhum atributo de código ou nome encontrado nos biomas. Colunas:', colsBio);
+
+// ----------------------------------------------------------------------------
 // Funções
 // ----------------------------------------------------------------------------
 function imagemAno(ano) {
@@ -112,6 +159,20 @@ function comIdNumerico(fc, atributo) {
     var v = f.get(atributo);
     var n = ee.Algorithms.If(ee.Algorithms.IsEqual(ee.Algorithms.ObjectType(v), 'String'), ee.Number.parse(v), v);
     return f.set('id_num', ee.Number(n).toInt64());
+  });
+}
+
+function semAcento(s) {
+  return ee.String(s).toLowerCase().trim()
+    .replace('[áàâã]', 'a', 'g').replace('[éê]', 'e', 'g').replace('[í]', 'i', 'g')
+    .replace('[óôõ]', 'o', 'g').replace('[ú]', 'u', 'g').replace('ç', 'c', 'g');
+}
+
+function comIdBioma(fc) {
+  if (atribBioCod) return comIdNumerico(fc, atribBioCod);
+  var tabela = ee.Dictionary(CODIGO_BIOMA);
+  return fc.map(function (f) {
+    return f.set('id_num', ee.Number(tabela.get(semAcento(f.get(atribBioNome)), 0)).toInt64());
   });
 }
 
@@ -143,8 +204,8 @@ function reduzir(empilhado, zona, geometria) {
 }
 
 function zonaMunicipioBioma() {
-  var mun = rasterIds(comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), ATRIB_MUNICIPIO));
-  var bio = rasterIds(comIdNumerico(ee.FeatureCollection(ASSET_BIOMAS), ATRIB_BIOMA)).unmask(0);  // 0 = sem bioma
+  var mun = rasterIds(comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun));
+  var bio = rasterIds(comIdBioma(ee.FeatureCollection(ASSET_BIOMAS))).unmask(0);  // 0 = sem bioma
   return mun.multiply(10).add(bio).rename('zona');
 }
 
@@ -160,7 +221,8 @@ function tabelaMunicipioBioma(anosLote, celulas) {
 
 function tabelaRecorteExtra(nome, anosLote) {
   var cfg = RECORTES_EXTRA[nome];
-  var fc = comIdNumerico(ee.FeatureCollection(cfg.asset), cfg.atributo);
+  var atrib = cfg.atributo || primeiroPresente(colunas(cfg.asset), CANDIDATOS_ID);
+  var fc = comIdNumerico(ee.FeatureCollection(cfg.asset), atrib);
   return ee.FeatureCollection(anosLote.map(function (ano) {
     var emp = imagemAno(ano), out;
     if (cfg.sobrepoe) {
@@ -189,7 +251,7 @@ function lotes(xs, k) {
 // ----------------------------------------------------------------------------
 // Execução
 // ----------------------------------------------------------------------------
-print('ybyra_estatisticas.js v0.1.0 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
+print('ybyra_estatisticas.js v0.2.0 · modelo ' + VERSAO_MODELO + ' · modo ' + MODO);
 
 if (MODO === 'inspecionar') {
   print('Imagens:', col.size(), 'Anos:', anos);
@@ -199,6 +261,15 @@ if (MODO === 'inspecionar') {
   print('Ignoradas (derivadas _ha ou não aditivas):', ignoradas);
   if (faltam.length) print('AVISO — bandas configuradas ausentes no asset:', faltam);
   print('Propriedades da 1ª imagem:', primeira.propertyNames());
+  print('Municípios — atributo usado: ' + atribMun + ' · nº de feições:', ee.FeatureCollection(ASSET_MUNICIPIOS).size(), 'Colunas:', colsMun);
+  print('Biomas — ' + (atribBioCod ? 'código: ' + atribBioCod : 'nome: ' + atribBioNome) + '; códigos obtidos:',
+        comIdBioma(ee.FeatureCollection(ASSET_BIOMAS)).aggregate_array('id_num'), 'Colunas:', colsBio);
+  print('Estados (conferência) — nº de feições:', ee.FeatureCollection(ASSET_ESTADOS).size());
+  Object.keys(RECORTES_EXTRA).forEach(function (nome) {
+    var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
+    print(nome + ' — atributo: ' + (cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID)) + (cfg.ativo ? ' (ativo)' : ' (desligado)') + ' · nº de feições:',
+          ee.FeatureCollection(cfg.asset).size(), 'Colunas:', cols);
+  });
   Map.setCenter(-52, -12, 4);
   Map.addLayer(zonaMunicipioBioma().randomVisualizer(), {}, 'Zonas município × bioma');
   Map.addLayer(ee.Image(col.sort('system:time_start', false).first()).select(porPixel[0]),
@@ -214,6 +285,37 @@ if (MODO === 'teste') {
   print(fcTeste.limit(20));
   Map.centerObject(celula, 9);
   Map.addLayer(celula, {color: 'red'}, 'Célula de teste');
+}
+
+if (MODO === 'geometrias') {
+  // Cada malha sai como shapefile com: id (mesmo identificador das tabelas de estatística), nome
+  // e, nos municípios, sigla_uf. Nomes de coluna curtos (limite de 10 caracteres do shapefile).
+  var exportarGeo = function (nome, fc, cols) {
+    var atrNome = primeiroPresente(cols, CANDIDATOS_NOME);
+    var atrUf = primeiroPresente(cols, ['SIGLA_UF', 'sigla_uf', 'SG_UF']);
+    var saida = fc.map(function (f) {
+      var g = SIMPLIFICAR_M > 0 ? f.geometry().simplify(SIMPLIFICAR_M) : f.geometry();
+      var props = {id: f.get('id_num'), nome: atrNome ? f.get(atrNome) : ''};
+      if (atrUf) props.sigla_uf = f.get(atrUf);
+      return ee.Feature(g, props);
+    });
+    var desc = 'ybyra_geometria_' + nome;
+    Export.table.toDrive({collection: saida, description: desc, folder: PASTA_GEOMETRIAS,
+                          fileNamePrefix: desc, fileFormat: 'SHP'});
+    print(nome + ' — id: ' + (nome === 'municipio' ? atribMun : nome === 'bioma' ? (atribBioCod || atribBioNome + ' → código') : 'ver acima') +
+          ' · nome: ' + atrNome + (atrUf ? ' · UF: ' + atrUf : ''));
+  };
+  exportarGeo('municipio', comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun), colsMun);
+  exportarGeo('bioma', comIdBioma(ee.FeatureCollection(ASSET_BIOMAS)), colsBio);
+  var colsUf = colunas(ASSET_ESTADOS), atribUf = primeiroPresente(colsUf, CANDIDATOS_UF);
+  if (atribUf) exportarGeo('uf', comIdNumerico(ee.FeatureCollection(ASSET_ESTADOS), atribUf), colsUf);
+  else print('Estados: nenhum atributo de código da UF encontrado. Colunas:', colsUf);
+  Object.keys(RECORTES_EXTRA).forEach(function (nome) {
+    var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
+    var atrib = cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID);
+    exportarGeo(nome, comIdNumerico(ee.FeatureCollection(cfg.asset), atrib), cols);
+  });
+  print('Tarefas de geometria criadas (pasta do Drive: ' + PASTA_GEOMETRIAS + '). Clique RUN em cada uma na aba Tasks.');
 }
 
 if (MODO === 'exportar') {
