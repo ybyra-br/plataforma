@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.7.0 — 2026-10-22
+- Aviso de dados fictícios automático: `dados/brutos/v1_2/FICTICIOS.txt` marca a pasta como fictícia; o R (`agregar.R` v0.1.1) grava `ficticio` no catálogo e o site mostra ou esconde o aviso (painel, relatório e citação). Ao trocar pelos CSV reais e apagar esse arquivo, o aviso some sem mexer no site.
+
 ## 0.6.5 — 2026-10-22
 - `gee/ybyra_estatisticas.js` volta à v0.3.1 (sem rasters de zonas gravados como assets nem `reduceRegions`), que já funcionava; fica só a correção dos shapefiles (partes poligonais).
 

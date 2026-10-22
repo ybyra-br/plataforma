@@ -1,0 +1,7 @@
+Os CSV desta pasta são FICTÍCIOS (scripts/gerar_dados_ficticios.py), só para testar a plataforma.
+Enquanto este arquivo existir, o site mostra o aviso de dados fictícios.
+
+Para publicar os resultados reais:
+  1. apague TODOS os arquivos desta pasta, inclusive este;
+  2. envie os CSV exportados pelo GEE (pasta YBYRA-ESTATISTICAS do Drive).
+Se sobrar algum CSV fictício, ele é somado aos reais.

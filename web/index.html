@@ -346,7 +346,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 
 <aside class="painel" id="esq" aria-label="Explorar">
   <div class="cab-painel"><h2>Explorar</h2><button type="button" class="icone" id="fechar-esq" aria-label="Esconder painel" title="Esconder painel"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button></div>
-  <div class="aviso" role="note"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 0 .8.2 1 .6l5.9 10.6c.4.8-.1 1.8-1 1.8H2.1c-.9 0-1.4-1-1-1.8L7 2.1c.2-.4.6-.6 1-.6Zm-.75 4.25v4h1.5v-4h-1.5Zm0 5.25v1.5h1.5V11h-1.5Z"/></svg><span><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
+  <div class="aviso" id="aviso-ficticio" role="note" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 0 .8.2 1 .6l5.9 10.6c.4.8-.1 1.8-1 1.8H2.1c-.9 0-1.4-1-1-1.8L7 2.1c.2-.4.6-.6 1-.6Zm-.75 4.25v4h1.5v-4h-1.5Zm0 5.25v1.5h1.5V11h-1.5Z"/></svg><span><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
   <div class="grupo">
     <p class="rotulo">Recorte do mapa</p>
     <div class="seg" id="seg-tipo" style="--n:4">
@@ -422,7 +422,8 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.6.0
+/* plataforma de emissões YbYrá-BR · v0.6.1
+   0.6.1 (2026-10-22) — aviso de dados fictícios (painel, relatório e citação) só quando o catálogo indica ficticio.
    0.6.0 (2026-10-22) — painéis recolhíveis como na plataforma de queimadas: botão de esconder em cada painel e
                         botões "Painel" e "Gráficos" para reabrir; controles do mapa acompanham; estado salvo.
    0.5.4 (2026-10-22) — sem desfoque (backdrop-filter) sobre o mapa: barra e painéis piscavam no zoom (mesma correção
@@ -455,7 +456,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.6.0", DADOS = "dados/v1_2/";
+const VERSAO = "0.6.1", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -764,7 +765,7 @@ async function ranking(){
   $("rank").querySelectorAll("button").forEach(b=>b.onclick=()=>selecionar(b.dataset.t,+b.dataset.i,true));
 }
 function citacao(s){
-  $("cit").textContent = `Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR, versão ${CAT.versao_modelo} (prévia ${VERSAO}, dados fictícios). Projeto YbYrá-BR, CNPq 401741/2023-0.`;
+  $("cit").textContent = `Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR, versão ${CAT.versao_modelo} (plataforma ${VERSAO}${CAT.ficticio ? ", prévia com dados fictícios" : ""}). Projeto YbYrá-BR, CNPq 401741/2023-0.`;
 }
 async function copiarTexto(txt, botao){
   const ok = ()=>{ const t = botao.textContent; botao.textContent = "Copiado"; setTimeout(()=>botao.textContent=t,1500); };
@@ -798,7 +799,7 @@ async function relatorio(){
     <div class="cabrel"><img class="y claro" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><img class="y escuro" src="img/ybyra-logo-branco-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
       <div class="ap">Apoio<img src="img/cnpq-128.png" alt="CNPq">Processo 401741/2023-0</div></div>
     <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
-    <p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>
+    ${CAT.ficticio ? `<p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>` : ""}
     <p>${resumo}</p>
     <div class="kpis">${$("kpis").innerHTML}</div>
     <h2>Emissões e remoções por processo</h2>
@@ -929,7 +930,8 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
   try{
     const [cat, geo, cont] = await Promise.all([j("catalogo.json"), fetch("geo/municipios.geojson").then(r=>r.json()), fetch("geo/contornos.geojson").then(r=>r.json())]);
     try{ E.base = localStorage.getItem("ybyra-base2") || E.base; if(!BASE[E.base]) E.base = "cinza"; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
-    CAT = cat; GEO = geo; CONT = cont; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
+    CAT = cat; GEO = geo; CONT = cont;
+    $("aviso-ficticio").hidden = !CAT.ficticio; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
     nomeDe("bioma",1);
     for(const f of GEO.features){ MUN_BIOMA[f.properties.c] = f.properties.b; BBOX["m"+f.properties.c] = bbox(f.geometry.coordinates); }

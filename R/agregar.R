@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# agregar.R · v0.1.0
+# agregar.R · v0.1.1
 # -----------------------------------------------------------------------------
 # Agrega as tabelas exportadas pelo GEE (gee/ybyra_estatisticas.js) e grava os
 # arquivos estáticos da plataforma https://ybyra-br.github.io/plataforma/.
@@ -20,13 +20,15 @@
 # Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <municipios.geojson>
 #
 # Histórico de versões
+#   0.1.1 (2026-10-22) — catálogo indica dados fictícios (arquivo FICTICIOS.txt na pasta de entrada)
+#                        e o período dos anos; nomes de arquivo com qualquer recorte do GEE v0.3.
 #   0.1.0 (2026-10-21) — porte para R de ybyra_estatisticas_agregar.py v0.2.0 (mesmo
 #                        formato de saída); lê .csv e .csv.gz e nomes de arquivo com
 #                        lote de anos; nomes dos municípios vêm da malha do site.
 # =============================================================================
 suppressPackageStartupMessages({ library(data.table); library(jsonlite) })
 
-VERSAO_SCRIPT <- "0.1.0"
+VERSAO_SCRIPT <- "0.1.1"
 arg <- commandArgs(trailingOnly = TRUE)
 if (length(arg) < 4) stop("Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <municipios.geojson>")
 ENTRADA <- arg[1]; SAIDA <- arg[2]; MODELO <- arg[3]; GEO <- arg[4]
@@ -120,6 +122,7 @@ dir.create(SAIDA, recursive = TRUE, showWarnings = FALSE)
 
 catalogo <- list(versao_script = paste0("R ", VERSAO_SCRIPT), versao_modelo = MODELO,
                  gerado_em = format(Sys.Date()), gases = "somente CO₂ (sem CH₄ e N₂O)",
+                 ficticio = file.exists(file.path(ENTRADA, "FICTICIOS.txt")),
                  variaveis = setNames(lapply(COLS, unidade), COLS), tipos = list())
 longa <- list()
 for (tipo in names(rec)) {
@@ -155,5 +158,6 @@ for (tipo in names(rec)) {
 gravar_json(catalogo, file.path(SAIDA, "catalogo.json"))
 longa <- rbindlist(longa)[, .(tipo, id, ano, variavel, valor)]
 fwrite(longa, file.path(SAIDA, "estatisticas.csv.gz"))
+cat(sprintf("Dados fictícios: %s\n", if (file.exists(file.path(ENTRADA, "FICTICIOS.txt"))) "sim" else "não"))
 cat(sprintf("Gravado em %s: %s linhas na tabela longa; tipos = %s\n", SAIDA,
             format(nrow(longa), big.mark = "."), paste(names(rec), collapse = ", ")))

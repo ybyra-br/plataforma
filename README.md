@@ -1,4 +1,4 @@
-# Emissões e Remoções de CO₂ — YbYrá-BR · v0.6.5
+# Emissões e Remoções de CO₂ — YbYrá-BR · v0.7.0
 
 Plataforma do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para explorar as emissões e remoções de CO₂ do modelo YbYrá-BR por recorte territorial: Brasil, estados, biomas e municípios.
 
@@ -18,7 +18,7 @@ GEE (Code Editor, projeto ee-redd-brazil)
 
 1. No Code Editor do GEE, abra `gee/ybyra_estatisticas.js` e rode com `MODO = 'inspecionar'`, depois `'teste'` e `'exportar'` (clique RUN em cada tarefa na aba Tasks).
 2. Baixe os CSV da pasta `YBYRA-ESTATISTICAS` do Drive.
-3. Substitua o conteúdo de `dados/brutos/v1_2/` pelos CSV reais (pelo site do GitHub: *Add file → Upload files*, ou por git). Apague os arquivos fictícios.
+3. Em `dados/brutos/v1_2/`, **apague todos os arquivos** (os CSV fictícios e o `FICTICIOS.txt`) e envie os CSV reais (pelo site do GitHub: *Add file → Upload files*, ou por git). Arquivos acima de 25 MB não sobem pelo site: compacte em `.csv.gz` (o R lê os dois) ou use git. O aviso de dados fictícios some sozinho quando o `FICTICIOS.txt` sai.
 4. O envio dispara o workflow `pages`: o R agrega, confere o fechamento dos totais e publica o site. A tabela longa completa fica em `dados/v1_2/estatisticas.csv.gz` no site.
 
 Local: `Rscript R/agregar.R dados/brutos/v1_2 web/dados/v1_2 v1_2 web/geo/municipios.geojson` e depois `python -m http.server -d web`.
