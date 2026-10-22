@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 0.5.4 — 2026-10-22
+- Correção do piscar da barra superior e dos painéis durante o zoom: o desfoque de fundo (`backdrop-filter`) era recalculado a cada quadro do mapa (WebGL). Desfoque removido de tudo que fica sobre o mapa, materiais quase opacos (97–98%) e camadas de composição próprias (`translateZ(0)`, `contain:paint`; mapa com `contain:strict`). Mesma correção da plataforma de queimadas (v0.14.1).
+- Link **Alerta de Queimadas** na barra superior, que leva à plataforma Alerta de Queimadas por Município; no celular aparece como ícone.
+- Correção dos tokens do tema escuro escolhido manualmente (fundo do espaço do globo ausente).
+
 ## 0.5.3 — 2026-10-21
 - Correção: os comandos do botão de camadas tinham ido parar dentro da função que atualiza os controles (eram recriados a cada mudança e o Esc não fechava o painel).
 - Correção: o painel de camadas ficava sempre aberto. Faltava a regra global `[hidden]{display:none!important}` (o ambiente de prévia a incluía, o GitHub Pages não); a caixa de ranking tinha o mesmo problema.
