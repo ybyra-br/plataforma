@@ -26,6 +26,7 @@
   /* Okabe-Ito: processos */
   --p-defor:#D55E00; --p-fogo:#E69F00; --p-borda:#CC79A7; --p-madeira:#0072B2; --p-dsec:#56B4E9; --p-rem:#009E73; --p-liq:#1c1c1e;
   --topo:52px; --largura-esq:340px; --largura-dir:420px;
+  --off-esq:calc(var(--largura-esq) + 28px); --off-dir:calc(var(--largura-dir) + 28px);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#000; --painel:rgba(28,28,30,.86); --cell:#1c1c1e; --mapa:#1a1c1a; --vazio:#2c2c2e;
@@ -90,10 +91,10 @@ button{-webkit-tap-highlight-color:transparent}
 .maplibregl-map{font:inherit}
 .sobre-mapa{position:absolute;z-index:3}
 .vidro{background:var(--vidro);box-shadow:var(--sombra)}
-.info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:12px;padding:6px 10px}
+.info-mapa{left:calc(var(--off-esq) + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:12px;padding:6px 10px}
 .escala{display:flex;flex-direction:column;gap:2px;font-size:0.6875rem;color:var(--label2)}
 .escala .barra-esc{height:6px;border:1.5px solid var(--label);border-top:0}
-.camadas{position:fixed;z-index:12;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
+.camadas{position:fixed;z-index:12;right:calc(var(--off-dir) + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
 .b-camadas{width:36px;height:36px;border:0;border-radius:12px;cursor:pointer;display:grid;place-items:center;color:var(--label)}
 .b-camadas svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 .b-camadas:hover{background:var(--material)} .b-camadas[aria-expanded="true"]{color:var(--tint)}
@@ -105,7 +106,7 @@ button{-webkit-tap-highlight-color:transparent}
 .pop .op svg{margin-left:auto;width:14px;height:14px;fill:none;stroke:var(--tint);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;visibility:hidden}
 .pop .op[aria-checked="true"]{font-weight:600} .pop .op[aria-checked="true"] svg{visibility:visible}
 .pop .seg{margin:2px 4px 4px}
-.creditos{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:0.6875rem;line-height:1.3;color:var(--label2);pointer-events:none}
+.creditos{left:calc(var(--off-esq) + env(safe-area-inset-left,0px));right:calc(var(--off-dir) + env(safe-area-inset-right,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:0.6875rem;line-height:1.3;color:var(--label2);pointer-events:none}
 .creditos span{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;background:var(--vidro);border-radius:8px;padding:2px 8px;pointer-events:auto}
 .creditos a{color:inherit}
 .maplibregl-map{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -114,7 +115,7 @@ button{-webkit-tap-highlight-color:transparent}
 .maplibregl-canvas:focus{outline:none}
 #dica{position:fixed;z-index:15;pointer-events:none;background:var(--cell);color:var(--label);border-radius:10px;padding:7px 10px;font-size:0.8125rem;box-shadow:var(--sombra);max-width:260px}
 #dica b{display:block;font-weight:600}
-.zoom{position:absolute;z-index:3;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;background:var(--vidro);border-radius:12px;box-shadow:var(--sombra);overflow:hidden}
+.zoom{position:absolute;z-index:3;right:calc(var(--off-dir) + env(safe-area-inset-right,0px));bottom:calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;background:var(--vidro);border-radius:12px;box-shadow:var(--sombra);overflow:hidden}
 .zoom button{width:36px;height:36px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
 .zoom svg{width:16px;height:16px;fill:none;stroke:var(--label);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .zoom button+button{border-top:.5px solid var(--sep)}
@@ -123,6 +124,22 @@ button{-webkit-tap-highlight-color:transparent}
 /* painéis */
 .painel{position:fixed;z-index:10;top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);bottom:calc(12px + env(safe-area-inset-bottom,0px));overflow:auto;background:var(--vidro);border-radius:22px;box-shadow:var(--sombra);padding:12px;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin}
 #esq{left:calc(12px + env(safe-area-inset-left,0px));width:var(--largura-esq)}
+.painel{transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.cab-painel{display:flex;align-items:center;gap:8px;padding:2px 2px 0 4px}
+.cab-painel h2{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.02em;flex:1}
+.icone{width:30px;height:30px;border-radius:50%;border:0;background:var(--fill);color:var(--label2);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0}
+.icone:hover{color:var(--label)} .icone:active{background:var(--fill2)}
+.icone svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#fechar-dir{position:absolute;top:12px;right:12px}
+#dir{position:fixed}
+.alavanca{position:fixed;z-index:11;top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);display:inline-flex;align-items:center;gap:6px;border:0;cursor:pointer;border-radius:999px;padding:8px 14px;min-height:36px;font-weight:600;font-size:0.9375rem;color:var(--label);background:var(--vidro);box-shadow:var(--sombra);transform:translateZ(0)}
+.alavanca:hover{background:var(--material)} .alavanca:active{opacity:.6}
+.alavanca svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#abrir-esq{left:calc(12px + env(safe-area-inset-left,0px))} #abrir-dir{right:calc(12px + env(safe-area-inset-right,0px))}
+body.sem-esq #esq{transform:translateX(calc(-100% - 24px));opacity:0;pointer-events:none}
+body.sem-dir #dir{transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none}
+body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
+.zoom,.camadas,.info-mapa,.creditos{transition:left .28s,right .28s}
 #dir{right:calc(12px + env(safe-area-inset-right,0px));width:var(--largura-dir);background:var(--material)}
 .aviso{display:flex;gap:8px;align-items:flex-start;background:var(--aviso-bg);color:var(--aviso-fg);border-radius:10px;padding:9px 11px;font-size:0.8125rem;line-height:17px}
 .aviso b{font-weight:600}
@@ -170,7 +187,7 @@ button{-webkit-tap-highlight-color:transparent}
 .legenda .un{font-size:0.75rem;color:var(--label2)}
 
 /* painel do recorte */
-.cab-rec{display:flex;flex-direction:column;gap:2px;padding:4px 4px 0}
+.cab-rec{display:flex;flex-direction:column;gap:2px;padding:4px 40px 0 4px}
 .cab-rec .tipo{font-size:0.8125rem;font-weight:600;color:var(--label2)}
 .cab-rec h2{margin:0;font-size:1.75rem;line-height:1.15;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
 .cab-rec .sub{font-size:0.8125rem;color:var(--label2)}
@@ -279,11 +296,13 @@ button{-webkit-tap-highlight-color:transparent}
   .painel{position:static;width:auto!important;margin:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));overflow:visible;background:var(--bg)!important;box-shadow:none;padding:0;border-radius:0}
   .zoom{right:12px;top:66px;bottom:auto} .camadas{position:absolute;right:12px;top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);bottom:auto} .pop{top:0;bottom:auto}
   #dica{display:none}
+  .alavanca,#fechar-esq,#fechar-dir{display:none!important}
+  body.sem-esq #esq,body.sem-dir #dir{transform:none;opacity:1;pointer-events:auto}
 }
 @media (max-width:420px){.marca-proj .proj{display:none} .kpi .v{font-size:1rem}}
 @media (pointer: coarse){
   .sel-var select{min-height:44px}
-  .b-camadas{width:44px;height:44px} .pop .op{min-height:44px}
+  .b-camadas{width:44px;height:44px} .icone{width:44px;height:44px} .alavanca{min-height:44px} .pop .op{min-height:44px}
   .seg button,.vars button,.rank button,.btn,.busca input,.busca li{min-height:44px}
   .trilha button{min-height:36px} .btn-ic{width:44px}
   .zoom button,.ano button{width:44px;height:44px}
@@ -326,6 +345,7 @@ button{-webkit-tap-highlight-color:transparent}
 <div id="dica" hidden></div>
 
 <aside class="painel" id="esq" aria-label="Explorar">
+  <div class="cab-painel"><h2>Explorar</h2><button type="button" class="icone" id="fechar-esq" aria-label="Esconder painel" title="Esconder painel"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button></div>
   <div class="aviso" role="note"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 0 .8.2 1 .6l5.9 10.6c.4.8-.1 1.8-1 1.8H2.1c-.9 0-1.4-1-1-1.8L7 2.1c.2-.4.6-.6 1-.6Zm-.75 4.25v4h1.5v-4h-1.5Zm0 5.25v1.5h1.5V11h-1.5Z"/></svg><span><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
   <div class="grupo">
     <p class="rotulo">Recorte do mapa</p>
@@ -354,6 +374,7 @@ button{-webkit-tap-highlight-color:transparent}
 </aside>
 
 <aside class="painel" id="dir" aria-label="Recorte selecionado">
+  <button type="button" class="icone" id="fechar-dir" aria-label="Esconder gráficos" title="Esconder gráficos"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button>
   <div class="cab-rec"><span class="tipo" id="r-tipo"></span><h2 id="r-nome"></h2><span class="sub num" id="r-sub"></span></div>
   <div class="trilha" id="trilha"></div>
   <div class="kpis" id="kpis"></div>
@@ -383,6 +404,8 @@ button{-webkit-tap-highlight-color:transparent}
   </section>
 </aside>
 
+<button type="button" class="alavanca" id="abrir-esq" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg>Painel</button>
+<button type="button" class="alavanca" id="abrir-dir" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13V8M8 13V3M13 13V6"/></svg>Gráficos</button>
 <div id="metodo" role="dialog" aria-modal="true" aria-label="Método" hidden>
   <article>
     <div class="barra-folha"><button type="button" class="btn btn-ic" id="fechar-metodo" aria-label="Fechar"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button><span class="esp"></span></div>
@@ -399,7 +422,9 @@ button{-webkit-tap-highlight-color:transparent}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.5.4
+/* plataforma de emissões YbYrá-BR · v0.6.0
+   0.6.0 (2026-10-22) — painéis recolhíveis como na plataforma de queimadas: botão de esconder em cada painel e
+                        botões "Painel" e "Gráficos" para reabrir; controles do mapa acompanham; estado salvo.
    0.5.4 (2026-10-22) — sem desfoque (backdrop-filter) sobre o mapa: barra e painéis piscavam no zoom (mesma correção
                         da plataforma de queimadas, v0.14.1); materiais quase opacos e camadas de composição próprias;
                         link "Alerta de Queimadas" na barra superior (ícone no celular).
@@ -430,7 +455,7 @@ button{-webkit-tap-highlight-color:transparent}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.5.4", DADOS = "dados/v1_2/";
+const VERSAO = "0.6.0", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -507,7 +532,7 @@ function bbox(coords, b=[180,90,-180,-90]){
 function padding(){
   if(innerWidth<=900) return {top:20, bottom:60, left:20, right:60};
   const topo = document.querySelector(".barra-proj").offsetHeight;
-  return {top:topo+30, bottom:70, left:$("esq").offsetWidth+40, right:$("dir").offsetWidth+40};
+  return {top:topo+30, bottom:70, left:PAINEIS.esq ? $("esq").offsetWidth+40 : 40, right:PAINEIS.dir ? $("dir").offsetWidth+40 : 70};
 }
 const escuro = ()=> document.documentElement.dataset.theme==="dark" || (document.documentElement.dataset.theme!=="light" && matchMedia("(prefers-color-scheme: dark)").matches);
 const ARC = (caminho)=> [`https://server.arcgisonline.com/ArcGIS/rest/services/${caminho}/MapServer/tile/{z}/{y}/{x}`];
@@ -796,6 +821,23 @@ async function relatorio(){
 $("abrir-rel").onclick = relatorio;
 $("fechar-rel").onclick = ()=>{ $("relatorio").hidden = true; };
 $("imprimir-rel").onclick = ()=>window.print();
+
+/* ---------- painéis recolhíveis ---------- */
+const PAINEIS = {esq:true, dir:true};
+try{ Object.assign(PAINEIS, JSON.parse(localStorage.getItem("ybyra-paineis")||"{}")); }catch(e){}
+function aplicarPaineis(){
+  document.body.classList.toggle("sem-esq", !PAINEIS.esq);
+  document.body.classList.toggle("sem-dir", !PAINEIS.dir);
+  $("abrir-esq").hidden = PAINEIS.esq; $("abrir-dir").hidden = PAINEIS.dir;
+  $("esq").inert = !PAINEIS.esq && innerWidth>900; $("dir").inert = !PAINEIS.dir && innerWidth>900;
+  try{ localStorage.setItem("ybyra-paineis", JSON.stringify(PAINEIS)); }catch(e){}
+  if(mapa) setTimeout(()=>{ mapa.resize(); escalaMapa(); }, 320);
+}
+$("fechar-esq").onclick = ()=>{ PAINEIS.esq = false; aplicarPaineis(); $("abrir-esq").focus(); };
+$("abrir-esq").onclick = ()=>{ PAINEIS.esq = true; aplicarPaineis(); $("fechar-esq").focus(); };
+$("fechar-dir").onclick = ()=>{ PAINEIS.dir = false; aplicarPaineis(); $("abrir-dir").focus(); };
+$("abrir-dir").onclick = ()=>{ PAINEIS.dir = true; aplicarPaineis(); $("fechar-dir").focus(); };
+aplicarPaineis();
 
 /* ---------- controles ---------- */
 function marcar(){

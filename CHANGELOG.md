@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 0.6.0 — 2026-10-22
+- **Painéis recolhíveis**, como na plataforma de queimadas: botão de esconder no painel Explorar (‹) e no painel do recorte (›); com o painel escondido, aparecem os botões **Painel** e **Gráficos** no alto do mapa para reabrir. Zoom, camadas, escala e créditos acompanham, e o mapa se reenquadra no espaço livre. A escolha fica salva no navegador. No celular os painéis continuam empilhados sob o mapa.
+- Painel esquerdo ganha o título "Explorar".
+
 ## 0.5.4 — 2026-10-22
 - Correção do piscar da barra superior e dos painéis durante o zoom: o desfoque de fundo (`backdrop-filter`) era recalculado a cada quadro do mapa (WebGL). Desfoque removido de tudo que fica sobre o mapa, materiais quase opacos (97–98%) e camadas de composição próprias (`translateZ(0)`, `contain:paint`; mapa com `contain:strict`). Mesma correção da plataforma de queimadas (v0.14.1).
 - Link **Alerta de Queimadas** na barra superior, que leva à plataforma Alerta de Queimadas por Município; no celular aparece como ícone.
