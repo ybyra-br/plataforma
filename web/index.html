@@ -128,6 +128,7 @@ button{-webkit-tap-highlight-color:transparent}
 .sel-var{position:relative;display:flex;align-items:center}
 .sel-var select{appearance:none;-webkit-appearance:none;width:100%;min-height:40px;background:var(--cell);border:0;border-radius:10px;padding:8px 36px 8px 34px;font-size:0.9375rem;font-weight:600;cursor:pointer;box-shadow:0 0 0 .5px var(--sep)}
 .sel-var select:focus-visible{outline:2px solid var(--tint);outline-offset:0}
+.sel-var.sem-cor select{padding-left:12px;font-weight:500}
 .sel-var i{position:absolute;left:12px;width:12px;height:12px;border-radius:3px;pointer-events:none}
 .sel-var svg{position:absolute;right:12px;width:12px;height:12px;fill:none;stroke:var(--label2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 .sel-var .grupo-var{position:absolute;left:34px;top:-1px;font-size:0.6875rem;color:var(--label2);display:none}
@@ -323,8 +324,8 @@ button{-webkit-tap-highlight-color:transparent}
   </div>
   <div class="legenda" id="legenda"></div>
   <div class="grupo">
-    <p class="rotulo">Mapa de fundo</p>
-    <div class="seg" id="seg-base" style="--n:3"><button type="button" data-b="claro">Mapa</button><button type="button" data-b="satelite">Satélite</button><button type="button" data-b="nenhum">Nenhum</button></div>
+    <label class="rotulo" for="sel-base">Mapa de fundo</label>
+    <div class="sel-var sem-cor"><select id="sel-base"></select><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></div>
   </div>
   <div class="grupo">
     <p class="rotulo">Projeção</p>
@@ -380,6 +381,9 @@ button{-webkit-tap-highlight-color:transparent}
 <script>
 /* plataforma de emissões YbYrá-BR · v0.5.0
    (0.5.0 inclui) marca do YbYrá-BR toda branca no tema escuro, como a do CNPq; impressão sempre colorida.
+   0.5.1 (2026-10-21) — mapas de fundo em lista suspensa: cinza Esri (claro/escuro), OpenStreetMap, topográfico Esri,
+                        OpenTopoMap, satélite Esri World Imagery e Sentinel-2 cloudless 2024 (EOX), com rótulos
+                        sobre os satélites; créditos de cada fonte no rodapé.
    0.5.0 (2026-10-21) — mapa em globo (MapLibre 5.6.0) com atmosfera e opção plana; mapa de fundo (Esri
                         cinza claro/escuro com rótulos, satélite Sentinel-2 cloudless/EOX, ou nenhum); seta de norte e
                         barra de escala; créditos no rodapé do mapa; variáveis em lista suspensa agrupada.
@@ -398,7 +402,7 @@ button{-webkit-tap-highlight-color:transparent}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.5.0", DADOS = "dados/v1_2/";
+const VERSAO = "0.5.1", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -430,7 +434,7 @@ const RAMPAS = {
   div:["#00594f","#3fa594","#b9e3d9","#f3f1ec","#fdd49e","#e34a33","#8c0d0d"]};
 
 /* estado */
-const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}, base:"claro", proj:"globe"};
+const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}, base:"cinza", proj:"globe"};
 let CAT, ANOS, mapa, GEO, CONT, BBOX = {}, MUN_BIOMA = {};
 const cache = new Map();
 const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
@@ -478,27 +482,40 @@ function padding(){
   return {top:topo+30, bottom:70, left:$("esq").offsetWidth+40, right:$("dir").offsetWidth+40};
 }
 const escuro = ()=> document.documentElement.dataset.theme==="dark" || (document.documentElement.dataset.theme!=="light" && matchMedia("(prefers-color-scheme: dark)").matches);
-const ESRI = (servico)=> [`https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/${servico}/MapServer/tile/{z}/{y}/{x}`];
-const FONTES_BASE = {
-  "base-claro": {type:"raster", tiles:ESRI("World_Light_Gray_Base"), tileSize:256, maxzoom:16},
-  "base-escuro": {type:"raster", tiles:ESRI("World_Dark_Gray_Base"), tileSize:256, maxzoom:16},
-  "rot-claro": {type:"raster", tiles:ESRI("World_Light_Gray_Reference"), tileSize:256, maxzoom:16},
-  "rot-escuro": {type:"raster", tiles:ESRI("World_Dark_Gray_Reference"), tileSize:256, maxzoom:16},
-  "base-sat": {type:"raster", tiles:["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg"], tileSize:256, maxzoom:15}};
+const ARC = (caminho)=> [`https://server.arcgisonline.com/ArcGIS/rest/services/${caminho}/MapServer/tile/{z}/{y}/{x}`];
+const OSM_ATR = `© colaboradores do <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>`;
+const ESRI_ATR = `<a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>`;
+/* mapas de fundo gratuitos e sem chave (conferidos em 21/10/2026); rot = camada de rótulos por cima dos recortes */
+const BASES = [
+  {k:"cinza", g:"Mapas", n:"Cinza (claro ou escuro, conforme o tema)", tiles:ARC("Canvas/World_Light_Gray_Base"), escuro:ARC("Canvas/World_Dark_Gray_Base"),
+   rot:ARC("Canvas/World_Light_Gray_Reference"), rotEscuro:ARC("Canvas/World_Dark_Gray_Reference"), max:16, atr:`${ESRI_ATR}, HERE, Garmin, ${OSM_ATR}`},
+  {k:"osm", g:"Mapas", n:"OpenStreetMap", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], max:19, atr:OSM_ATR},
+  {k:"topo-esri", g:"Mapas", n:"Topográfico (Esri)", tiles:ARC("World_Topo_Map"), max:19, atr:`${ESRI_ATR}, HERE, Garmin, Intermap, USGS, NGA, ${OSM_ATR}`},
+  {k:"opentopo", g:"Mapas", n:"Relevo (OpenTopoMap)", tiles:["a","b","c"].map(l=>`https://${l}.tile.opentopomap.org/{z}/{x}/{y}.png`), max:17, atr:`Estilo © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC BY-SA), SRTM, ${OSM_ATR}`},
+  {k:"sat-esri", g:"Satélite", n:"Imagem de alta resolução (Esri)", tiles:ARC("World_Imagery"), max:19, rot:ARC("Reference/World_Boundaries_and_Places"),
+   atr:`${ESRI_ATR}, Maxar, Earthstar Geographics e comunidade de usuários GIS`},
+  {k:"sat-s2", g:"Satélite", n:"Sentinel-2 sem nuvens 2024 (EOX)", tiles:["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg"], max:15,
+   rot:ARC("Reference/World_Boundaries_and_Places"), atr:`<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless 2024</a> © EOX (dados Copernicus Sentinel 2024 modificados; CC BY-NC-SA 4.0); rótulos ${ESRI_ATR}`},
+  {k:"nenhum", g:"Sem fundo", n:"Nenhum"}];
+const BASE = Object.fromEntries(BASES.map(b=>[b.k,b]));
 function creditos(){
-  const esri = `<a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>`;
-  const base = E.base==="satelite" ? `<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless</a> © EOX (dados Copernicus Sentinel 2020 modificados) · rótulos: ${esri}`
-    : E.base==="claro" ? `Fundo: ${esri}` : "";
+  const b = BASE[E.base], base = b.atr ? `Fundo: ${b.atr}` : "";
   $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas © IBGE · Dados: modelo YbYrá-BR</span>`;
   $("creditos").title = $("creditos").textContent;
 }
 function aplicarBase(){
   if(!mapa) return;
-  const vis = (id,v)=> mapa.setLayoutProperty(id,"visibility", v?"visible":"none");
-  const e = escuro();
-  vis("base-claro", E.base==="claro" && !e); vis("base-escuro", E.base==="claro" && e); vis("base-sat", E.base==="satelite");
-  vis("rot-claro", E.base==="claro" && !e); vis("rot-escuro", (E.base==="claro" && e) || E.base==="satelite");
-  mapa.setPaintProperty("mun-fill","fill-opacity", E.base==="nenhum" ? 1 : .86);
+  const b = BASE[E.base] || BASE.cinza, e = escuro();
+  for(const id of ["base","rot"]){ if(mapa.getLayer(id)) mapa.removeLayer(id); if(mapa.getSource(id)) mapa.removeSource(id); }
+  if(b.tiles){
+    mapa.addSource("base",{type:"raster", tiles:(e && b.escuro) || b.tiles, tileSize:256, maxzoom:b.max});
+    mapa.addLayer({id:"base", type:"raster", source:"base"}, "mun-fill");
+  }
+  if(b.rot){
+    mapa.addSource("rot",{type:"raster", tiles:(e && b.rotEscuro) || b.rot, tileSize:256, maxzoom:Math.min(b.max,16)});
+    mapa.addLayer({id:"rot", type:"raster", source:"rot", paint:{"raster-opacity":.95}});
+  }
+  mapa.setPaintProperty("mun-fill","fill-opacity", b.tiles ? (b.g==="Satélite" ? .8 : .86) : 1);
   creditos();
 }
 function aplicarProjecao(){ if(mapa) mapa.setProjection({type:E.proj}); }
@@ -517,10 +534,9 @@ function escalaMapa(){
 }
 function iniciarMapa(){
   mapa = new maplibregl.Map({container:"mapa", attributionControl:false, dragRotate:false, pitchWithRotate:false, renderWorldCopies:false,
-    style:{version:8, projection:{type:E.proj}, sources:FONTES_BASE,
+    style:{version:8, projection:{type:E.proj}, sources:{},
       sky:{"atmosphere-blend":["interpolate",["linear"],["zoom"],0,1,5,1,7,0]},
-      layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}},
-        ...["base-claro","base-escuro","base-sat"].map(id=>({id, type:"raster", source:id, layout:{visibility:"none"}, paint:{"raster-opacity":1}}))]},
+      layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}}]},
     center:[-53,-14], zoom:2.6});
   mapa.touchZoomRotate.disableRotation();
   return new Promise(ok=>mapa.on("load",()=>{
@@ -532,7 +548,6 @@ function iniciarMapa(){
     mapa.addLayer({id:"cont", type:"line", source:"cont", filter:["==",["get","t"],"uf"], paint:{"line-color":cor("--contorno"), "line-width":["interpolate",["linear"],["zoom"],3,.7,7,1.6], "line-opacity":.85}});
     mapa.addLayer({id:"sel-mun", type:"line", source:"mun", filter:["==",["get","c"],-1], paint:{"line-color":cor("--contorno"), "line-width":2.6}});
     mapa.addLayer({id:"sel-cont", type:"line", source:"cont", filter:["==",["get","t"],"x"], paint:{"line-color":cor("--contorno"), "line-width":3}});
-    for(const id of ["rot-claro","rot-escuro"]) mapa.addLayer({id, type:"raster", source:id, layout:{visibility:"none"}, paint:{"raster-opacity":.95}});
     aplicarBase();
     mapa.fitBounds([[-74,-34],[-28.8,5.3]],{padding:padding(), duration:0});
     mapa.on("move", escalaMapa); escalaMapa();
@@ -758,11 +773,12 @@ $("imprimir-rel").onclick = ()=>window.print();
 /* ---------- controles ---------- */
 function marcar(){
   document.querySelectorAll("#seg-tipo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.t===E.tipo));
-  document.querySelectorAll("#seg-base button").forEach(b=>b.onclick=()=>{ E.base=b.dataset.b; marcar(); aplicarBase(); try{localStorage.setItem("ybyra-base",E.base);}catch(e){} });
+  $("sel-base").innerHTML = [...new Set(BASES.map(b=>b.g))].map(g=>`<optgroup label="${g}">${BASES.filter(b=>b.g===g).map(b=>`<option value="${b.k}">${b.n}</option>`).join("")}</optgroup>`).join("");
+$("sel-base").onchange = e=>{ E.base = e.target.value; aplicarBase(); try{localStorage.setItem("ybyra-base2",E.base);}catch(_){} };
 document.querySelectorAll("#seg-proj button").forEach(b=>b.onclick=()=>{ E.proj=b.dataset.p; marcar(); aplicarProjecao(); try{localStorage.setItem("ybyra-proj",E.proj);}catch(e){} });
 document.querySelectorAll("#seg-modo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.m===E.modo));
   $("sel-var").value = E.v; $("var-cor").style.background = RAMPAS[VAR[E.v].esc][VAR[E.v].esc==="div"?6:5];
-  document.querySelectorAll("#seg-base button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.b===E.base));
+  $("sel-base").value = E.base;
   document.querySelectorAll("#seg-proj button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===E.proj));
   $("ano").value = E.ano; $("ano-v").textContent = E.ano;
 }
@@ -839,7 +855,7 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
 (async function(){
   try{
     const [cat, geo, cont] = await Promise.all([j("catalogo.json"), fetch("geo/municipios.geojson").then(r=>r.json()), fetch("geo/contornos.geojson").then(r=>r.json())]);
-    try{ E.base = localStorage.getItem("ybyra-base") || E.base; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
+    try{ E.base = localStorage.getItem("ybyra-base2") || E.base; if(!BASE[E.base]) E.base = "cinza"; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
     CAT = cat; GEO = geo; CONT = cont; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
     nomeDe("bioma",1);

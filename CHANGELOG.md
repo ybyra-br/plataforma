@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.5.1 — 2026-10-21
+- **Mapas de fundo em lista suspensa**, todos gratuitos e sem chave de API (testados em 21/10/2026):
+  - Mapas: Cinza da Esri (claro ou escuro conforme o tema), OpenStreetMap, Topográfico da Esri, Relevo do OpenTopoMap;
+  - Satélite: imagem de alta resolução da Esri (World Imagery) e Sentinel-2 sem nuvens 2024 da EOX, ambos com rótulos de limites e lugares por cima;
+  - Nenhum.
+- Créditos de cada fonte no rodapé do mapa, trocados junto com o fundo.
+
 ## 0.5.0 — 2026-10-21
 - **Globo**: mapa em projeção de globo com atmosfera (MapLibre GL JS 5.6.0), com opção de mapa plano; a escolha fica salva no navegador.
 - **Mapa de fundo**: Mapa (Esri cinza claro ou escuro conforme o tema, com rótulos por cima dos recortes; o CARTO passou a exigir chave de API), Satélite (Sentinel-2 cloudless, EOX) ou Nenhum.
