@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.6.5 — 2026-10-22
+- `gee/ybyra_estatisticas.js` volta à v0.3.1 (sem rasters de zonas gravados como assets nem `reduceRegions`), que já funcionava; fica só a correção dos shapefiles (partes poligonais).
+
 ## 0.6.4 — 2026-10-22
 - `gee/ybyra_estatisticas.js` v0.4.0: rasters de zonas gravados uma vez como assets (`MODO = 'rasterizar'`, na grade de 30 m do modelo) e só lidos nas exportações; terras indígenas, UCs e quilombos, que se sobrepõem, passam a usar `image.reduceRegions` (uma redução por ano para todas as feições) no lugar do cálculo feição a feição.
 
