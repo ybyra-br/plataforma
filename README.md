@@ -1,4 +1,4 @@
-# Emissões e Remoções de CO₂ — YbYrá-BR · v0.7.0
+# Emissões e Remoções de CO₂ — YbYrá-BR · v0.8.0
 
 Plataforma do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para explorar as emissões e remoções de CO₂ do modelo YbYrá-BR por recorte territorial: Brasil, estados, biomas e municípios.
 
@@ -21,7 +21,9 @@ GEE (Code Editor, projeto ee-redd-brazil)
 3. Em `dados/brutos/v1_2/`, **apague todos os arquivos** (os CSV fictícios e o `FICTICIOS.txt`) e envie os CSV reais (pelo site do GitHub: *Add file → Upload files*, ou por git). Arquivos acima de 25 MB não sobem pelo site: compacte em `.csv.gz` (o R lê os dois) ou use git. O aviso de dados fictícios some sozinho quando o `FICTICIOS.txt` sai.
 4. O envio dispara o workflow `pages`: o R agrega, confere o fechamento dos totais e publica o site. A tabela longa completa fica em `dados/v1_2/estatisticas.csv.gz` no site.
 
-Local: `Rscript R/agregar.R dados/brutos/v1_2 web/dados/v1_2 v1_2 web/geo/municipios.geojson` e depois `python -m http.server -d web`.
+Local: `Rscript R/agregar.R dados/brutos/v1_2 web/dados/v1_2 v1_2 web/geo/indice.json` e depois `python -m http.server -d web`.
+
+Malhas do mapa: rode o GEE com `MODO = 'geometrias'`, baixe a pasta `YBYRA-GEOMETRIAS` e gere as camadas com `python scripts/gerar_pmtiles.py <pasta> [nomes_municipios.json] [recortes...]`.
 
 Os dados fictícios atuais vêm de `scripts/gerar_dados_ficticios.py` (mesmo formato do export do GEE).
 
@@ -42,14 +44,14 @@ Somente CO₂ (sem CH₄ e N₂O).
 gee/ybyra_estatisticas.js              estatísticas por recorte no Earth Engine (Code Editor)
 R/agregar.R                            agregação hierárquica e arquivos do site (roda no GitHub Actions)
 dados/brutos/v1_2/                     CSV exportados do GEE (hoje: fictícios)
-scripts/ybyra_estatisticas_agregar.py  versão anterior em Python, mantida só para conferir o R
-scripts/comparar_saidas.py             compara as saídas do R e do Python
-scripts/preparar_malhas.py             municípios simplificados e contornos de UF, bioma e Brasil
+scripts/ler_shp.py                     leitor mínimo de shapefile (polígonos) e dbf
+scripts/gerar_pmtiles.py               malhas do GEE (shapefiles) → web/geo/<recorte>.pmtiles + indice.json
+scripts/gerar_ficticios_extras.py      dados fictícios dos recortes extras (TI, UC, quilombos, regiões, bacias)
 scripts/gerar_dados_ficticios.py       dados fictícios no formato do export do GEE
 dados_ficticios/                       bioma predominante e nomes usados na prévia
 web/index.html                         plataforma
 web/dados/v1_2/                        gerado no Actions: catálogo, mapas (por variável), séries (por UF), tabela longa
-web/geo/                               geometrias do mapa
+web/geo/                               malhas do mapa em PMTiles (uma por recorte) e indice.json (id, nome, extensão)
 ```
 
 ## Como citar

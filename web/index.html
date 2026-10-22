@@ -348,14 +348,12 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
   <div class="cab-painel"><h2>Explorar</h2><button type="button" class="icone" id="fechar-esq" aria-label="Esconder painel" title="Esconder painel"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button></div>
   <div class="aviso" id="aviso-ficticio" role="note" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 0 .8.2 1 .6l5.9 10.6c.4.8-.1 1.8-1 1.8H2.1c-.9 0-1.4-1-1-1.8L7 2.1c.2-.4.6-.6 1-.6Zm-.75 4.25v4h1.5v-4h-1.5Zm0 5.25v1.5h1.5V11h-1.5Z"/></svg><span><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
   <div class="grupo">
-    <p class="rotulo">Recorte do mapa</p>
-    <div class="seg" id="seg-tipo" style="--n:4">
-      <button type="button" data-t="brasil">Brasil</button><button type="button" data-t="uf">Estados</button><button type="button" data-t="bioma">Biomas</button><button type="button" data-t="municipio">Municípios</button>
-    </div>
+    <label class="rotulo" for="sel-tipo">Recorte do mapa</label>
+    <div class="sel-var sem-cor"><select id="sel-tipo"></select><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></div>
   </div>
   <div class="busca">
     <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 1a5.5 5.5 0 0 1 4.38 8.83l3.65 3.64-1.06 1.06-3.64-3.65A5.5 5.5 0 1 1 6.5 1Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
-    <input id="busca" type="search" role="combobox" aria-expanded="false" aria-autocomplete="list" placeholder="Buscar estado, bioma ou município" autocomplete="off" aria-label="Buscar recorte (atalho: /)" aria-controls="sugestoes">
+    <input id="busca" type="search" role="combobox" aria-expanded="false" aria-autocomplete="list" placeholder="Buscar município, estado, TI, UC, bacia…" autocomplete="off" aria-label="Buscar recorte (atalho: /)" aria-controls="sugestoes">
     <ul id="sugestoes" role="listbox" hidden></ul>
   </div>
   <div class="grupo">
@@ -422,7 +420,11 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.6.1
+/* plataforma de emissões YbYrá-BR · v0.7.0
+   0.7.0 (2026-10-22) — malhas reais do GEE (MapBiomas) em PMTiles, uma camada por recorte, como na plataforma de
+                        queimadas; novos recortes: Amazônia Legal, MATOPIBA, bacias níveis 1 e 2, terras indígenas,
+                        unidades de conservação e territórios quilombolas; seletor de recorte agrupado; busca em todos
+                        os recortes; ranking "maiores do Brasil" nos recortes extras; limites dos estados sempre visíveis.
    0.6.1 (2026-10-22) — aviso de dados fictícios (painel, relatório e citação) só quando o catálogo indica ficticio.
    0.6.0 (2026-10-22) — painéis recolhíveis como na plataforma de queimadas: botão de esconder em cada painel e
                         botões "Painel" e "Gráficos" para reabrir; controles do mapa acompanham; estado salvo.
@@ -456,10 +458,26 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.6.1", DADOS = "dados/v1_2/";
+const VERSAO = "0.7.0", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
-const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
+const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma",
+  amazonia_legal:"Região", matopiba:"Região", bacia_nivel1:"Bacia hidrográfica (nível 1)", bacia_nivel2:"Bacia hidrográfica (nível 2)",
+  terra_indigena:"Terra indígena", unidade_conservacao:"Unidade de conservação", territorio_quilombola:"Território quilombola"};
+/* recortes do mapa: camada vetorial (PMTiles) de cada um em geo/<fonte>.pmtiles, camada "r", atributo c = id */
+const RECS = [
+  {k:"brasil", n:"Brasil", g:"Divisão político-administrativa", fonte:"uf"},
+  {k:"uf", n:"Estados", g:"Divisão político-administrativa", fonte:"uf"},
+  {k:"municipio", n:"Municípios", g:"Divisão político-administrativa", fonte:"municipio", fino:true},
+  {k:"bioma", n:"Biomas", g:"Regiões", fonte:"bioma"},
+  {k:"amazonia_legal", n:"Amazônia Legal", g:"Regiões", fonte:"amazonia_legal"},
+  {k:"matopiba", n:"MATOPIBA", g:"Regiões", fonte:"matopiba"},
+  {k:"bacia_nivel1", n:"Bacias hidrográficas — nível 1", g:"Bacias hidrográficas (ANA)", fonte:"bacia_nivel1"},
+  {k:"bacia_nivel2", n:"Bacias hidrográficas — nível 2", g:"Bacias hidrográficas (ANA)", fonte:"bacia_nivel2"},
+  {k:"terra_indigena", n:"Terras indígenas", g:"Áreas protegidas e territórios", fonte:"terra_indigena", fino:true, sobrepoe:true},
+  {k:"unidade_conservacao", n:"Unidades de conservação", g:"Áreas protegidas e territórios", fonte:"unidade_conservacao", fino:true, sobrepoe:true},
+  {k:"territorio_quilombola", n:"Territórios quilombolas", g:"Áreas protegidas e territórios", fonte:"territorio_quilombola", fino:true, sobrepoe:true}];
+const REC = Object.fromEntries(RECS.map(r=>[r.k,r]));
 const cor = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const MOV = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1;
 
@@ -489,11 +507,18 @@ const RAMPAS = {
 
 /* estado */
 const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}, base:"cinza", proj:"globe"};
-let CAT, ANOS, mapa, GEO, CONT, BBOX = {}, MUN_BIOMA = {};
+let CAT, ANOS, mapa, IDX = {}, NOMES = {}, BBOX = {};
 const cache = new Map();
 const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
-const nomeDe = (tipo,id) => { const t = CAT.tipos[tipo]; if(!t._nomes) t._nomes = new Map(t.ids.map(o=>[o.id,o.nome]));
-  let n = t._nomes.get(+id) ?? String(id); if(tipo==="uf") n = UF_NOME[id] ?? n; if(tipo==="uf_bioma") n = `${UF_NOME[Math.floor(id/10)]??"?"} · ${CAT.tipos.bioma._nomes?.get(id%10) ?? nomeDe("bioma", id%10)}`; return n; };
+const nomeDe = (tipo,id) => {
+  id = +id;
+  if(tipo==="brasil") return "Brasil";
+  const f = REC[tipo]?.fonte;
+  if(f && NOMES[f]?.has(id)) return NOMES[f].get(id);
+  if(tipo==="uf_bioma") return `${UF_NOME[Math.floor(id/10)]??"?"} · ${nomeDe("bioma", id%10)}`;
+  if(tipo==="municipio_bioma") return `${nomeDe("municipio", Math.floor(id/10))} · ${nomeDe("bioma", id%10)}`;
+  const t = CAT?.tipos?.[tipo]; if(t){ if(!t._nomes) t._nomes = new Map(t.ids.map(o=>[o.id,o.nome])); if(t._nomes.has(id)) return t._nomes.get(id); }
+  return String(id); };
 
 /* ---------- formatação ---------- */
 const nf = (x,d=1)=> x.toLocaleString("pt-BR",{maximumFractionDigits:d, minimumFractionDigits:d});
@@ -522,7 +547,10 @@ async function mapaVar(tipo, k){
   });
   return out;
 }
-const lote = (tipo,id)=> CAT.tipos[tipo].lote==="uf" ? (tipo==="municipio" ? Math.floor(id/100000) : Math.floor(id/1000000)) : 0;
+const lote = (tipo,id)=>{ const l = CAT.tipos[tipo].lote;
+  if(l==="uf") return tipo==="municipio" ? Math.floor(id/100000) : Math.floor(id/1000000);
+  if(l && l.startsWith("mod")) return id % (+l.slice(3));
+  return 0; };
 async function serie(tipo,id){ const d = await j(`serie/${tipo}/${lote(tipo,id)}.json`); return d.series[String(id)]; }
 
 /* ---------- mapa ---------- */
@@ -554,7 +582,7 @@ const BASES = [
 const BASE = Object.fromEntries(BASES.map(b=>[b.k,b]));
 function creditos(){
   const b = BASE[E.base], base = b.atr ? `Fundo: ${b.atr}` : "";
-  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas © IBGE · Dados: modelo YbYrá-BR</span>`;
+  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas: IBGE, FUNAI, CNUC/MMA, INCRA, ANA, EMBRAPA, via <a href="https://brasil.mapbiomas.org" target="_blank" rel="noopener">MapBiomas</a> · Dados: modelo YbYrá-BR</span>`;
   $("creditos").title = $("creditos").textContent;
 }
 function aplicarBase(){
@@ -563,13 +591,14 @@ function aplicarBase(){
   for(const id of ["base","rot"]){ if(mapa.getLayer(id)) mapa.removeLayer(id); if(mapa.getSource(id)) mapa.removeSource(id); }
   if(b.tiles){
     mapa.addSource("base",{type:"raster", tiles:(e && b.escuro) || b.tiles, tileSize:256, maxzoom:b.max});
-    mapa.addLayer({id:"base", type:"raster", source:"base"}, "mun-fill");
+    mapa.addLayer({id:"base", type:"raster", source:"base"}, "ancora");
   }
   if(b.rot){
     mapa.addSource("rot",{type:"raster", tiles:(e && b.rotEscuro) || b.rot, tileSize:256, maxzoom:Math.min(b.max,16)});
     mapa.addLayer({id:"rot", type:"raster", source:"rot", paint:{"raster-opacity":.95}});
   }
-  mapa.setPaintProperty("mun-fill","fill-opacity", b.tiles ? (b.g==="Satélite" ? .8 : .86) : 1);
+  if(mapa.getLayer("rec-fill")) mapa.setPaintProperty("rec-fill","fill-opacity", opacidadeFill());
+  if(mapa.getLayer("rec-veda")) mapa.setPaintProperty("rec-veda","line-opacity", opacidadeFill());
   creditos();
 }
 function aplicarProjecao(){ if(mapa) mapa.setProjection({type:E.proj}); }
@@ -585,34 +614,45 @@ function escalaMapa(){
   $("escala-barra").style.width = Math.round(nice/porPx)+"px";
   $("escala-txt").textContent = nice>=1000 ? `${nf(nice/1000,0)} km` : `${nf(nice,0)} m`;
 }
+const URL_PM = f => "pmtiles://"+new URL(`geo/${f}.pmtiles`, location.href).href;
+function fonteDe(tipo){ return REC[tipo]?.fonte; }
+function garantirFonte(f){ if(!mapa.getSource("f-"+f)) mapa.addSource("f-"+f, {type:"vector", url:URL_PM(f), promoteId:{r:"c"}}); }
 function iniciarMapa(){
   mapa = new maplibregl.Map({container:"mapa", attributionControl:false, dragRotate:false, pitchWithRotate:false, renderWorldCopies:false,
-    style:{version:8, projection:{type:E.proj}, sources:{},
+    style:{version:8, projection:{type:E.proj}, sources:{vazio:{type:"geojson", data:{type:"FeatureCollection", features:[]}}},
       sky:{"atmosphere-blend":["interpolate",["linear"],["zoom"],0,1,5,1,7,0]},
-      layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}}]},
+      layers:[{id:"fundo", type:"background", paint:{"background-color":cor("--mapa")}},
+              {id:"ancora", type:"fill", source:"vazio"}]},
     center:[-53,-14], zoom:2.6});
   mapa.touchZoomRotate.disableRotation();
   return new Promise(ok=>mapa.on("load",()=>{
-    mapa.addSource("mun",{type:"geojson", data:GEO, promoteId:"c"});
-    mapa.addSource("cont",{type:"geojson", data:CONT});
-    mapa.addLayer({id:"mun-fill", type:"fill", source:"mun", paint:{"fill-color":corFill(), "fill-antialias":false}});
-    mapa.addLayer({id:"mun-veda", type:"line", source:"mun", paint:{"line-color":corFill(), "line-width":["interpolate",["linear"],["zoom"],3,.6,8,1.2]}});
-    mapa.addLayer({id:"mun-linha", type:"line", source:"mun", paint:{"line-color":cor("--contorno-mun"), "line-width":["interpolate",["linear"],["zoom"],3,.15,6,.4,9,.9]}});
-    mapa.addLayer({id:"cont", type:"line", source:"cont", filter:["==",["get","t"],"uf"], paint:{"line-color":cor("--contorno"), "line-width":["interpolate",["linear"],["zoom"],3,.7,7,1.6], "line-opacity":.85}});
-    mapa.addLayer({id:"sel-mun", type:"line", source:"mun", filter:["==",["get","c"],-1], paint:{"line-color":cor("--contorno"), "line-width":2.6}});
-    mapa.addLayer({id:"sel-cont", type:"line", source:"cont", filter:["==",["get","t"],"x"], paint:{"line-color":cor("--contorno"), "line-width":3}});
+    garantirFonte("uf");
+    mapa.addLayer({id:"uf-cont", type:"line", source:"f-uf", "source-layer":"r", paint:{"line-color":cor("--contorno"), "line-width":["interpolate",["linear"],["zoom"],3,.6,7,1.5], "line-opacity":.8}});
+    mapa.addLayer({id:"rec-sel", type:"line", source:"f-uf", "source-layer":"r", filter:["==",["get","c"],-1], paint:{"line-color":cor("--contorno"), "line-width":3}});
     aplicarBase();
+    montarCamadas();
     mapa.fitBounds([[-74,-34],[-28.8,5.3]],{padding:padding(), duration:0});
     mapa.on("move", escalaMapa); escalaMapa();
     ok();
   }));
 }
-function corFill(){
-  const r = RAMPAS[VAR[E.v].esc];
-  return ["match",["coalesce",["feature-state","k"],-1], 0,r[0],1,r[1],2,r[2],3,r[3],4,r[4],5,r[5],6,r[6], 9,cor("--vazio"), cor("--vazio")];
+/* camadas do recorte ativo: preenchimento, vedação das frestas e contorno fino */
+let CAMADA_FONTE = null, CAMADA_TIPO = null;
+function montarCamadas(){
+  const f = fonteDe(E.tipo), r = REC[E.tipo];
+  if(CAMADA_FONTE === f && CAMADA_TIPO === E.tipo) return;
+  for(const id of ["rec-fill","rec-veda","rec-linha","rec-sel"]) if(mapa.getLayer(id)) mapa.removeLayer(id);
+  garantirFonte(f);
+  const sl = {source:"f-"+f, "source-layer":"r"};
+  mapa.addLayer({id:"rec-fill", type:"fill", ...sl, paint:{"fill-color":corFill(), "fill-antialias":false, "fill-opacity":opacidadeFill()}}, "uf-cont");
+  if(!r.sobrepoe) mapa.addLayer({id:"rec-veda", type:"line", ...sl, paint:{"line-color":corFill(), "line-width":["interpolate",["linear"],["zoom"],3,.6,8,1.2], "line-opacity":opacidadeFill()}}, "uf-cont");
+  mapa.addLayer({id:"rec-linha", type:"line", ...sl, paint:{"line-color":cor("--contorno-mun"), "line-width":["interpolate",["linear"],["zoom"],3,r.fino?.15:.3,6,r.fino?.4:.6,9,.9], "line-opacity":(E.tipo==="brasil"||E.tipo==="uf")?0:1}}, "uf-cont");
+  mapa.addLayer({id:"rec-sel", type:"line", ...sl, filter:["==",["get","c"],-1], paint:{"line-color":cor("--contorno"), "line-width":3}});
+  if(mapa.getLayer("rot")) mapa.moveLayer("rot");
+  CAMADA_FONTE = f; CAMADA_TIPO = E.tipo;
+  ligarDica();
 }
-function grupoDe(tipo, c){ return tipo==="municipio" ? c : tipo==="uf" ? Math.floor(c/100000) : tipo==="bioma" ? MUN_BIOMA[c] : 1; }
-
+function opacidadeFill(){ const b = BASE[E.base]; return b && b.tiles ? (b.g==="Satélite" ? .8 : .86) : 1; }
 function quebras(vals, esc){
   const xs = vals.filter(v=>esc==="div" ? v!==0 : v>0).sort((a,b)=>a-b);
   if(!xs.length) return null;
@@ -636,14 +676,16 @@ async function colorir(){
   VALORES = await mapaVar(E.tipo, E.v);
   const esc = VAR[E.v].esc; QB = quebras([...VALORES.values()], esc);
   const maxAbs = Math.max(...[...VALORES.values()].map(Math.abs), 0); ESC = escala(maxAbs, E.v);
-  for(const f of GEO.features){
-    const c = f.properties.c, v = VALORES.get(grupoDe(E.tipo,c));
-    mapa.setFeatureState({source:"mun", id:c}, {k: v===undefined ? 9 : classe(v,QB)});
+  montarCamadas();
+  const f = fonteDe(E.tipo), alvo = {source:"f-"+f, sourceLayer:"r"};
+  const vBrasil = E.tipo==="brasil" ? VALORES.get(1) : undefined;
+  for(const e of (IDX[f] || [])){
+    const v = E.tipo==="brasil" ? vBrasil : VALORES.get(e[0]);
+    mapa.setFeatureState({...alvo, id:e[0]}, {k: v===undefined ? 9 : classe(v,QB)});
   }
-  mapa.setPaintProperty("mun-fill","fill-color",corFill());
-  mapa.setPaintProperty("mun-veda","line-color",corFill());
-  mapa.setFilter("cont", E.tipo==="municipio" ? ["==",["get","t"],"uf"] : ["==",["get","t"], E.tipo]);
-  mapa.setPaintProperty("mun-linha","line-opacity", E.tipo==="municipio" ? 1 : 0);
+  mapa.setPaintProperty("rec-fill","fill-color",corFill());
+  if(mapa.getLayer("rec-veda")) mapa.setPaintProperty("rec-veda","line-color",corFill());
+  destacar();
   legenda();
 }
 function legenda(){
@@ -658,27 +700,41 @@ function legenda(){
     <span class="un">${VAR[E.v].n}, ${E.ano} · ${ESC.u}${E.tipo!=="brasil"?` · por ${TIPO_NOME[E.tipo].toLowerCase()}`:""}</span>`;
 }
 
-/* dica ao passar o mouse */
+/* dica ao passar o mouse e clique (camada "rec-fill", recriada a cada troca de recorte) */
+let DICA_LIGADA = false;
+function areaBbox(c){ const b = BBOX[fonteDe(E.tipo)+":"+c]; return b ? (b[2]-b[0])*(b[3]-b[1]) : 1e9; }
+function idDoMapa(e){
+  const fs = e.features || []; if(!fs.length) return null;
+  if(E.tipo==="brasil") return 1;
+  // recortes sobrepostos (UC, TI): a feição menor costuma ser a de interesse
+  if(REC[E.tipo]?.sobrepoe && fs.length>1) return fs.map(f=>f.properties.c).sort((a,b)=>areaBbox(a)-areaBbox(b))[0];
+  return fs[0].properties.c;
+}
 function ligarDica(){
+  if(DICA_LIGADA) return; DICA_LIGADA = true;
   const d = $("dica");
-  mapa.on("mousemove","mun-fill",e=>{
-    const p = e.features[0].properties, g = grupoDe(E.tipo,p.c), v = VALORES.get(g);
-    const nome = E.tipo==="municipio" ? `${p.n} (${p.u})` : nomeDe(E.tipo,g);
-    d.innerHTML = `<b>${nome}</b><span class="num">${v===undefined?"sem dado":`${fmt(v,ESC)} ${ESC.u}`}</span>`;
+  mapa.on("mousemove","rec-fill",e=>{
+    const id = idDoMapa(e); if(id===null) return;
+    const v = VALORES.get(id);
+    d.innerHTML = `<b>${nomeDe(E.tipo,id)}</b><span class="num">${v===undefined?"sem dado":`${fmt(v,ESC)} ${ESC.u}`}</span>`;
     d.hidden = false; d.style.left = (e.originalEvent.clientX+14)+"px"; d.style.top = (e.originalEvent.clientY+14)+"px";
     mapa.getCanvas().style.cursor = "pointer";
   });
-  mapa.on("mouseleave","mun-fill",()=>{ d.hidden = true; mapa.getCanvas().style.cursor = ""; });
-  mapa.on("click","mun-fill",e=>{ const c = e.features[0].properties.c; selecionar(E.tipo, grupoDe(E.tipo,c), false); });
+  mapa.on("mouseleave","rec-fill",()=>{ d.hidden = true; mapa.getCanvas().style.cursor = ""; });
+  mapa.on("click","rec-fill",e=>{ const id = idDoMapa(e); if(id!==null) selecionar(E.tipo, id, false); });
 }
 function destacar(){
-  const {tipo,id} = E.sel;
-  mapa.setFilter("sel-mun", tipo==="municipio" ? ["==",["get","c"],id] : ["==",["get","c"],-1]);
-  mapa.setFilter("sel-cont", (tipo==="uf"||tipo==="bioma") ? ["all",["==",["get","t"],tipo],["==",["get","id"],id]] : ["==",["get","t"],"x"]);
+  if(!mapa || !mapa.getLayer("rec-sel")) return;
+  const {tipo,id} = E.sel; let c = -1;
+  if(tipo===E.tipo && tipo!=="brasil") c = id;
+  else if(tipo==="municipio_bioma" && E.tipo==="municipio") c = Math.floor(id/10);
+  else if(tipo==="uf_bioma" && E.tipo==="uf") c = Math.floor(id/10);
+  else if(tipo==="uf_bioma" && E.tipo==="bioma") c = id%10;
+  mapa.setFilter("rec-sel", ["==",["get","c"],c]);
 }
 function voar(tipo,id){
-  const b = tipo==="municipio" ? BBOX["m"+id] : tipo==="brasil" ? [-74,-34,-28.8,5.3] : BBOX[tipo+id];
-  if(b) mapa.fitBounds([[b[0],b[1]],[b[2],b[3]]], {padding:padding(), maxZoom:9, duration:700*MOV()});
+  const b = tipo==="brasil" ? [-74,-34,-28.8,5.3] : BBOX[fonteDe(tipo)+":"+id];
+  if(b) mapa.fitBounds([[b[0],b[1]],[b[2],b[3]]], {padding:padding(), maxZoom:10, duration:700*MOV()});
 }
 
 /* ---------- painel do recorte ---------- */
@@ -746,6 +802,7 @@ async function ranking(){
   else if(tipo==="bioma"){ filho="uf_bioma"; filtro=c=>c%10===id; tit="Estados dentro do bioma"; }
   else if(tipo==="municipio"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/10)===id; tit="Partes do município por bioma"; }
   else if(tipo==="uf_bioma"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/1000000)===Math.floor(id/10) && c%10===id%10; tit="Municípios nesta parte"; }
+  else if(REC[tipo] && CAT.tipos[tipo] && CAT.tipos[tipo].n>1){ filho=tipo; filtro=()=>true; tit=`Maiores do Brasil — ${REC[tipo].n.toLowerCase()}`; }
   else { $("cx-rank").hidden = true; return; }
   $("cx-rank").hidden = false;
   let lista;
@@ -842,7 +899,7 @@ aplicarPaineis();
 
 /* ---------- controles ---------- */
 function marcar(){
-  document.querySelectorAll("#seg-tipo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.t===E.tipo));
+  $("sel-tipo").value = E.tipo;
   document.querySelectorAll("#seg-modo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.m===E.modo));
   $("sel-var").value = E.v; $("var-cor").style.background = RAMPAS[VAR[E.v].esc][VAR[E.v].esc==="div"?6:5];
   document.querySelectorAll("#lista-base .op").forEach(o=>o.setAttribute("aria-checked", o.dataset.b===E.base));
@@ -864,12 +921,19 @@ function montarVars(){
 async function atualizar(comPainel=true){ marcar(); await colorir(); if(comPainel) await painel(); else ranking(); }
 async function selecionar(tipo,id,voa){
   E.sel = {tipo,id};
-  if(["uf","bioma","municipio","brasil"].includes(tipo) && tipo!==E.tipo && voa){ E.tipo = tipo; await colorir(); }
+  if(REC[tipo] && CAT.tipos[tipo] && tipo!==E.tipo && voa){ E.tipo = tipo; await colorir(); }
   marcar(); destacar(); await painel();
   if(voa) voar(tipo==="uf_bioma"?"uf":tipo==="municipio_bioma"?"municipio":tipo, tipo==="uf_bioma"?Math.floor(id/10):tipo==="municipio_bioma"?Math.floor(id/10):id);
 }
 async function mudarAno(a){ E.ano = a; marcar(); await colorir(); await painel(); }
-document.querySelectorAll("#seg-tipo button").forEach(b=>b.onclick=async()=>{ E.tipo=b.dataset.t; await atualizar(false); if(E.tipo==="brasil") selecionar("brasil",1,true); });
+function montarRecortes(){
+  const disp = RECS.filter(r=>CAT.tipos[r.k]);
+  const grupos = [...new Set(disp.map(r=>r.g))];
+  $("sel-tipo").innerHTML = grupos.map(g=>`<optgroup label="${g}">${disp.filter(r=>r.g===g).map(r=>`<option value="${r.k}">${r.n}</option>`).join("")}</optgroup>`).join("");
+  $("sel-tipo").onchange = async e=>{ E.tipo = e.target.value; await atualizar(false);
+    if(E.tipo==="brasil") selecionar("brasil",1,true);
+    else if(CAT.tipos[E.tipo].n===1) selecionar(E.tipo, CAT.tipos[E.tipo].ids[0].id, true); };
+}
 document.querySelectorAll("#seg-modo button").forEach(b=>b.onclick=()=>{ E.modo=b.dataset.m; atualizar(true); });
 let tAno; $("ano").oninput = e=>{ E.ano=+e.target.value; $("ano-v").textContent=E.ano; clearTimeout(tAno); tAno=setTimeout(()=>mudarAno(E.ano),120); };
 let tocando = null;
@@ -892,16 +956,18 @@ addEventListener("keydown",e=>{
 
 /* busca */
 let INDICE = [];
+const ORDEM_BUSCA = ["brasil","uf","bioma","amazonia_legal","matopiba","municipio","terra_indigena","unidade_conservacao","territorio_quilombola","bacia_nivel1","bacia_nivel2"];
 function montarIndice(){
   INDICE = [["brasil",1,"Brasil"]];
-  for(const t of ["uf","bioma","municipio"]) for(const o of CAT.tipos[t].ids) INDICE.push([t,o.id,nomeDe(t,o.id)]);
+  for(const r of RECS){ if(r.k==="brasil" || !CAT.tipos[r.k]) continue;
+    for(const e of (IDX[r.fonte] || [])) INDICE.push([r.k, e[0], e[1]]); }
   INDICE.forEach(x=>x.push(x[2].normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()));
 }
 let sugAtual = [], sugI = 0;
 function sugerir(q){
   const ul = $("sugestoes"); q = q.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
   if(!q){ abrirLista(false); return; }
-  sugAtual = INDICE.filter(x=>x[3].includes(q)).sort((a,b)=>(a[3].startsWith(q)?0:1)-(b[3].startsWith(q)?0:1) || ["brasil","uf","bioma","municipio"].indexOf(a[0])-["brasil","uf","bioma","municipio"].indexOf(b[0])).slice(0,12);
+  sugAtual = INDICE.filter(x=>x[3].includes(q)).sort((a,b)=>(a[3].startsWith(q)?0:1)-(b[3].startsWith(q)?0:1) || ORDEM_BUSCA.indexOf(a[0])-ORDEM_BUSCA.indexOf(b[0])).slice(0,12);
   sugI = 0;
   ul.innerHTML = sugAtual.map((x,k)=>`<li role="option" aria-selected="${k===0}" data-k="${k}">${x[2]}<span>${TIPO_NOME[x[0]]}</span></li>`).join("") || `<li aria-disabled="true">Nada encontrado</li>`;
   abrirLista(true);
@@ -920,24 +986,25 @@ $("busca").onblur = ()=>setTimeout(()=>abrirLista(false),150);
 
 /* tema: refaz cores do mapa e gráficos */
 function aoMudarTema(){ if(!mapa) return; mapa.setPaintProperty("fundo","background-color",cor("--mapa"));
-  ["cont","sel-mun","sel-cont"].forEach(l=>mapa.setPaintProperty(l,"line-color",cor("--contorno"))); mapa.setPaintProperty("mun-linha","line-color",cor("--contorno-mun"));
-  mapa.setPaintProperty("mun-fill","fill-color",corFill()); mapa.setPaintProperty("mun-veda","line-color",corFill()); aplicarBase(); painel(); }
+  ["uf-cont","rec-sel"].forEach(l=>mapa.getLayer(l)&&mapa.setPaintProperty(l,"line-color",cor("--contorno")));
+  if(mapa.getLayer("rec-linha")) mapa.setPaintProperty("rec-linha","line-color",cor("--contorno-mun"));
+  mapa.setPaintProperty("rec-fill","fill-color",corFill()); if(mapa.getLayer("rec-veda")) mapa.setPaintProperty("rec-veda","line-color",corFill()); aplicarBase(); painel(); }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aoMudarTema);
 new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:true, attributeFilter:["data-theme"]});
 
 /* ---------- início ---------- */
 (async function(){
   try{
-    const [cat, geo, cont] = await Promise.all([j("catalogo.json"), fetch("geo/municipios.geojson").then(r=>r.json()), fetch("geo/contornos.geojson").then(r=>r.json())]);
+    const pm = await import("https://cdn.jsdelivr.net/npm/pmtiles@4.3.0/+esm");
+    maplibregl.addProtocol("pmtiles", new pm.Protocol().tile);
+    const [cat, idx] = await Promise.all([j("catalogo.json"), fetch("geo/indice.json").then(r=>r.json())]);
     try{ E.base = localStorage.getItem("ybyra-base2") || E.base; if(!BASE[E.base]) E.base = "cinza"; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
-    CAT = cat; GEO = geo; CONT = cont;
+    CAT = cat; IDX = idx;
+    for(const [f, lista] of Object.entries(IDX)){ NOMES[f] = new Map(lista.map(e=>[e[0], e[1]])); for(const e of lista) BBOX[f+":"+e[0]] = e.slice(2,6); }
     $("aviso-ficticio").hidden = !CAT.ficticio; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
-    nomeDe("bioma",1);
-    for(const f of GEO.features){ MUN_BIOMA[f.properties.c] = f.properties.b; BBOX["m"+f.properties.c] = bbox(f.geometry.coordinates); }
-    for(const f of CONT.features){ BBOX[f.properties.t+f.properties.id] = bbox(f.geometry.coordinates); }
-    montarVars(); montarIndice(); marcar();
-    await iniciarMapa(); ligarDica();
+    montarVars(); montarRecortes(); montarIndice(); marcar();
+    await iniciarMapa();
     await colorir(); destacar(); await painel();
     $("carregando").remove();
   }catch(err){ console.error(err); $("carregando").textContent = "Não foi possível carregar os dados. Recarregue a página."; }

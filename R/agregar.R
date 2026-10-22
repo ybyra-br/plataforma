@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# agregar.R · v0.1.1
+# agregar.R · v0.2.0
 # -----------------------------------------------------------------------------
 # Agrega as tabelas exportadas pelo GEE (gee/ybyra_estatisticas.js) e grava os
 # arquivos estáticos da plataforma https://ybyra-br.github.io/plataforma/.
@@ -10,16 +10,21 @@
 #           (colunas zona, ano, area_ha e as bandas; uma linha por zona × ano × célula da grade)
 # Saídas  : <saida>/catalogo.json                  tipos, ids, nomes, variáveis e unidades, anos
 #           <saida>/mapa/<tipo>/<variavel>.json    todos os recortes × anos (mapa)
-#           <saida>/serie/<tipo>/<lote>.json       séries por lote (UF nos tipos municipais)
+#           <saida>/serie/<tipo>/<lote>.json       séries por lote (UF nos tipos municipais; id %% 20
+#                                                  nos recortes com mais de 300 feições; 0 nos demais)
 #           <saida>/estatisticas.csv.gz            tabela longa (tipo, id, ano, variavel, valor)
 #
 # Recortes derivados de município × bioma (zona = código IBGE × 10 + bioma):
 #   municipio_bioma, municipio, uf, bioma, uf_bioma, brasil.
 # Recortes independentes (terra_indigena, unidade_conservacao, ...) entram como vierem.
 #
-# Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <municipios.geojson>
+# Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <web/geo/indice.json>
 #
 # Histórico de versões
+#   0.2.0 (2026-10-22) — nomes de todos os recortes vêm de web/geo/indice.json (malhas do GEE, gerado
+#                        por scripts/gerar_pmtiles.py); estados com nome por extenso; séries em lotes
+#                        id %% 20 nos recortes grandes (UC, TI, quilombos); ids formatados sem notação
+#                        científica.
 #   0.1.1 (2026-10-22) — catálogo indica dados fictícios (arquivo FICTICIOS.txt na pasta de entrada)
 #                        e o período dos anos; nomes de arquivo com qualquer recorte do GEE v0.3.
 #   0.1.0 (2026-10-21) — porte para R de ybyra_estatisticas_agregar.py v0.2.0 (mesmo
@@ -28,10 +33,11 @@
 # =============================================================================
 suppressPackageStartupMessages({ library(data.table); library(jsonlite) })
 
-VERSAO_SCRIPT <- "0.1.1"
+VERSAO_SCRIPT <- "0.2.0"
 arg <- commandArgs(trailingOnly = TRUE)
-if (length(arg) < 4) stop("Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <municipios.geojson>")
-ENTRADA <- arg[1]; SAIDA <- arg[2]; MODELO <- arg[3]; GEO <- arg[4]
+if (length(arg) < 4) stop("Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <web/geo/indice.json>")
+ENTRADA <- arg[1]; SAIDA <- arg[2]; MODELO <- arg[3]; INDICE <- arg[4]
+chr <- function(x) sprintf("%.0f", x)   # ids sem notação científica
 
 BIOMAS <- c("0" = "Sem bioma", "1" = "Amazônia", "2" = "Caatinga", "3" = "Cerrado",
             "4" = "Mata Atlântica", "5" = "Pampa", "6" = "Pantanal")
@@ -41,6 +47,8 @@ UFS <- c("11" = "RO", "12" = "AC", "13" = "AM", "14" = "RR", "15" = "PA", "16" =
          "42" = "SC", "43" = "RS", "50" = "MS", "51" = "MT", "52" = "GO", "53" = "DF")
 LOTE_UF <- list(municipio = function(i) i %/% 100000, municipio_bioma = function(i) i %/% 1000000)
 SEM_MAPA <- c("municipio_bioma")
+LOTE_MOD <- 20          # módulo do lote nos recortes grandes
+LIMITE_LOTE <- 300      # acima disso, séries em lotes
 cat(sprintf("agregar.R v%s · modelo %s\n", VERSAO_SCRIPT, MODELO))
 
 # ---------------- leitura ----------------
@@ -89,18 +97,24 @@ cat(sprintf("  área total coberta: %.1f Mha (Brasil ≈ 851 Mha)\n", area_mha))
 if (area_mha < 840 || area_mha > 860) cat("  ATENÇÃO: área fora do esperado — confira malhas, máscara e projeção.\n")
 
 # ---------------- nomes ----------------
-geo <- fromJSON(GEO, simplifyVector = TRUE)$features$properties
-nome_mun <- setNames(sprintf("%s (%s)", geo$n, geo$u), as.character(geo$c))
+IDX <- fromJSON(INDICE, simplifyVector = FALSE)
+nomes_idx <- function(r) {
+  L <- IDX[[r]]
+  if (is.null(L)) return(character(0))
+  setNames(vapply(L, function(e) as.character(e[[2]]), ""), vapply(L, function(e) chr(as.numeric(e[[1]])), ""))
+}
+nome_mun <- nomes_idx("municipio")
+nome_uf <- nomes_idx("uf"); if (!length(nome_uf)) nome_uf <- UFS
 nomes_de <- function(tipo, ids) {
-  k <- as.character(ids)
+  k <- chr(ids)
   out <- switch(tipo,
     brasil = rep("Brasil", length(ids)),
-    uf = unname(UFS[k]),
+    uf = unname(nome_uf[k]),
     bioma = unname(BIOMAS[k]),
-    uf_bioma = sprintf("%s · %s", UFS[as.character(ids %/% 10)], BIOMAS[as.character(ids %% 10)]),
+    uf_bioma = sprintf("%s · %s", nome_uf[chr(ids %/% 10)], BIOMAS[chr(ids %% 10)]),
     municipio = unname(nome_mun[k]),
-    municipio_bioma = sprintf("%s · %s", nome_mun[as.character(ids %/% 10)], BIOMAS[as.character(ids %% 10)]),
-    k)
+    municipio_bioma = sprintf("%s · %s", nome_mun[chr(ids %/% 10)], BIOMAS[chr(ids %% 10)]),
+    unname(nomes_idx(tipo)[k]))
   out[is.na(out)] <- k[is.na(out)]
   out
 }
@@ -130,19 +144,20 @@ for (tipo in names(rec)) {
   anos <- sort(unique(dt$ano)); ids <- sort(unique(dt$id)); nomes <- nomes_de(tipo, ids)
   catalogo$tipos[[tipo]] <- list(anos = I(anos), n = length(ids),
     ids = lapply(seq_along(ids), function(k) list(id = ids[k], nome = nomes[k])),
-    lote = if (tipo %in% names(LOTE_UF)) "uf" else "unico")
+    lote = if (tipo %in% names(LOTE_UF)) "uf" else if (length(ids) > LIMITE_LOTE) paste0("mod", LOTE_MOD) else "unico")
   # completa anos ausentes com zero
   grade <- CJ(id = ids, ano = anos)
   dt <- dt[grade, on = c("id", "ano")]
   for (v in COLS) set(dt, which(is.na(dt[[v]])), v, 0)
   setorder(dt, id, ano)
   # séries em lotes
-  lote <- if (tipo %in% names(LOTE_UF)) LOTE_UF[[tipo]](dt$id) else rep(0, nrow(dt))
+  lote <- if (tipo %in% names(LOTE_UF)) LOTE_UF[[tipo]](dt$id) else
+          if (length(ids) > LIMITE_LOTE) dt$id %% LOTE_MOD else rep(0, nrow(dt))
   for (l in unique(lote)) {
     sub <- dt[lote == l]
     series <- lapply(split(sub, by = "id", keep.by = FALSE), function(g)
       setNames(lapply(COLS, function(v) I(compacto(g[[v]]))), COLS))
-    names(series) <- as.character(unique(sub$id))
+    names(series) <- chr(unique(sub$id))
     gravar_json(list(tipo = tipo, anos = I(anos), series = series),
                 file.path(SAIDA, "serie", tipo, sprintf("%d.json", as.integer(l))))
   }

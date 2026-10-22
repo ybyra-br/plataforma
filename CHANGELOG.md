@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.8.0 — 2026-10-22
+- **Malhas reais no mapa** (shapefiles exportados do GEE a partir dos assets públicos do MapBiomas), em PMTiles, uma camada por recorte, como na plataforma de queimadas: estados, municípios, biomas, Amazônia Legal, MATOPIBA, bacias DHN250 níveis 1 e 2, terras indígenas, unidades de conservação e territórios quilombolas (`scripts/gerar_pmtiles.py`, `scripts/ler_shp.py`). `web/geo/indice.json` guarda id, nome e extensão de cada feição (busca, zoom e nomes).
+- Site v0.7.0: seletor de recorte agrupado (divisão político-administrativa, regiões, bacias, áreas protegidas e territórios); busca em todos os recortes; ranking "maiores do Brasil" nos recortes extras; limites dos estados sempre visíveis; nas camadas sobrepostas (TI, UC) o clique escolhe a feição menor.
+- `R/agregar.R` v0.2.0: nomes vindos de `web/geo/indice.json`; recortes com mais de 300 feições têm séries em 20 lotes (`id %% 20`).
+- Dados fictícios dos recortes extras com ids e áreas reais (`scripts/gerar_ficticios_extras.py`).
+- Removidos: GeoJSON antigos (`municipios.geojson`, `contornos.geojson`), `scripts/preparar_malhas.py` e a conferência R × Python (o R já foi validado).
+
 ## 0.7.0 — 2026-10-22
 - Workflows instalam o R pelos pacotes do Ubuntu (`r-base-core`, `r-cran-data.table`, `r-cran-jsonlite`) no lugar do `r-lib/actions/setup-r`, que travou duas vezes; limite de 20 minutos por job.
 - Aviso de dados fictícios automático: `dados/brutos/v1_2/FICTICIOS.txt` marca a pasta como fictícia; o R (`agregar.R` v0.1.1) grava `ficticio` no catálogo e o site mostra ou esconde o aviso (painel, relatório e citação). Ao trocar pelos CSV reais e apagar esse arquivo, o aviso some sem mexer no site.

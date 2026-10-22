@@ -1,4 +1,4 @@
-# Plataforma YbYrá-BR — agrega os CSV do GEE em R e publica web/ no GitHub Pages (v0.2.1)
+# Plataforma YbYrá-BR — agrega os CSV do GEE em R e publica web/ no GitHub Pages (v0.2.2)
 # Dispara a cada envio ao main (inclusive quando novos CSV entram em dados/brutos/).
 name: pages
 on:
@@ -19,7 +19,7 @@ jobs:
       - name: R (pacotes do Ubuntu)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends r-base-core r-cran-data.table r-cran-jsonlite r-cran-r.utils
       - name: Agregar (R)
-        run: Rscript R/agregar.R dados/brutos/$MODELO web/dados/$MODELO $MODELO web/geo/municipios.geojson
+        run: Rscript R/agregar.R dados/brutos/$MODELO web/dados/$MODELO $MODELO web/geo/indice.json
       - uses: actions/upload-pages-artifact@v3
         with: { path: web }
   publicar:
