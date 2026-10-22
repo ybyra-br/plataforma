@@ -1,6 +1,7 @@
 # Histórico de versões
 
 ## 0.7.0 — 2026-10-22
+- Workflows instalam o R pelos pacotes do Ubuntu (`r-base-core`, `r-cran-data.table`, `r-cran-jsonlite`) no lugar do `r-lib/actions/setup-r`, que travou duas vezes; limite de 20 minutos por job.
 - Aviso de dados fictícios automático: `dados/brutos/v1_2/FICTICIOS.txt` marca a pasta como fictícia; o R (`agregar.R` v0.1.1) grava `ficticio` no catálogo e o site mostra ou esconde o aviso (painel, relatório e citação). Ao trocar pelos CSV reais e apagar esse arquivo, o aviso some sem mexer no site.
 
 ## 0.6.5 — 2026-10-22
