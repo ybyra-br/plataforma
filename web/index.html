@@ -86,7 +86,7 @@ button{-webkit-tap-highlight-color:transparent}
 .info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:12px;padding:6px 10px}
 .escala{display:flex;flex-direction:column;gap:2px;font-size:0.6875rem;color:var(--label2)}
 .escala .barra-esc{height:6px;border:1.5px solid var(--label);border-top:0}
-.camadas{z-index:12;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
+.camadas{position:fixed;z-index:12;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
 .b-camadas{width:36px;height:36px;border:0;border-radius:12px;cursor:pointer;display:grid;place-items:center;color:var(--label)}
 .b-camadas svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 .b-camadas:hover{background:var(--material)} .b-camadas[aria-expanded="true"]{color:var(--tint)}
@@ -268,7 +268,7 @@ button{-webkit-tap-highlight-color:transparent}
   .info-mapa{left:12px;bottom:30px} .creditos{left:8px;right:8px}
   .barra-proj{background:var(--material)}
   .painel{position:static;width:auto!important;margin:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));overflow:visible;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)!important;box-shadow:none;padding:0;border-radius:0}
-  .zoom{right:12px;top:66px;bottom:auto} .camadas{right:12px;top:12px;bottom:auto} .pop{top:0;bottom:auto}
+  .zoom{right:12px;top:66px;bottom:auto} .camadas{position:absolute;right:12px;top:calc(var(--topo) + env(safe-area-inset-top,0px) + 12px);bottom:auto} .pop{top:0;bottom:auto}
   #dica{display:none}
 }
 @media (max-width:420px){.marca-proj .proj{display:none} .kpi .v{font-size:1rem}}
@@ -303,7 +303,9 @@ button{-webkit-tap-highlight-color:transparent}
 <div id="mapa" role="application" aria-label="Mapa de emissões por recorte"></div>
 <div class="sobre-mapa vidro info-mapa" aria-hidden="true"><div class="escala"><span id="escala-txt" class="num">500 km</span><div class="barra-esc" id="escala-barra" style="width:80px"></div></div></div>
 <div class="sobre-mapa creditos" id="creditos"></div>
-<div class="sobre-mapa camadas">
+<div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar" title="Aproximar"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></button><button type="button" id="z-menos" aria-label="Afastar" title="Afastar"><svg viewBox="0 0 16 16"><path d="M3 8h10"/></svg></button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Ver o Brasil inteiro"><svg viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button></div>
+</div>
+<div class="camadas">
   <button type="button" class="vidro b-camadas" id="b-camadas" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop-camadas" aria-label="Mapa de fundo e projeção" title="Mapa de fundo"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18 7l-8 4.5L2 7Z"/><path d="M2 10.5l8 4.5 8-4.5"/><path d="M2 14l8 4.5 8-4.5"/></svg></button>
   <div class="pop vidro" id="pop-camadas" role="dialog" aria-label="Mapa de fundo e projeção" hidden>
     <div class="pop-tit">Mapa de fundo</div>
@@ -311,8 +313,6 @@ button{-webkit-tap-highlight-color:transparent}
     <div class="pop-tit">Projeção</div>
     <div class="seg" id="seg-proj" style="--n:2"><button type="button" data-p="globe">Globo</button><button type="button" data-p="mercator">Plano</button></div>
   </div>
-</div>
-<div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar" title="Aproximar"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></button><button type="button" id="z-menos" aria-label="Afastar" title="Afastar"><svg viewBox="0 0 16 16"><path d="M3 8h10"/></svg></button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Ver o Brasil inteiro"><svg viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button></div>
 </div>
 <div id="dica" hidden></div>
 
