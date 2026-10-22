@@ -86,7 +86,7 @@ button{-webkit-tap-highlight-color:transparent}
 .info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:12px;padding:6px 10px}
 .escala{display:flex;flex-direction:column;gap:2px;font-size:0.6875rem;color:var(--label2)}
 .escala .barra-esc{height:6px;border:1.5px solid var(--label);border-top:0}
-.camadas{right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
+.camadas{z-index:12;right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
 .b-camadas{width:36px;height:36px;border:0;border-radius:12px;cursor:pointer;display:grid;place-items:center;color:var(--label)}
 .b-camadas svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 .b-camadas:hover{background:var(--material)} .b-camadas[aria-expanded="true"]{color:var(--tint)}
@@ -391,7 +391,8 @@ button{-webkit-tap-highlight-color:transparent}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
 /* plataforma de emissões YbYrá-BR · v0.5.2
-   0.5.2 (2026-10-21) — sem seta de norte; mapa de fundo e projeção num botão de camadas sobre o mapa (como no MapBiomas).
+   0.5.2 (2026-10-21) — sem seta de norte; mapa de fundo e projeção num botão de camadas sobre o mapa (como no MapBiomas),
+                        com o painel de camadas acima dos painéis laterais.
    (0.5.0 inclui) marca do YbYrá-BR toda branca no tema escuro, como a do CNPq; impressão sempre colorida.
    0.5.1 (2026-10-21) — mapas de fundo em lista suspensa: cinza Esri (claro/escuro), OpenStreetMap, topográfico Esri,
                         OpenTopoMap, satélite Esri World Imagery e Sentinel-2 cloudless 2024 (EOX), com rótulos
