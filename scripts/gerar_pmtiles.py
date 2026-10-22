@@ -1,5 +1,5 @@
 """
-gerar_pmtiles.py · v0.1.0
+gerar_pmtiles.py · v0.1.1
 Malhas vetoriais do mapa da plataforma de emissões YbYrá-BR em PMTiles v3 (Mapbox Vector Tiles),
 só com numpy, a partir dos shapefiles exportados pelo GEE (gee/ybyra_estatisticas.js, MODO 'geometrias').
 Núcleo (MVT, recorte por bloco, PMTiles) copiado de alerta-queimadas-municipios/scripts/gerar_pmtiles.py
@@ -18,6 +18,7 @@ Uso: python scripts/gerar_pmtiles.py <pasta_shapefiles> <municipios_idx.json da 
 
 Histórico de versões
   0.1.0 (2026-10-22) — versão inicial.
+  0.1.1 (2026-10-22) — blocos desde o zoom 0 (o globo abre abaixo do zoom 2).
 """
 from __future__ import annotations
 
@@ -314,7 +315,7 @@ def nomes_de(recorte, attrs, mun_idx):
     return titulo(n) if recorte.startswith("bacia") else n
 
 
-def gerar(recorte, pasta, mun_idx, zmin=2):
+def gerar(recorte, pasta, mun_idx, zmin=0):
     zmax = RECORTES[recorte]
     t0 = time.time()
     fs = ler(Path(pasta) / f"ybyra_geometria_{recorte}")
