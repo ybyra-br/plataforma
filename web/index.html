@@ -83,12 +83,21 @@ button{-webkit-tap-highlight-color:transparent}
 .maplibregl-map{font:inherit}
 .sobre-mapa{position:absolute;z-index:3}
 .vidro{background:var(--vidro);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--sombra)}
-.info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:14px;padding:6px 12px 6px 6px}
-.norte{width:36px;height:36px;display:grid;place-items:center}
-.norte svg{width:26px;height:26px}
-.norte .seta-n{fill:var(--sobe)} .norte .seta-s{fill:var(--label3)} .norte text{fill:var(--label);font:600 8px var(--font)}
+.info-mapa{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;border-radius:12px;padding:6px 10px}
 .escala{display:flex;flex-direction:column;gap:2px;font-size:0.6875rem;color:var(--label2)}
 .escala .barra-esc{height:6px;border:1.5px solid var(--label);border-top:0}
+.camadas{right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(32px + 118px + env(safe-area-inset-bottom,0px))}
+.b-camadas{width:36px;height:36px;border:0;border-radius:12px;cursor:pointer;display:grid;place-items:center;color:var(--label)}
+.b-camadas svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
+.b-camadas:hover{background:var(--material)} .b-camadas[aria-expanded="true"]{color:var(--tint)}
+.pop{position:absolute;right:calc(100% + 8px);bottom:0;width:260px;max-height:min(70vh,520px);overflow:auto;border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:4px;background:var(--material)}
+.pop-tit{font-size:0.8125rem;font-weight:600;color:var(--label2);padding:6px 8px 2px}
+.pop .grp{font-size:0.6875rem;color:var(--label2);padding:6px 8px 2px}
+.pop .op{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;text-align:left;border-radius:8px;padding:7px 8px;min-height:34px;font-size:0.875rem;cursor:pointer}
+.pop .op:hover{background:var(--fill)} .pop .op:active{background:var(--fill2)}
+.pop .op svg{margin-left:auto;width:14px;height:14px;fill:none;stroke:var(--tint);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;visibility:hidden}
+.pop .op[aria-checked="true"]{font-weight:600} .pop .op[aria-checked="true"] svg{visibility:visible}
+.pop .seg{margin:2px 4px 4px}
 .creditos{left:calc(var(--largura-esq) + 28px + env(safe-area-inset-left,0px));right:calc(var(--largura-dir) + 28px + env(safe-area-inset-right,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));text-align:center;font-size:0.6875rem;line-height:1.3;color:var(--label2);pointer-events:none}
 .creditos span{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;background:var(--vidro);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:8px;padding:2px 8px;pointer-events:auto}
 .creditos a{color:inherit}
@@ -259,12 +268,13 @@ button{-webkit-tap-highlight-color:transparent}
   .info-mapa{left:12px;bottom:30px} .creditos{left:8px;right:8px}
   .barra-proj{background:var(--material)}
   .painel{position:static;width:auto!important;margin:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));overflow:visible;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)!important;box-shadow:none;padding:0;border-radius:0}
-  .zoom{right:12px;top:12px;bottom:auto}
+  .zoom{right:12px;top:66px;bottom:auto} .camadas{right:12px;top:12px;bottom:auto} .pop{top:0;bottom:auto}
   #dica{display:none}
 }
 @media (max-width:420px){.marca-proj .proj{display:none} .kpi .v{font-size:1rem}}
 @media (pointer: coarse){
   .sel-var select{min-height:44px}
+  .b-camadas{width:44px;height:44px} .pop .op{min-height:44px}
   .seg button,.vars button,.rank button,.btn,.busca input,.busca li{min-height:44px}
   .trilha button{min-height:36px} .btn-ic{width:44px}
   .zoom button,.ano button{width:44px;height:44px}
@@ -291,8 +301,17 @@ button{-webkit-tap-highlight-color:transparent}
 
 <div id="area-mapa">
 <div id="mapa" role="application" aria-label="Mapa de emissões por recorte"></div>
-<div class="sobre-mapa vidro info-mapa" aria-hidden="true"><div class="norte" id="norte" title="Norte"><svg viewBox="0 0 26 26"><path class="seta-n" d="M13 2 17 13H9Z"/><path class="seta-s" d="M13 24 9 13h8Z"/><text x="13" y="11.2" text-anchor="middle">N</text></svg></div><div class="escala"><span id="escala-txt" class="num">500 km</span><div class="barra-esc" id="escala-barra" style="width:80px"></div></div></div>
+<div class="sobre-mapa vidro info-mapa" aria-hidden="true"><div class="escala"><span id="escala-txt" class="num">500 km</span><div class="barra-esc" id="escala-barra" style="width:80px"></div></div></div>
 <div class="sobre-mapa creditos" id="creditos"></div>
+<div class="sobre-mapa camadas">
+  <button type="button" class="vidro b-camadas" id="b-camadas" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop-camadas" aria-label="Mapa de fundo e projeção" title="Mapa de fundo"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18 7l-8 4.5L2 7Z"/><path d="M2 10.5l8 4.5 8-4.5"/><path d="M2 14l8 4.5 8-4.5"/></svg></button>
+  <div class="pop vidro" id="pop-camadas" role="dialog" aria-label="Mapa de fundo e projeção" hidden>
+    <div class="pop-tit">Mapa de fundo</div>
+    <div id="lista-base" role="radiogroup" aria-label="Mapa de fundo"></div>
+    <div class="pop-tit">Projeção</div>
+    <div class="seg" id="seg-proj" style="--n:2"><button type="button" data-p="globe">Globo</button><button type="button" data-p="mercator">Plano</button></div>
+  </div>
+</div>
 <div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar" title="Aproximar"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></button><button type="button" id="z-menos" aria-label="Afastar" title="Afastar"><svg viewBox="0 0 16 16"><path d="M3 8h10"/></svg></button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Ver o Brasil inteiro"><svg viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button></div>
 </div>
 <div id="dica" hidden></div>
@@ -323,14 +342,6 @@ button{-webkit-tap-highlight-color:transparent}
     <div class="seg" id="seg-modo" style="--n:2"><button type="button" data-m="total">Total</button><button type="button" data-m="ha">Por hectare</button></div>
   </div>
   <div class="legenda" id="legenda"></div>
-  <div class="grupo">
-    <label class="rotulo" for="sel-base">Mapa de fundo</label>
-    <div class="sel-var sem-cor"><select id="sel-base"></select><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></div>
-  </div>
-  <div class="grupo">
-    <p class="rotulo">Projeção</p>
-    <div class="seg" id="seg-proj" style="--n:2"><button type="button" data-p="globe">Globo</button><button type="button" data-p="mercator">Plano</button></div>
-  </div>
 </aside>
 
 <aside class="painel" id="dir" aria-label="Recorte selecionado">
@@ -379,7 +390,8 @@ button{-webkit-tap-highlight-color:transparent}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.5.0
+/* plataforma de emissões YbYrá-BR · v0.5.2
+   0.5.2 (2026-10-21) — sem seta de norte; mapa de fundo e projeção num botão de camadas sobre o mapa (como no MapBiomas).
    (0.5.0 inclui) marca do YbYrá-BR toda branca no tema escuro, como a do CNPq; impressão sempre colorida.
    0.5.1 (2026-10-21) — mapas de fundo em lista suspensa: cinza Esri (claro/escuro), OpenStreetMap, topográfico Esri,
                         OpenTopoMap, satélite Esri World Imagery e Sentinel-2 cloudless 2024 (EOX), com rótulos
@@ -402,7 +414,7 @@ button{-webkit-tap-highlight-color:transparent}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.5.1", DADOS = "dados/v1_2/";
+const VERSAO = "0.5.2", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
@@ -530,7 +542,6 @@ function escalaMapa(){
   const nice = (d>=5?5:d>=2?2:1)*pot;
   $("escala-barra").style.width = Math.round(nice/porPx)+"px";
   $("escala-txt").textContent = nice>=1000 ? `${nf(nice/1000,0)} km` : `${nf(nice,0)} m`;
-  $("norte").style.transform = `rotate(${-mapa.getBearing()}deg)`;
 }
 function iniciarMapa(){
   mapa = new maplibregl.Map({container:"mapa", attributionControl:false, dragRotate:false, pitchWithRotate:false, renderWorldCopies:false,
@@ -773,12 +784,16 @@ $("imprimir-rel").onclick = ()=>window.print();
 /* ---------- controles ---------- */
 function marcar(){
   document.querySelectorAll("#seg-tipo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.t===E.tipo));
-  $("sel-base").innerHTML = [...new Set(BASES.map(b=>b.g))].map(g=>`<optgroup label="${g}">${BASES.filter(b=>b.g===g).map(b=>`<option value="${b.k}">${b.n}</option>`).join("")}</optgroup>`).join("");
-$("sel-base").onchange = e=>{ E.base = e.target.value; aplicarBase(); try{localStorage.setItem("ybyra-base2",E.base);}catch(_){} };
+  const OK = `<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>`;
+$("lista-base").innerHTML = [...new Set(BASES.map(b=>b.g))].map(g=>`<div class="grp">${g}</div>`+BASES.filter(b=>b.g===g).map(b=>`<button type="button" class="op" role="radio" data-b="${b.k}">${b.n}${OK}</button>`).join("")).join("");
+$("lista-base").querySelectorAll(".op").forEach(o=>o.onclick=()=>{ E.base = o.dataset.b; marcar(); aplicarBase(); try{localStorage.setItem("ybyra-base2",E.base);}catch(_){} });
+function popCamadas(abrir){ $("pop-camadas").hidden = !abrir; $("b-camadas").setAttribute("aria-expanded", abrir); if(abrir) $("lista-base").querySelector('[aria-checked="true"]')?.focus(); }
+$("b-camadas").onclick = e=>{ e.stopPropagation(); popCamadas($("pop-camadas").hidden); };
+document.addEventListener("click", e=>{ if(!$("pop-camadas").hidden && !e.target.closest(".camadas")) popCamadas(false); });
 document.querySelectorAll("#seg-proj button").forEach(b=>b.onclick=()=>{ E.proj=b.dataset.p; marcar(); aplicarProjecao(); try{localStorage.setItem("ybyra-proj",E.proj);}catch(e){} });
 document.querySelectorAll("#seg-modo button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.m===E.modo));
   $("sel-var").value = E.v; $("var-cor").style.background = RAMPAS[VAR[E.v].esc][VAR[E.v].esc==="div"?6:5];
-  $("sel-base").value = E.base;
+  document.querySelectorAll("#lista-base .op").forEach(o=>o.setAttribute("aria-checked", o.dataset.b===E.base));
   document.querySelectorAll("#seg-proj button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===E.proj));
   $("ano").value = E.ano; $("ano-v").textContent = E.ano;
 }
@@ -811,7 +826,7 @@ $("abrir-metodo").onclick = ()=>{ $("metodo").hidden=false; $("metodo").scrollTo
 $("fechar-metodo").onclick = ()=>{ $("metodo").hidden=true; };
 $("marca").onclick = e=>{ e.preventDefault(); $("metodo").hidden=true; selecionar("brasil",1,true); };
 addEventListener("keydown",e=>{
-  if(e.key==="Escape"){ $("metodo").hidden=true; $("relatorio").hidden=true; }
+  if(e.key==="Escape"){ $("metodo").hidden=true; $("relatorio").hidden=true; if(!$("pop-camadas").hidden){ popCamadas(false); $("b-camadas").focus(); } }
   const digitando = /INPUT|TEXTAREA/.test(document.activeElement?.tagName);
   if(!digitando && (e.key==="/" || ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==="k"))){ e.preventDefault(); $("busca").focus(); }
 });
