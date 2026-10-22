@@ -46,6 +46,7 @@
 @media (prefers-contrast: more){:root{--label2:rgba(60,60,67,.85); --sep:rgba(60,60,67,.45); --vidro:rgba(255,255,255,.97); --material:#fff; --contorno-mun:rgba(28,28,30,.6)}}
 @media (prefers-contrast: more) and (prefers-color-scheme: dark){:root:not([data-theme="light"]){--label2:rgba(235,235,245,.85); --sep:rgba(120,120,128,.9); --vidro:rgba(28,28,30,.97); --material:#1c1c1e}}
 @media (prefers-reduced-transparency: reduce){:root{--vidro:var(--bg); --material:var(--cell)}}
+[hidden]{display:none!important}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--label);font:0.9375rem/1.35 var(--font);letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -390,7 +391,9 @@ button{-webkit-tap-highlight-color:transparent}
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.5.2
+/* plataforma de emissões YbYrá-BR · v0.5.3
+   0.5.3 (2026-10-21) — regra global [hidden]: no GitHub Pages o painel de camadas (e outros elementos com display
+                        próprio) ignorava o atributo hidden e ficava sempre aberto.
    0.5.2 (2026-10-21) — sem seta de norte; mapa de fundo e projeção num botão de camadas sobre o mapa (como no MapBiomas),
                         com o painel de camadas acima dos painéis laterais.
    (0.5.0 inclui) marca do YbYrá-BR toda branca no tema escuro, como a do CNPq; impressão sempre colorida.
@@ -415,7 +418,7 @@ button{-webkit-tap-highlight-color:transparent}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.5.2", DADOS = "dados/v1_2/";
+const VERSAO = "0.5.3", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma"};
