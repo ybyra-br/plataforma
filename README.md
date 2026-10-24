@@ -1,8 +1,8 @@
-# Emissões e Remoções de CO₂ — YbYrá-BR · v0.8.0
+# Emissões e Remoções de CO₂ — YbYrá-BR · v0.9.0
 
 Plataforma do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para explorar as emissões e remoções de CO₂ do modelo YbYrá-BR por recorte territorial: Brasil, estados, biomas e municípios.
 
-> **Prévia com dados fictícios.** A estrutura, os cálculos e os formatos de arquivo são os definitivos; os números serão substituídos pelos resultados do modelo.
+> **Prévia com os resultados do modelo YbYrá-BR v1.2** (1986–2024), ainda sem o método publicado.
 
 Site: https://ybyra-br.github.io/plataforma/
 
@@ -25,7 +25,7 @@ Local: `Rscript R/agregar.R dados/brutos/v1_2 web/dados/v1_2 v1_2 web/geo/indice
 
 Malhas do mapa: rode o GEE com `MODO = 'geometrias'`, baixe a pasta `YBYRA-GEOMETRIAS` e gere as camadas com `python scripts/gerar_pmtiles.py <pasta> [nomes_municipios.json] [recortes...]`.
 
-Os dados fictícios atuais vêm de `scripts/gerar_dados_ficticios.py` (mesmo formato do export do GEE).
+Para testes sem os dados do modelo, `scripts/gerar_dados_ficticios.py` gera CSV fictícios no mesmo formato do export do GEE (com um `FICTICIOS.txt`, que liga o aviso no site).
 
 ## Unidades
 
@@ -43,7 +43,7 @@ Somente CO₂ (sem CH₄ e N₂O).
 ```
 gee/ybyra_estatisticas.js              estatísticas por recorte no Earth Engine (Code Editor)
 R/agregar.R                            agregação hierárquica e arquivos do site (roda no GitHub Actions)
-dados/brutos/v1_2/                     CSV exportados do GEE (hoje: fictícios)
+dados/brutos/v1_2/                     CSV exportados do GEE (modelo v1.2, 1986–2024)
 scripts/ler_shp.py                     leitor mínimo de shapefile (polígonos) e dbf
 scripts/gerar_pmtiles.py               malhas do GEE (shapefiles) → web/geo/<recorte>.pmtiles + indice.json
 scripts/gerar_ficticios_extras.py      dados fictícios dos recortes extras (TI, UC, quilombos, regiões, bacias)

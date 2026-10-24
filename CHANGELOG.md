@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 0.9.0 — 2026-10-24
+- **Dados reais do modelo YbYrá-BR v1.2** no lugar dos fictícios: 24 CSV exportados do GEE (`gee/ybyra_estatisticas.js` v0.3.1), 1986–2024, em três blocos de 13 anos, para município × bioma, Amazônia Legal, MATOPIBA, bacias níveis 1 e 2, terras indígenas, unidades de conservação e territórios quilombolas. Sai o `FICTICIOS.txt`, e o aviso de dados fictícios some do site.
+- Conferência antes do envio: área total de 850,9 Mha em todos os anos; nenhum valor inválido ou negativo; `total_primary_co2` = desmatamento + fogo + borda + exploração madeireira. Nos dados reais `removal_sf_co2` vem positiva (nos fictícios era negativa); o site já usa o valor absoluto, então a emissão líquida continua sendo bruta − remoção.
+
 ## 0.8.0 — 2026-10-22
 - **Malhas reais no mapa** (shapefiles exportados do GEE a partir dos assets públicos do MapBiomas), em PMTiles, uma camada por recorte, como na plataforma de queimadas: estados, municípios, biomas, Amazônia Legal, MATOPIBA, bacias DHN250 níveis 1 e 2, terras indígenas, unidades de conservação e territórios quilombolas (`scripts/gerar_pmtiles.py`, `scripts/ler_shp.py`). `web/geo/indice.json` guarda id, nome e extensão de cada feição (busca, zoom e nomes).
 - Site v0.7.0: seletor de recorte agrupado (divisão político-administrativa, regiões, bacias, áreas protegidas e territórios); busca em todos os recortes; ranking "maiores do Brasil" nos recortes extras; limites dos estados sempre visíveis; nas camadas sobrepostas (TI, UC) o clique escolhe a feição menor. Camadas com blocos desde o zoom 0 (o globo abre abaixo do zoom 2).
