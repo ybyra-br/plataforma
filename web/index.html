@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/ybyra-simbolo-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.css">
 <title>Emissões YbYrá-BR</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -20,7 +20,7 @@
    flutuando sobre o mapa; no celular, mapa no topo e painéis empilhados abaixo.
    Mesma linguagem visual da plataforma irmã Alerta de Queimadas por Município. */
 :root{
-  --font:"Ubuntu",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --bg:#f2f2f7; --painel:rgba(255,255,255,.86); --cell:#fff; --mapa:#e9ece6; --vazio:#f6f6f2;
   --label:#000; --label2:rgba(60,60,67,.62); --label3:rgba(60,60,67,.3);
   --sep:rgba(60,60,67,.18); --fill:rgba(118,118,128,.12); --fill2:rgba(118,118,128,.24); --tint:#007AFF; --seg-on:#fff;
@@ -56,12 +56,12 @@
 [hidden]{display:none!important}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--label);font:0.9375rem/1.35 var(--font);letter-spacing:0;-webkit-font-smoothing:antialiased;overflow:hidden}
+body{margin:0;background:var(--bg);color:var(--label);font:0.9375rem/1.35 var(--font);letter-spacing:-.006em;font-feature-settings:"ss01";-webkit-font-smoothing:antialiased;overflow:hidden}
 button,input,select{font:inherit;color:inherit;letter-spacing:inherit}
 button{-webkit-tap-highlight-color:transparent}
 @media (pointer: coarse){html{font-size:106.25%}}
 :focus-visible{outline:2px solid var(--tint);outline-offset:2px;border-radius:6px}
-.num{font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum","ss01"}
 
 /* elementos fixos sobre o mapa: camada própria e sem desfoque (o desfoque recalculado
    a cada quadro do WebGL fazia a barra e os painéis piscarem durante o zoom) */
@@ -439,6 +439,8 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
 /* plataforma de emissões YbYrá-BR · v0.8.0
+   0.10.1 (2026-10-24) — fonte Inter no lugar da Ubuntu (algarismos tabulares e espessura semibold 600); ss01
+                        (dígitos abertos) para leitura dos números.
    0.10.0 (2026-10-24) — fonte Ubuntu (Google Fonts) em toda a plataforma, inclusive gráficos e relatório; nomes reais e
                         acentuados das unidades de conservação na busca e nos painéis.
    0.9.2 (2026-10-24) — telas até 900 px: o painel do recorte ficava fixo por cima do Explorar (regra #dir vencia a do
@@ -486,8 +488,8 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.10.0", DADOS = "dados/v1_2/";
-Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "Ubuntu, sans-serif";
+const VERSAO = "0.10.1", DADOS = "dados/v1_2/";
+Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "Inter, sans-serif";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma",
@@ -1068,7 +1070,7 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
 
 /* ---------- início ---------- */
 (async function(){
-  try{ await Promise.race([document.fonts.load('400 1em Ubuntu'), new Promise(r=>setTimeout(r,1500))]); }catch(e){}
+  try{ await Promise.race([document.fonts.load('400 1em Inter'), new Promise(r=>setTimeout(r,1500))]); }catch(e){}
   try{
     const pm = await import("https://cdn.jsdelivr.net/npm/pmtiles@4.3.0/+esm");
     maplibregl.addProtocol("pmtiles", new pm.Protocol().tile);

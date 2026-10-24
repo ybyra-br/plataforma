@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.13.1 — 2026-10-24
+- Site v0.10.1: fonte **Inter** (Google Fonts, SIL OFL) no lugar da Ubuntu: algarismos tabulares nos números, espessura semibold (600) nos títulos e dígitos abertos (`ss01`) para leitura de valores pequenos.
+
 ## 0.13.0 — 2026-10-24
 - **Nomes das unidades de conservação**: tabela de atributos do CNUC 2026 exportada do GEE (`gee/ybyra_nomes_uc.js`); os acentos já vinham perdidos ("�") no asset de origem e foram restaurados por `scripts/reparar_acentos.py` v0.1.0 (vocabulário do IBGE e de termos de áreas protegidas, lista de palavras do português, regras de contexto e uma tabela de correções conferidas). Resultado em `dados/nomes/ybyra_nomes_unidade_conservacao.csv` (id, nome, código CNUC, categoria, esfera) e aplicado em `web/geo/indice.json`: as 3.247 UCs passam a ter nome na busca, nos painéis e no catálogo; os 36 nomes repetidos levam o código CNUC entre parênteses.
 - `scripts/aplicar_nomes.py` v0.1.2: diferencia nomes repetidos pelo código oficial.
