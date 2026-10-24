@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.11.0 — 2026-10-24
+- Site v0.9.0: gráfico da **variável selecionada** no pé do painel Explorar, para o recorte selecionado (total ou por hectare, segue a escolha "Mostrar"); o gráfico por processo do painel da direita continua igual. Cores: cada processo na sua cor Okabe-Ito; emissão bruta em laranja-escuro (`--p-bruta`); emissão líquida em barras coloridas pelo sinal, vermelho para fonte e verde-azulado para sumidouro (as pontas da escala divergente do mapa); estoques em área verde. Clique numa barra escolhe o ano.
+
 ## 0.10.0 — 2026-10-24
 - Site v0.8.0: botão de aparência na barra superior (ícone ao lado de "Código aberto"), que alterna entre automática (segue o sistema), clara e escura. A escolha fica salva no navegador e é aplicada antes da primeira pintura, sem piscar; mapa, gráficos e logos acompanham. No celular o botão continua visível.
 

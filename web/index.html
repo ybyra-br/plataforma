@@ -26,6 +26,8 @@
   --sobe:#c2410c; --desce:#047857; --sombra:0 8px 30px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06);
   /* Okabe-Ito: processos */
   --p-defor:#D55E00; --p-fogo:#E69F00; --p-borda:#CC79A7; --p-madeira:#0072B2; --p-dsec:#56B4E9; --p-rem:#009E73; --p-liq:#1c1c1e;
+  /* série da variável (painel esquerdo): bruta e saldo, nas pontas da escala do mapa */
+  --p-bruta:#a63603; --p-liq-pos:#b2182b; --p-liq-neg:#00594f;
   --topo:52px; --largura-esq:340px; --largura-dir:420px;
   --off-esq:calc(var(--largura-esq) + 28px); --off-dir:calc(var(--largura-dir) + 28px);
 }
@@ -36,7 +38,7 @@
   --vidro:rgba(30,30,32,.97); --material:rgba(28,28,30,.98); --espaco:#05070b; --halo:#1b2633;
   --contorno:#f2f2f7; --contorno-mun:rgba(242,242,247,.28); --aviso-bg:#3a2c00; --aviso-fg:#ffd479;
   --sobe:#fb923c; --desce:#34d399; --sombra:0 8px 30px rgba(0,0,0,.5),0 0 0 .5px rgba(255,255,255,.08);
-  --p-liq:#f2f2f7; color-scheme:dark}}
+  --p-liq:#f2f2f7; --p-bruta:#fd8d3c; --p-liq-pos:#f4796b; --p-liq-neg:#3fa594; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#000; --painel:rgba(28,28,30,.86); --cell:#1c1c1e; --mapa:#1a1c1a; --vazio:#2c2c2e;
   --label:#fff; --label2:rgba(235,235,245,.62); --label3:rgba(235,235,245,.3);
@@ -44,7 +46,7 @@
   --vidro:rgba(30,30,32,.97); --material:rgba(28,28,30,.98); --espaco:#05070b; --halo:#1b2633;
   --contorno:#f2f2f7; --contorno-mun:rgba(242,242,247,.28); --aviso-bg:#3a2c00; --aviso-fg:#ffd479;
   --sobe:#fb923c; --desce:#34d399; --sombra:0 8px 30px rgba(0,0,0,.5),0 0 0 .5px rgba(255,255,255,.08);
-  --p-liq:#f2f2f7; color-scheme:dark}
+  --p-liq:#f2f2f7; --p-bruta:#fd8d3c; --p-liq-pos:#f4796b; --p-liq-neg:#3fa594; color-scheme:dark}
 @media (prefers-contrast: more){:root{--label2:rgba(60,60,67,.85); --sep:rgba(60,60,67,.45); --vidro:rgba(255,255,255,.97); --material:#fff; --contorno-mun:rgba(28,28,30,.6)}}
 @media (prefers-contrast: more) and (prefers-color-scheme: dark){:root:not([data-theme="light"]){--label2:rgba(235,235,245,.85); --sep:rgba(120,120,128,.9); --vidro:rgba(28,28,30,.97); --material:#1c1c1e}}
 @media (prefers-reduced-transparency: reduce){:root{--vidro:var(--bg); --material:var(--cell)}}
@@ -184,6 +186,12 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 .ano button svg{width:12px;height:12px;fill:var(--label)}
 .ano button:active{background:var(--fill2)}
 .legenda{display:flex;flex-direction:column;gap:4px;padding:0 4px 4px}
+.serie-var{margin-top:6px;padding:12px 4px 0;border-top:.5px solid var(--sep)}
+.serie-var h3{font-size:0.8125rem;font-weight:600;margin:0;line-height:1.3}
+.serie-var .sub{font-size:0.6875rem;color:var(--label2);display:block;margin:2px 0 6px}
+.serie-var .grafico{height:150px}
+.serie-var .chaves-var{display:flex;gap:10px;font-size:0.6875rem;color:var(--label2);margin-top:4px}
+.serie-var .chaves-var i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 .legenda .barra{display:grid;grid-template-columns:repeat(var(--n),1fr);height:10px;border-radius:3px;overflow:hidden}
 .legenda .marcas{display:grid;grid-template-columns:repeat(var(--n),1fr);font-size:0.6875rem;color:var(--label2)}
 .legenda .marcas span{white-space:nowrap;transform:translateX(-50%)}
@@ -373,6 +381,11 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
     <div class="seg" id="seg-modo" style="--n:2"><button type="button" data-m="total">Total</button><button type="button" data-m="ha">Por hectare</button></div>
   </div>
   <div class="legenda" id="legenda"></div>
+  <section class="serie-var" aria-labelledby="sv-tit">
+    <h3 id="sv-tit">Série da variável</h3><span class="sub" id="sv-sub"></span>
+    <div class="grafico"><canvas id="g-var" role="img" aria-label="Série anual da variável selecionada"></canvas></div>
+    <div class="chaves-var" id="sv-chaves" hidden></div>
+  </section>
 </aside>
 
 <aside class="painel" id="dir" aria-label="Recorte selecionado">
@@ -425,6 +438,9 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
 /* plataforma de emissões YbYrá-BR · v0.8.0
+   0.9.0 (2026-10-24) — gráfico da variável selecionada no pé do painel Explorar (recorte selecionado, total ou por hectare):
+                        processos na cor do processo; emissão bruta em laranja-escuro; emissão líquida em barras com
+                        cor pelo sinal (fonte × sumidouro, as pontas da escala do mapa); estoques em área. Clique escolhe o ano.
    0.8.0 (2026-10-24) — botão de aparência na barra superior: automática (segue o sistema) → clara → escura, salva no navegador
                         e aplicada antes da primeira pintura; fica visível também no celular.
    0.7.0 (2026-10-22) — malhas reais do GEE (MapBiomas) em PMTiles, uma camada por recorte, como na plataforma de
@@ -464,7 +480,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.8.0", DADOS = "dados/v1_2/";
+const VERSAO = "0.9.0", DADOS = "dados/v1_2/";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
 const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma",
@@ -489,8 +505,8 @@ const MOV = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1
 
 /* variáveis exibidas: base (arquivos) ou derivadas */
 const VARS = [
-  {k:"liquida", n:"Emissão líquida", g:"Saldo", esc:"div", sw:"--p-liq", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]-Math.abs(s.removal_sf_co2[i])), base:["total_primary_co2","defor_sf_co2","removal_sf_co2"]},
-  {k:"bruta", n:"Emissão bruta", g:"Emissões", esc:"emi", sw:"--p-defor", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]), base:["total_primary_co2","defor_sf_co2"]},
+  {k:"liquida", n:"Emissão líquida", g:"Saldo", esc:"div", sw:"--p-liq", sinal:true, f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]-Math.abs(s.removal_sf_co2[i])), base:["total_primary_co2","defor_sf_co2","removal_sf_co2"]},
+  {k:"bruta", n:"Emissão bruta", g:"Emissões", esc:"emi", sw:"--p-defor", cg:"--p-bruta", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]), base:["total_primary_co2","defor_sf_co2"]},
   {k:"defor_co2", n:"Desmatamento de floresta primária", g:"Emissões", esc:"emi", sw:"--p-defor"},
   {k:"fire_co2", n:"Fogo em floresta", g:"Emissões", esc:"emi", sw:"--p-fogo"},
   {k:"edge_co2", n:"Efeito de borda", g:"Emissões", esc:"emi", sw:"--p-borda"},
@@ -770,7 +786,7 @@ async function painel(){
     const cls = dl===null ? "" : (inv ? !sobe : sobe) ? "sobe" : "desce";
     return `<div class="kpi"><span class="n">${n}</span><span class="v num">${fmt(v,e)}</span><span class="u">${e.u}</span>${dl===null?"":`<span class="d num ${cls}">${dl>0?"▲":"▼"} ${nf(Math.abs(dl),0)}% vs ${E.ano-1}</span>`}</div>`; };
   $("kpis").innerHTML = kpi("Emissão bruta",bruta) + kpi("Remoção",rem,true) + kpi("Emissão líquida",liq);
-  graficos(s, div); ranking(); citacao(s);
+  graficos(s, div); graficoVar(s); ranking(); citacao(s);
 }
 function opcoesBase(u){
   const fg = cor("--label2"), sep = cor("--sep");
@@ -800,6 +816,32 @@ function graficos(s, div){
     desenhar(canv, "g-"+canv, {type:"line", data:{labels:ANOS, datasets:[{label:VAR[chave].n, data:vals.map(v=>v/ee.f), borderColor:cor("--p-rem"), backgroundColor:cor("--p-rem")+"26", fill:true, borderWidth:1.8, pointRadius:sel.map(x=>x?3:0), tension:.25}]}, options:oo});
   };
   est("sf","agc_sf_co2","agc_sf_co2","u-sf"); est("p","agc0_mgc","agc0_mgc","u-p");
+}
+/* série da variável selecionada, no recorte selecionado (painel esquerdo) */
+function graficoVar(s){
+  const def = VAR[E.v], i = ANOS.indexOf(E.ano);
+  const bruto = def.f ? def.f(s) : s[E.v];
+  const vals = bruto.map((v,k)=> E.modo==="ha" ? (s.area_ha[k]>0 ? v/s.area_ha[k] : 0) : v);
+  const e = escala(Math.max(...vals.map(Math.abs)), E.v), conv = x=>x/e.f;
+  const sel = ANOS.map(a=>a===E.ano), alfa = (c,k)=> sel[k] ? c : c+"b3";
+  $("sv-tit").textContent = def.n;
+  $("sv-sub").textContent = `${nomeDe(E.sel.tipo,E.sel.id)} · ${e.u}`;
+  const o = opcoesBase(e.u); o.scales.x.ticks.maxTicksLimit = 5; o.plugins.tooltip.callbacks.title = c=>String(c[0].label);
+  o.onClick = (ev,els)=>{ if(els.length) mudarAno(ANOS[els[0].index]); };
+  let ds, chaves = "";
+  if(def.estoque){
+    ds = [{type:"line", label:def.n, data:vals.map(conv), borderColor:cor(def.sw), backgroundColor:cor(def.sw)+"26", fill:true, borderWidth:1.8, pointRadius:sel.map(x=>x?3.5:0), tension:.25}];
+  } else if(def.sinal){
+    const pos = cor("--p-liq-pos"), neg = cor("--p-liq-neg");
+    ds = [{type:"bar", label:def.n, data:vals.map(conv), backgroundColor:vals.map((v,k)=>alfa(v>=0?pos:neg,k)), borderWidth:0}];
+    chaves = `<span><i style="background:${pos}"></i>Fonte (emite mais do que remove)</span><span><i style="background:${neg}"></i>Sumidouro</span>`;
+  } else {
+    const c = cor(def.cg || def.sw);
+    ds = [{type:"bar", label:def.n, data:vals.map(conv), backgroundColor:vals.map((v,k)=>alfa(c,k)), borderWidth:0}];
+  }
+  $("sv-chaves").innerHTML = chaves; $("sv-chaves").hidden = !chaves;
+  desenhar("var", "g-var", {type: def.estoque ? "line" : "bar", data:{labels:ANOS, datasets:ds}, options:o});
+  $("g-var").setAttribute("aria-label", `${def.n} em ${nomeDe(E.sel.tipo,E.sel.id)}, ${ANOS[0]} a ${ANOS.at(-1)}. Em ${E.ano}: ${nf(conv(vals[i]), e.d)} ${e.u}.`);
 }
 function desenhar(chave, canvasId, cfg){ if(G[chave]) G[chave].destroy(); G[chave] = new Chart($(canvasId), cfg); }
 
@@ -926,7 +968,7 @@ document.querySelectorAll("#seg-proj button").forEach(b=>b.onclick=()=>{ E.proj=
 function montarVars(){
   const grupos = [...new Set(VARS.map(v=>v.g))];
   $("sel-var").innerHTML = grupos.map(g=>`<optgroup label="${g}">${VARS.filter(v=>v.g===g).map(v=>`<option value="${v.k}">${v.n}</option>`).join("")}</optgroup>`).join("");
-  $("sel-var").onchange = e=>{ E.v = e.target.value; atualizar(false); };
+  $("sel-var").onchange = async e=>{ E.v = e.target.value; await atualizar(false); graficoVar(await serie(E.sel.tipo, E.sel.id)); };
 }
 async function atualizar(comPainel=true){ marcar(); await colorir(); if(comPainel) await painel(); else ranking(); }
 async function selecionar(tipo,id,voa){
