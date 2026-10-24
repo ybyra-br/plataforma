@@ -1,5 +1,5 @@
 /**
- * ybyra_estatisticas.js · v0.3.1
+ * ybyra_estatisticas.js · v0.4.0
  * =============================================================================
  * Estatísticas por recorte territorial dos assets de emissões e remoções do modelo
  * YbYrá-BR (projeto CNPq 401741/2023-0) para a plataforma
@@ -22,6 +22,8 @@
  *   3. MODO = 'exportar'    → Run: cria as tarefas; clique RUN em cada uma na aba Tasks.
  *   3b. MODO = 'geometrias' → Run: exporta as malhas em shapefile (pasta YBYRA-GEOMETRIAS)
  *      com colunas id (o mesmo da tabela) e nome, para o mapa da plataforma.
+ *   3d. MODO = 'nomes'      → Run: exporta só id + nome de cada malha em CSV UTF-8 (pasta YBYRA-NOMES),
+ *                             para corrigir os nomes do mapa (acentos e nomes vazios).
  *   3c. MODO = 'tudo'       → Run: 'exportar' + 'geometrias' numa só execução.
  *   4. Baixe os CSV da pasta YBYRA-ESTATISTICAS do Drive e envie para a pasta
  *      dados/brutos/v1_2/ do repositório ybyra-br/plataforma (pode ser pelo site do
@@ -34,6 +36,11 @@
  *   agc_sf_ha, agc0_state  Mg C ha⁻¹                            → × área (ha) → Mg C
  *
  * Histórico de versões
+ *   0.4.0 (2026-10-24) — modo 'nomes': CSV UTF-8 com id + nome de cada malha (o shapefile perdia os
+ *                        acentos de TI e quilombos); campo de nome detectado também por padrão
+ *                        (nome, name, nm_, no_ …, preferindo colunas de texto preenchidas), além da
+ *                        lista fixa, o que resolve as UCs sem nome; NOME_RECORTE fixa o campo à mão;
+ *                        inspecionar mostra o campo de nome escolhido e um exemplo de valor.
  *   0.3.1 (2026-10-22) — shapefiles só com polígonos: algumas feições das malhas do MapBiomas são
  *                        coleções com pedaços de linha (erro "Shapefiles cannot contain multiple
  *                        geometry types"); feições sem parte poligonal são descartadas.
@@ -54,7 +61,7 @@
 // ----------------------------------------------------------------------------
 // Configuração
 // ----------------------------------------------------------------------------
-var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar' | 'geometrias' | 'tudo'
+var MODO = 'inspecionar';           // 'inspecionar' | 'teste' | 'exportar' | 'geometrias' | 'nomes' | 'tudo'
 
 var ASSET_MODELO = 'projects/ee-redd-brazil/assets/ybyra-br-model/emissions_removals_v1_2';
 var VERSAO_MODELO = 'v1_2';
@@ -105,6 +112,10 @@ var PASTA_GEOMETRIAS = 'YBYRA-GEOMETRIAS';
 var SIMPLIFICAR_M = 0;              // 0 = geometria original; ex.: 100 simplifica com erro máx. de 100 m (arquivos bem menores)
 var CANDIDATOS_NOME = ['NM_MUN', 'NM_UF', 'NM_BIOMA', 'Bioma', 'NAME', 'name', 'NOME', 'nome', 'NM_TI', 'terrai_nom', 'nome_uc', 'NOME_UC1', 'nm_comunid', 'NM_COMUNID'];
 var CANDIDATOS_UF = ['CD_UF', 'cd_uf', 'COD_UF'];
+// Campo de nome fixado à mão por recorte (null = detectar). Ex.: unidade_conservacao: 'NOME_UC'
+var NOME_RECORTE = {municipio: null, bioma: null, uf: null, terra_indigena: null, unidade_conservacao: null,
+                    territorio_quilombola: null, amazonia_legal: null, matopiba: null, bacia_nivel1: null, bacia_nivel2: null};
+var PASTA_NOMES = 'YBYRA-NOMES';
 // Estados: conferência no modo inspecionar e shapefile no modo geometrias (as estatísticas
 // de estado e do Brasil saem da soma dos municípios)
 var ASSET_ESTADOS = MB + 'PLATFORM/demo/mapbiomas/brazil/territories/ESTADOS_IBGE_2025_F7EAF953/3f95fd9d-4b26-4243-8612-37b9d5b12a55';
@@ -137,6 +148,17 @@ var anos = ANOS || col.aggregate_array('system:time_start')
 // ----------------------------------------------------------------------------
 function colunas(asset) {
   return ee.Feature(ee.FeatureCollection(asset).first()).propertyNames().getInfo();
+}
+// Campo de nome: lista fixa; senão, colunas cujo nome lembra "nome" e que tenham texto na 1ª feição.
+function campoNome(asset, cols, recorte) {
+  if (NOME_RECORTE[recorte]) return NOME_RECORTE[recorte];
+  var fixo = primeiroPresente(cols, CANDIDATOS_NOME);
+  var props = ee.Feature(ee.FeatureCollection(asset).first()).toDictionary().getInfo();
+  var cheio = function (c) { var v = props[c]; return typeof v === 'string' && v.replace(/\s/g, '').length > 0; };
+  if (fixo && cheio(fixo)) return fixo;
+  var padrao = /(^|_)(nome|name|nm|no|nom|denomina)(_|$)|nome|name/i;
+  var achados = cols.filter(function (c) { return padrao.test(c) && !/(^|_)(id|cod|cd)(_|$)/i.test(c) && cheio(c); });
+  return achados.length ? achados[0] : fixo;
 }
 function primeiroPresente(cols, candidatos) {
   for (var i = 0; i < candidatos.length; i++) if (cols.indexOf(candidatos[i]) >= 0) return candidatos[i];
@@ -292,8 +314,9 @@ if (MODO === 'inspecionar') {
   print('Estados (conferência) — nº de feições:', ee.FeatureCollection(ASSET_ESTADOS).size());
   Object.keys(RECORTES_EXTRA).forEach(function (nome) {
     var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
-    print(nome + ' — atributo: ' + (cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID)) + (cfg.ativo ? ' (ativo)' : ' (desligado)') + ' · nº de feições:',
-          ee.FeatureCollection(cfg.asset).size(), 'Colunas:', cols);
+    var cn = campoNome(cfg.asset, cols, nome);
+    print(nome + ' — atributo: ' + (cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID)) + ' · nome: ' + cn + (cfg.ativo ? ' (ativo)' : ' (desligado)') + ' · nº de feições:',
+          ee.FeatureCollection(cfg.asset).size(), 'Colunas:', cols, 'Exemplo:', ee.FeatureCollection(cfg.asset).first().toDictionary());
   });
   Map.setCenter(-52, -12, 4);
   Map.addLayer(zonaMunicipioBioma().randomVisualizer(), {}, 'Zonas município × bioma');
@@ -315,8 +338,8 @@ if (MODO === 'teste') {
 if (MODO === 'geometrias' || MODO === 'tudo') {
   // Cada malha sai como shapefile com: id (mesmo identificador das tabelas de estatística), nome
   // e, nos municípios, sigla_uf. Nomes de coluna curtos (limite de 10 caracteres do shapefile).
-  var exportarGeo = function (nome, fc, cols) {
-    var atrNome = primeiroPresente(cols, CANDIDATOS_NOME);
+  var exportarGeo = function (nome, fc, cols, asset) {
+    var atrNome = campoNome(asset, cols, nome);
     var atrUf = primeiroPresente(cols, ['SIGLA_UF', 'sigla_uf', 'SG_UF']);
     var saida = fc.map(function (f) {
       var g = soPoligonos(f.geometry());
@@ -332,17 +355,37 @@ if (MODO === 'geometrias' || MODO === 'tudo') {
     print(nome + ' — id: ' + (nome === 'municipio' ? atribMun : nome === 'bioma' ? (atribBioCod || atribBioNome + ' → código') : 'ver acima') +
           ' · nome: ' + atrNome + (atrUf ? ' · UF: ' + atrUf : ''));
   };
-  exportarGeo('municipio', comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun), colsMun);
-  exportarGeo('bioma', comIdBioma(ee.FeatureCollection(ASSET_BIOMAS)), colsBio);
+  exportarGeo('municipio', comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun), colsMun, ASSET_MUNICIPIOS);
+  exportarGeo('bioma', comIdBioma(ee.FeatureCollection(ASSET_BIOMAS)), colsBio, ASSET_BIOMAS);
   var colsUf = colunas(ASSET_ESTADOS), atribUf = primeiroPresente(colsUf, CANDIDATOS_UF);
-  if (atribUf) exportarGeo('uf', comIdNumerico(ee.FeatureCollection(ASSET_ESTADOS), atribUf), colsUf);
+  if (atribUf) exportarGeo('uf', comIdNumerico(ee.FeatureCollection(ASSET_ESTADOS), atribUf), colsUf, ASSET_ESTADOS);
   else print('Estados: nenhum atributo de código da UF encontrado. Colunas:', colsUf);
   Object.keys(RECORTES_EXTRA).forEach(function (nome) {
     var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
     var atrib = cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID);
-    if (cfg.ativo) exportarGeo(nome, comIdNumerico(ee.FeatureCollection(cfg.asset), atrib), cols);
+    if (cfg.ativo) exportarGeo(nome, comIdNumerico(ee.FeatureCollection(cfg.asset), atrib), cols, cfg.asset);
   });
   print('Tarefas de geometria criadas (pasta do Drive: ' + PASTA_GEOMETRIAS + '). Clique RUN em cada uma na aba Tasks.');
+}
+
+if (MODO === 'nomes') {
+  // CSV UTF-8 só com id e nome (sem geometria): corrige acentos e nomes vazios do shapefile.
+  var exportarNomes = function (nome, fc, cols, asset) {
+    var atrNome = campoNome(asset, cols, nome);
+    if (!atrNome) { print('AVISO — ' + nome + ': nenhum campo de nome encontrado; fixe em NOME_RECORTE. Colunas:', cols); return; }
+    var saida = fc.map(function (f) { return ee.Feature(null, {id: f.get('id_num'), nome: f.get(atrNome)}); });
+    var desc = 'ybyra_nomes_' + nome;
+    Export.table.toDrive({collection: saida, description: desc, folder: PASTA_NOMES, fileNamePrefix: desc,
+                          fileFormat: 'CSV', selectors: ['id', 'nome']});
+    print(nome + ' — nome: ' + atrNome);
+  };
+  exportarNomes('municipio', comIdNumerico(ee.FeatureCollection(ASSET_MUNICIPIOS), atribMun), colsMun, ASSET_MUNICIPIOS);
+  Object.keys(RECORTES_EXTRA).forEach(function (nome) {
+    var cfg = RECORTES_EXTRA[nome], cols = colunas(cfg.asset);
+    var atrib = cfg.atributo || primeiroPresente(cols, CANDIDATOS_ID);
+    if (cfg.ativo) exportarNomes(nome, comIdNumerico(ee.FeatureCollection(cfg.asset), atrib), cols, cfg.asset);
+  });
+  print('Tarefas de nomes criadas (pasta do Drive: ' + PASTA_NOMES + '). Clique RUN em cada uma na aba Tasks.');
 }
 
 if (MODO === 'exportar' || MODO === 'tudo') {

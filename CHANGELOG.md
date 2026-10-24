@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 0.12.0 — 2026-10-24
+- `gee/ybyra_estatisticas.js` v0.4.0: modo `nomes`, que exporta em CSV UTF-8 só o id e o nome de cada malha (o shapefile perdia os acentos de terras indígenas e quilombos); campo de nome detectado também por padrão (`nome`, `name`, `nm_`…), o que resolve as unidades de conservação sem nome; `NOME_RECORTE` permite fixar o campo à mão.
+- `scripts/aplicar_nomes.py` v0.1.0: aplica esses nomes em `web/geo/indice.json` (busca, rótulos e catálogo), sem refazer as camadas do mapa; nomes repetidos ganham o identificador.
+- README reescrito para o público: o que a plataforma mostra, recortes, dados, fontes das malhas, processamento e citação.
+
 ## 0.11.2 — 2026-10-24
 - Site v0.9.2: em telas de até 900 px, o painel do recorte ficava fixo por cima do painel Explorar; agora os dois se empilham sob o mapa, como previsto.
 

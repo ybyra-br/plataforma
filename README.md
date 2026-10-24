@@ -1,59 +1,63 @@
-# Emissões e Remoções de CO₂ — YbYrá-BR · v0.11.2
+# Emissões e Remoções de CO₂ — YbYrá-BR
 
-Plataforma do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para explorar as emissões e remoções de CO₂ do modelo YbYrá-BR por recorte territorial: Brasil, estados, biomas e municípios.
+Plataforma pública do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para consultar as emissões e remoções de CO₂ da vegetação nativa brasileira, ano a ano, de 1986 a 2024, em diferentes recortes do território.
 
-> **Prévia com os resultados do modelo YbYrá-BR v1.2** (1986–2024), ainda sem o método publicado.
+**Acesse:** https://ybyra-br.github.io/plataforma/
 
-Site: https://ybyra-br.github.io/plataforma/
+> Versão de prévia com os resultados do modelo YbYrá-BR v1.2. A descrição completa do método será publicada em breve na seção *Método* da plataforma.
 
-## Fluxo
+## O que a plataforma mostra
 
-```
-GEE (Code Editor, projeto ee-redd-brazil)
-  └─ gee/ybyra_estatisticas.js        soma por município × bioma (padrão MapBiomas) → CSV no Drive
-       └─ dados/brutos/v1_2/*.csv[.gz]     você envia os CSV para esta pasta do repositório
-            └─ R/agregar.R                  (GitHub Actions) UF, bioma, UF × bioma, Brasil; conferência; JSON
-                 └─ web/                     site estático (MapLibre + Chart.js) no GitHub Pages
-```
+- **Processos de emissão:** desmatamento de floresta primária, fogo em floresta, efeito de borda, exploração madeireira e desmatamento de vegetação secundária.
+- **Remoção:** crescimento da vegetação secundária.
+- **Saldos:** emissão bruta (soma dos processos) e emissão líquida (bruta − remoção).
+- **Estoques de carbono acima do solo:** vegetação secundária e floresta primária.
 
-1. No Code Editor do GEE, abra `gee/ybyra_estatisticas.js` e rode com `MODO = 'inspecionar'`, depois `'teste'` e `'exportar'` (clique RUN em cada tarefa na aba Tasks).
-2. Baixe os CSV da pasta `YBYRA-ESTATISTICAS` do Drive.
-3. Em `dados/brutos/v1_2/`, **apague todos os arquivos** (os CSV fictícios e o `FICTICIOS.txt`) e envie os CSV reais (pelo site do GitHub: *Add file → Upload files*, ou por git). Arquivos acima de 25 MB não sobem pelo site: compacte em `.csv.gz` (o R lê os dois) ou use git. O aviso de dados fictícios some sozinho quando o `FICTICIOS.txt` sai.
-4. O envio dispara o workflow `pages`: o R agrega, confere o fechamento dos totais e publica o site. A tabela longa completa fica em `dados/v1_2/estatisticas.csv.gz` no site.
+Todos os valores podem ser vistos em total (Mg, kt, Mt ou Gt de CO₂ por ano) ou por hectare.
 
-Local: `Rscript R/agregar.R dados/brutos/v1_2 web/dados/v1_2 v1_2 web/geo/indice.json` e depois `python -m http.server -d web`.
+### Recortes territoriais
 
-Malhas do mapa: rode o GEE com `MODO = 'geometrias'`, baixe a pasta `YBYRA-GEOMETRIAS` e gere as camadas com `python scripts/gerar_pmtiles.py <pasta> [nomes_municipios.json] [recortes...]`.
+| Grupo | Recortes |
+|---|---|
+| Divisão político-administrativa | Brasil, estados, municípios |
+| Regiões | Biomas, Amazônia Legal, MATOPIBA |
+| Bacias hidrográficas | Divisão Hidrográfica Nacional (ANA), níveis 1 e 2 |
+| Áreas protegidas e territórios | Terras indígenas, unidades de conservação, territórios quilombolas |
 
-Para testes sem os dados do modelo, `scripts/gerar_dados_ficticios.py` gera CSV fictícios no mesmo formato do export do GEE (com um `FICTICIOS.txt`, que liga o aviso no site).
+As estatísticas de estados, biomas e do Brasil são a soma exata das zonas município × bioma. Os recortes que se sobrepõem (terras indígenas, unidades de conservação e territórios quilombolas) são calculados feição a feição.
 
-## Unidades
+### Recursos
 
-| Bandas | Tratamento | Resultado por recorte |
-|---|---|---|
-| `*_co2` (edge, fire, defor, logging, total_primary, defor_sf, removal_sf) | soma direta | Mg CO₂ ano⁻¹ |
-| `agc_sf_co2` | soma direta | estoque, Mg CO₂ |
-| `*_co2_ha` | não somadas (derivadas) | — |
-| `agc_sf_ha`, `agc0_state` (Mg C ha⁻¹) | × área do pixel e soma | estoque, Mg C |
+- Mapa em globo ou plano, com mapas de fundo e imagem de satélite.
+- Busca por nome em todos os recortes.
+- Série anual por processo, indicadores do ano, estoques e ranking dos sub-recortes.
+- Relatório para impressão, cópia da série em CSV e citação pronta.
+- Aparência clara, escura ou automática; uso por teclado e leitores de tela.
 
-Somente CO₂ (sem CH₄ e N₂O).
+## Dados
 
-## Estrutura
+- **Tabela completa:** [`dados/v1_2/estatisticas.csv.gz`](https://ybyra-br.github.io/plataforma/dados/v1_2/estatisticas.csv.gz), em formato longo (`tipo, id, ano, variavel, valor`), com todos os recortes, anos e variáveis.
+- **Unidades:** fluxos em Mg CO₂ ano⁻¹; estoque da vegetação secundária em Mg CO₂; estoque da floresta primária em Mg C. Somente CO₂ (sem CH₄ e N₂O).
+- **Identificadores:** códigos IBGE para municípios e estados, códigos IBGE de 1 a 6 para biomas e identificadores das bases de origem para os demais recortes.
 
-```
-gee/ybyra_estatisticas.js              estatísticas por recorte no Earth Engine (Code Editor)
-R/agregar.R                            agregação hierárquica e arquivos do site (roda no GitHub Actions)
-dados/brutos/v1_2/                     CSV exportados do GEE (modelo v1.2, 1986–2024)
-scripts/ler_shp.py                     leitor mínimo de shapefile (polígonos) e dbf
-scripts/gerar_pmtiles.py               malhas do GEE (shapefiles) → web/geo/<recorte>.pmtiles + indice.json
-scripts/gerar_ficticios_extras.py      dados fictícios dos recortes extras (TI, UC, quilombos, regiões, bacias)
-scripts/gerar_dados_ficticios.py       dados fictícios no formato do export do GEE
-dados_ficticios/                       bioma predominante e nomes usados na prévia
-web/index.html                         plataforma
-web/dados/v1_2/                        gerado no Actions: catálogo, mapas (por variável), séries (por UF), tabela longa
-web/geo/                               malhas do mapa em PMTiles (uma por recorte) e indice.json (id, nome, extensão)
-```
+### Limites territoriais
+
+Malhas públicas disponibilizadas pelo [MapBiomas](https://brasil.mapbiomas.org): municípios, estados e biomas (IBGE), terras indígenas (FUNAI), unidades de conservação (CNUC/MMA), territórios quilombolas (INCRA), bacias hidrográficas (ANA), Amazônia Legal e MATOPIBA (EMBRAPA).
+
+## Como o processamento funciona
+
+1. As estatísticas zonais são calculadas no Google Earth Engine sobre os mapas anuais do modelo, em 30 m (`gee/`).
+2. A agregação hierárquica e a conferência dos totais são feitas em R (`R/agregar.R`), a cada atualização dos dados, via GitHub Actions.
+3. O site é estático (MapLibre GL, PMTiles e Chart.js) e publicado no GitHub Pages (`web/`).
+
+O código é aberto. O histórico de versões está em [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Como citar
 
-Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR (prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. https://github.com/ybyra-br/plataforma
+Silva-Junior, C. H. L. (2026). *Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR* (versão de prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. https://ybyra-br.github.io/plataforma/
+
+## Apoio
+
+Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq), processo 401741/2023-0.
+
+Dúvidas, correções e sugestões: abra uma [issue](https://github.com/ybyra-br/plataforma/issues).
