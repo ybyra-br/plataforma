@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.10.0 — 2026-10-24
+- Site v0.8.0: botão de aparência na barra superior (ícone ao lado de "Código aberto"), que alterna entre automática (segue o sistema), clara e escura. A escolha fica salva no navegador e é aplicada antes da primeira pintura, sem piscar; mapa, gráficos e logos acompanham. No celular o botão continua visível.
+
 ## 0.9.0 — 2026-10-24
 - **Dados reais do modelo YbYrá-BR v1.2** no lugar dos fictícios: 24 CSV exportados do GEE (`gee/ybyra_estatisticas.js` v0.3.1), 1986–2024, em três blocos de 13 anos, para município × bioma, Amazônia Legal, MATOPIBA, bacias níveis 1 e 2, terras indígenas, unidades de conservação e territórios quilombolas. Sai o `FICTICIOS.txt`, e o aviso de dados fictícios some do site.
 - Conferência antes do envio: área total de 850,9 Mha em todos os anos; nenhum valor inválido ou negativo; `total_primary_co2` = desmatamento + fogo + borda + exploração madeireira. Nos dados reais `removal_sf_co2` vem positiva (nos fictícios era negativa); o site já usa o valor absoluto, então a emissão líquida continua sendo bruta − remoção.
