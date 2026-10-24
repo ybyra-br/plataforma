@@ -1,5 +1,8 @@
-# Plataforma YbYrá-BR — agrega os CSV do GEE em R e publica web/ no GitHub Pages (v0.2.2)
+# Plataforma YbYrá-BR — agrega os CSV do GEE em R e publica web/ no GitHub Pages (v0.3.0)
 # Dispara a cada envio ao main (inclusive quando novos CSV entram em dados/brutos/).
+# Cada pasta dados/brutos/<modelo>/ (com VERSAO.txt) vira web/dados/<modelo>/; todas ficam publicadas,
+# para que relatórios de versões anteriores continuem verificáveis. A versão atual é a de ATUAL.
+# 0.3.0 (2026-10-24) — várias versões de dados e web/dados/versoes.json.
 name: pages
 on:
   push: { branches: [main] }
@@ -9,7 +12,7 @@ permissions:
   pages: write
   id-token: write
 concurrency: { group: pages, cancel-in-progress: true }
-env: { MODELO: v1_2 }
+env: { ATUAL: v1_2 }
 jobs:
   montar:
     runs-on: ubuntu-latest
@@ -18,8 +21,25 @@ jobs:
       - uses: actions/checkout@v4
       - name: R (pacotes do Ubuntu)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends r-base-core r-cran-data.table r-cran-jsonlite r-cran-r.utils
-      - name: Agregar (R)
-        run: Rscript R/agregar.R dados/brutos/$MODELO web/dados/$MODELO $MODELO web/geo/indice.json
+      - name: Agregar (R), uma vez por versão de dados
+        run: |
+          for d in dados/brutos/*/; do
+            m=$(basename "$d")
+            Rscript R/agregar.R "dados/brutos/$m" "web/dados/$m" "$m" web/geo/indice.json
+          done
+      - name: Índice de versões
+        run: |
+          python3 - <<'PY'
+          import json, glob, os
+          vs = {}
+          for c in sorted(glob.glob("web/dados/*/catalogo.json")):
+              cat = json.load(open(c, encoding="utf-8"))
+              vs[cat["versao_dados"]] = {"pasta": os.path.dirname(c)[4:] + "/", "gerado_em": cat["gerado_em"],
+                                         "ficticio": cat.get("ficticio", False)}
+          atual = json.load(open(f"web/dados/{os.environ['ATUAL']}/catalogo.json", encoding="utf-8"))["versao_dados"]
+          json.dump({"atual": atual, "versoes": vs}, open("web/dados/versoes.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+          print("versões:", list(vs), "atual:", atual)
+          PY
       - uses: actions/upload-pages-artifact@v3
         with: { path: web }
   publicar:

@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # =============================================================================
-# agregar.R · v0.2.0
+# agregar.R · v0.3.0
 # -----------------------------------------------------------------------------
 # Agrega as tabelas exportadas pelo GEE (gee/ybyra_estatisticas.js) e grava os
 # arquivos estáticos da plataforma https://ybyra-br.github.io/plataforma/.
@@ -21,6 +21,9 @@
 # Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <web/geo/indice.json>
 #
 # Histórico de versões
+#   0.3.0 (2026-10-24) — versão dos dados (ex.: 1.2.0) lida de <entrada>/VERSAO.txt e gravada no
+#                        catálogo (versao_dados), com a data de geração em UTC; a versão também entra
+#                        na tabela longa (coluna versao_dados).
 #   0.2.0 (2026-10-22) — nomes de todos os recortes vêm de web/geo/indice.json (malhas do GEE, gerado
 #                        por scripts/gerar_pmtiles.py); estados com nome por extenso; séries em lotes
 #                        id %% 20 nos recortes grandes (UC, TI, quilombos); ids formatados sem notação
@@ -33,7 +36,7 @@
 # =============================================================================
 suppressPackageStartupMessages({ library(data.table); library(jsonlite) })
 
-VERSAO_SCRIPT <- "0.2.0"
+VERSAO_SCRIPT <- "0.3.0"
 arg <- commandArgs(trailingOnly = TRUE)
 if (length(arg) < 4) stop("Uso: Rscript R/agregar.R <entrada> <saida> <modelo> <web/geo/indice.json>")
 ENTRADA <- arg[1]; SAIDA <- arg[2]; MODELO <- arg[3]; INDICE <- arg[4]
@@ -134,8 +137,11 @@ gravar_json <- function(obj, caminho) {
 }
 dir.create(SAIDA, recursive = TRUE, showWarnings = FALSE)
 
-catalogo <- list(versao_script = paste0("R ", VERSAO_SCRIPT), versao_modelo = MODELO,
-                 gerado_em = format(Sys.Date()), gases = "somente CO₂ (sem CH₄ e N₂O)",
+arq_versao <- file.path(ENTRADA, "VERSAO.txt")
+VERSAO_DADOS <- if (file.exists(arq_versao)) trimws(readLines(arq_versao, n = 1, warn = FALSE)) else gsub("_", ".", sub("^v", "", MODELO))
+cat(sprintf("Versão dos dados: v%s\n", VERSAO_DADOS))
+catalogo <- list(versao_script = paste0("R ", VERSAO_SCRIPT), versao_modelo = MODELO, versao_dados = VERSAO_DADOS,
+                 gerado_em = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"), gases = "somente CO₂ (sem CH₄ e N₂O)",
                  ficticio = file.exists(file.path(ENTRADA, "FICTICIOS.txt")),
                  variaveis = setNames(lapply(COLS, unidade), COLS), tipos = list())
 longa <- list()
@@ -171,7 +177,7 @@ for (tipo in names(rec)) {
                         variable.name = "variavel", value.name = "valor")[, tipo := tipo]
 }
 gravar_json(catalogo, file.path(SAIDA, "catalogo.json"))
-longa <- rbindlist(longa)[, .(tipo, id, ano, variavel, valor)]
+longa <- rbindlist(longa)[, .(tipo, id, ano, variavel, valor)][, versao_dados := VERSAO_DADOS]
 fwrite(longa, file.path(SAIDA, "estatisticas.csv.gz"))
 cat(sprintf("Dados fictícios: %s\n", if (file.exists(file.path(ENTRADA, "FICTICIOS.txt"))) "sim" else "não"))
 cat(sprintf("Gravado em %s: %s linhas na tabela longa; tipos = %s\n", SAIDA,

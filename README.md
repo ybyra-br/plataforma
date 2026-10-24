@@ -4,7 +4,7 @@ Plataforma pública do projeto **YbYrá-BR** (CNPq, processo 401741/2023-0) para
 
 **Acesse:** https://ybyra-br.github.io/plataforma/
 
-> Versão de prévia com os resultados do modelo YbYrá-BR v1.2. A descrição completa do método será publicada em breve na seção *Método* da plataforma.
+> Versão de prévia com os resultados do modelo YbYrá-BR **v1.2.0**. A descrição completa do método será publicada em breve na seção *Método* da plataforma.
 
 ## O que a plataforma mostra
 
@@ -31,12 +31,13 @@ As estatísticas de estados, biomas e do Brasil são a soma exata das zonas muni
 - Mapa em globo ou plano, com mapas de fundo e imagem de satélite.
 - Busca por nome em todos os recortes.
 - Série anual por processo, indicadores do ano, estoques e ranking dos sub-recortes.
-- Relatório para impressão, cópia da série em CSV e citação pronta.
+- Relatório para impressão, com código de verificação de autenticidade ([verificar relatório](https://ybyra-br.github.io/plataforma/verificar.html)), cópia da série em CSV e citação pronta.
 - Aparência clara, escura ou automática; uso por teclado e leitores de tela.
 
 ## Dados
 
 - **Tabela completa:** [`dados/v1_2/estatisticas.csv.gz`](https://ybyra-br.github.io/plataforma/dados/v1_2/estatisticas.csv.gz), em formato longo (`tipo, id, ano, variavel, valor`), com todos os recortes, anos e variáveis.
+- **Versão dos dados:** modelo YbYrá-BR v1.2.0. Cada versão fica publicada em sua própria pasta, e a versão aparece no site, nos arquivos e nos relatórios.
 - **Unidades:** fluxos em Mg CO₂ ano⁻¹; estoque da vegetação secundária em Mg CO₂; estoque da floresta primária em Mg C. Somente CO₂ (sem CH₄ e N₂O).
 - **Identificadores:** códigos IBGE para municípios e estados, códigos IBGE de 1 a 6 para biomas e identificadores das bases de origem para os demais recortes.
 
@@ -54,7 +55,7 @@ O código é aberto. O histórico de versões está em [`CHANGELOG.md`](CHANGELO
 
 ## Como citar
 
-Silva-Junior, C. H. L. (2026). *Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR* (versão de prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. https://ybyra-br.github.io/plataforma/
+Silva-Junior, C. H. L. (2026). *Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR v1.2.0* (versão de prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. Disponível em: https://ybyra-br.github.io/plataforma/. Acesso em: [data].
 
 ## Apoio
 

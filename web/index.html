@@ -284,6 +284,14 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 .rel tr.at td{font-weight:700;background:var(--fill)}
 .rel .lista{columns:2;column-gap:28px;font-size:0.8125rem;padding-left:18px;margin:0}
 .rel .rod{font-size:0.7188rem;color:var(--label2);border-top:.5px solid var(--sep);padding-top:10px}
+.rel .verif{display:flex;gap:16px;align-items:center;border:.5px solid var(--sep);border-radius:12px;padding:12px 14px;break-inside:avoid}
+.rel .verif .qr svg{width:92px;height:92px;display:block}
+.rel .verif .qr{background:#fff;padding:6px;border-radius:6px}
+.rel .verif .tx{font-size:0.75rem;line-height:1.45;color:var(--label2);min-width:0}
+.rel .verif .tx b{color:var(--label);font-size:0.8125rem}
+.rel .verif code{font:600 0.875rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--label);letter-spacing:.02em}
+.rel .verif .lk{word-break:break-all}
+#versao-topo{margin-left:6px;font-variant-numeric:tabular-nums}
 @media (max-width:640px){.rel{padding:20px 16px}.rel .lista{columns:1}.rel .kpis{grid-template-columns:1fr}}
 @media print{
   body{overflow:visible;background:#fff}
@@ -329,7 +337,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 <header class="barra-proj">
   <a class="marca-proj" href="#" id="marca">
     <img class="claro" src="img/ybyra-simbolo-96.png" srcset="img/ybyra-simbolo-96.png 1x, img/ybyra-simbolo-192.png 2x" alt="Símbolo do projeto YbYrá-BR"><img class="escuro" src="img/ybyra-simbolo-branco-96.png" srcset="img/ybyra-simbolo-branco-96.png 1x, img/ybyra-simbolo-branco-192.png 2x" alt="Símbolo do projeto YbYrá-BR">
-    <span class="tx"><span class="proj">Projeto <b>YbYrá-BR</b></span><span class="tit">Emissões e Remoções de CO₂</span></span>
+    <span class="tx"><span class="proj">Projeto <b>YbYrá-BR</b><span id="versao-topo"></span></span><span class="tit">Emissões e Remoções de CO₂</span></span>
   </a>
   <span class="esp"></span>
   <nav class="links" aria-label="Seções"><button type="button" id="abrir-metodo">Método</button><a href="https://github.com/ybyra-br/plataforma" target="_blank" rel="noopener">Código aberto</a><button type="button" class="tema" id="b-tema" aria-label="Aparência: automática" title="Aparência: automática (segue o sistema)"><svg viewBox="0 0 16 16" aria-hidden="true"></svg></button></nav>
@@ -416,6 +424,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
     <h3>Relatório, dados e citação</h3>
     <div class="acoes"><button type="button" class="btn btn-pri" id="abrir-rel">Gerar relatório</button><button type="button" class="btn" id="copiar">Copiar tabela (CSV)</button><button type="button" class="btn" id="copiar-cit">Copiar citação</button></div>
     <p class="cit" id="cit"></p>
+    <p class="nota" id="versao-nota"></p>
     <textarea id="area-copia" hidden aria-hidden="true"></textarea>
   </section>
 </aside>
@@ -437,8 +446,14 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="verificacao.js"></script>
 <script>
 /* plataforma de emissões YbYrá-BR · v0.8.0
+   0.11.0 (2026-10-24) — versão dos dados (v1.2.0) na barra superior, nos créditos do mapa, no painel, na citação, no CSV e
+                        no relatório; citação com "Disponível em" e "Acesso em"; CSV com id, versao_dados e acesso;
+                        relatório com data e hora de acesso e código de verificação de autenticidade (QR code e
+                        código completo, conferidos em verificar.html); dados lidos de dados/versoes.json.
    0.10.1 (2026-10-24) — fonte Inter no lugar da Ubuntu (algarismos tabulares e espessura semibold 600); ss01
                         (dígitos abertos) para leitura dos números.
    0.10.0 (2026-10-24) — fonte Ubuntu (Google Fonts) em toda a plataforma, inclusive gráficos e relatório; nomes reais e
@@ -488,7 +503,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.10.1", DADOS = "dados/v1_2/";
+const VERSAO = "0.11.0"; let DADOS = "dados/v1_2/";
 Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "Inter, sans-serif";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
@@ -538,7 +553,7 @@ const RAMPAS = {
 
 /* estado */
 const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}, base:"cinza", proj:"globe"};
-let CAT, ANOS, mapa, IDX = {}, NOMES = {}, BBOX = {};
+let CAT, ANOS, mapa, IDX = {}, NOMES = {}, BBOX = {}, VD = "";
 const cache = new Map();
 const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
 const nomeDe = (tipo,id) => {
@@ -613,7 +628,7 @@ const BASES = [
 const BASE = Object.fromEntries(BASES.map(b=>[b.k,b]));
 function creditos(){
   const b = BASE[E.base], base = b.atr ? `Fundo: ${b.atr}` : "";
-  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas: IBGE, FUNAI, CNUC/MMA, INCRA, ANA, EMBRAPA, via <a href="https://brasil.mapbiomas.org" target="_blank" rel="noopener">MapBiomas</a> · Dados: modelo YbYrá-BR</span>`;
+  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas: IBGE, FUNAI, CNUC/MMA, INCRA, ANA, EMBRAPA, via <a href="https://brasil.mapbiomas.org" target="_blank" rel="noopener">MapBiomas</a> · Dados: modelo YbYrá-BR ${VD}</span>`;
   $("creditos").title = $("creditos").textContent;
 }
 function aplicarBase(){
@@ -882,8 +897,12 @@ async function ranking(){
   $("rank").innerHTML = top.map(([cid,v],k)=>`<button type="button" data-t="${filho}" data-i="${cid}"><span class="pos num">${k+1}</span><span class="nm"><span>${nomeDe(filho,cid)}</span><span class="bar"><i style="width:${Math.max(2,Math.abs(v)/maxAbs*100)}%;background:${v<0?cor("--p-rem"):c}"></i></span></span><span class="vl num">${fmt(v,e)}</span></button>`).join("") || `<span class="nota">Sem sub-recortes.</span>`;
   $("rank").querySelectorAll("button").forEach(b=>b.onclick=()=>selecionar(b.dataset.t,+b.dataset.i,true));
 }
+const MESES_ABNT = ["jan.","fev.","mar.","abr.","maio","jun.","jul.","ago.","set.","out.","nov.","dez."];
+const dataBR = d => d.toLocaleDateString("pt-BR");
+const dataABNT = d => `${d.getDate()} ${MESES_ABNT[d.getMonth()]} ${d.getFullYear()}`;
+const URL_SITE = "https://ybyra-br.github.io/plataforma/";
 function citacao(s){
-  $("cit").textContent = `Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR, versão ${CAT.versao_modelo} (plataforma ${VERSAO}${CAT.ficticio ? ", prévia com dados fictícios" : ""}). Projeto YbYrá-BR, CNPq 401741/2023-0.`;
+  $("cit").textContent = `Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR ${VD} (plataforma v${VERSAO}${CAT.ficticio ? ", prévia com dados fictícios" : ""}). Projeto YbYrá-BR, CNPq 401741/2023-0. Disponível em: ${URL_SITE}. Acesso em: ${dataABNT(new Date())}.`;
 }
 async function copiarTexto(txt, botao){
   const ok = ()=>{ const t = botao.textContent; botao.textContent = "Copiado"; setTimeout(()=>botao.textContent=t,1500); };
@@ -892,7 +911,8 @@ async function copiarTexto(txt, botao){
 }
 $("copiar").onclick = async ()=>{
   const {tipo,id} = E.sel, s = await serie(tipo,id), ks = Object.keys(s);
-  const csv = ["recorte,tipo,ano,"+ks.join(",")].concat(ANOS.map((a,i)=>`"${nomeDe(tipo,id)}",${tipo},${a},`+ks.map(k=>s[k][i]).join(","))).join("\n");
+  const acesso = new Date().toISOString().slice(0,10);
+  const csv = ["recorte,tipo,id,ano,"+ks.join(",")+",versao_dados,acesso"].concat(ANOS.map((a,i)=>`"${nomeDe(tipo,id)}",${tipo},${id},${a},`+ks.map(k=>s[k][i]).join(",")+`,${VD},${acesso}`)).join("\n");
   copiarTexto(csv, $("copiar"));
 };
 $("copiar-cit").onclick = ()=>copiarTexto($("cit").textContent, $("copiar-cit"));
@@ -913,10 +933,12 @@ async function relatorio(){
   const linhas = ANOS.map((a,k)=>`<tr class="${a===E.ano?"at":""}"><td>${a}</td>${PROC.map(p=>`<td>${f(p.neg?-Math.abs(s[p.k][k]):s[p.k][k])}</td>`).join("")}<td>${f(bruta[k])}</td><td>${f(liq[k])}</td></tr>`).join("");
   const rk = [...$("rank").querySelectorAll("button")].map(b=>`<li>${b.querySelector(".nm span").textContent} — ${b.querySelector(".vl").textContent}</li>`).join("");
   const sf = escala(Math.max(...s.agc_sf_co2), "agc_sf_co2"), pr = escala(Math.max(...s.agc0_mgc), "agc0_mgc");
+  const g = YBV.agora(), dg = new Date(g.replace("Z", ":00Z"));
+  const quando = `${dg.toLocaleDateString("pt-BR")} às ${dg.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",timeZoneName:"short"})}`;
   $("rel-conteudo").innerHTML = `
     <div class="cabrel"><img class="y claro" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><img class="y escuro" src="img/ybyra-logo-branco-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
       <div class="ap">Apoio<img src="img/cnpq-128.png" alt="CNPq">Processo 401741/2023-0</div></div>
-    <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
+    <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)} · modelo YbYrá-BR ${VD}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
     ${CAT.ficticio ? `<p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>` : ""}
     <p>${resumo}</p>
     <div class="kpis">${$("kpis").innerHTML}</div>
@@ -929,13 +951,28 @@ async function relatorio(){
     <h2>Série anual (${e.u})</h2>
     <div class="tabw"><table><thead><tr>${cab.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${linhas}</tbody></table></div>
     ${rk?`<h2>${$("rank-tit").textContent}</h2><p class="meta">${$("rank-nota").textContent}</p><ol class="lista">${rk}</ol>`:""}
-    <p class="rod">Área do recorte: ${nf(s.area_ha[i]/100,0)} km². Fonte: modelo YbYrá-BR, coleção emissions_removals_${CAT.versao_modelo}; somente CO₂. Plataforma versão ${VERSAO}; relatório gerado em ${new Date().toLocaleDateString("pt-BR")}.<br>${$("cit").textContent}</p>`;
+    <div class="verif" id="rel-verif"></div>
+    <p class="rod">Área do recorte: ${nf(s.area_ha[i]/100,0)} km². Fonte: modelo YbYrá-BR ${VD} (coleção emissions_removals_${CAT.versao_modelo}, dados atualizados em ${dataBR(new Date(CAT.gerado_em))}); somente CO₂. Plataforma v${VERSAO}. Relatório gerado e dados acessados em ${quando}.<br>${$("cit").textContent}</p>`;
+  await verificacaoRelatorio({v: VD.slice(1), t: tipo, i: id, a: E.ano, g}, s);
   $("relatorio").hidden = false; $("relatorio").scrollTop = 0;
   $("imprimir-rel").hidden = NA_PREVIA; $("fechar-rel").focus();
   // gráficos do relatório reaproveitam as configurações do painel
   const clone = (orig, canv)=>{ const c = G[orig].config; return new Chart($(canv), {type:c.type, data:structuredClone(c.data), options:{...c.options, onClick:null}}); };
   ["rproc","rsf","rp"].forEach(k=>{ if(G[k]) G[k].destroy(); });
   G.rproc = clone("proc","rg-proc"); G.rsf = clone("sf","rg-sf"); G.rp = clone("p","rg-p");
+}
+/* código de verificação do relatório (ver verificacao.js e verificar.html) */
+async function verificacaoRelatorio(p, s){
+  const el = $("rel-verif");
+  try{
+    p.c = await YBV.codigo(p, s);
+    const url = new URL("verificar.html", URL_SITE).href + "#" + YBV.paraURL(p);
+    let qr = "";
+    try{ const q = qrcode(0, "M"); q.addData(url); q.make(); qr = q.createSvgTag({cellSize:3, margin:0, scalable:true}); }catch(e){}
+    el.innerHTML = `${qr?`<div class="qr" aria-hidden="true">${qr}</div>`:""}<div class="tx"><b>Verificação de autenticidade</b><br>
+      Código <code>${YBV.curto(p.c)}</code> · código completo <code>${YBV.completo(p)}</code><br>
+      Leia o QR code ou acesse <span class="lk">${new URL("verificar.html", URL_SITE).href}</span> e informe o código completo para conferir os valores deste relatório com os dados oficiais da versão ${VD}.</div>`;
+  }catch(e){ el.remove(); }
 }
 $("abrir-rel").onclick = relatorio;
 $("fechar-rel").onclick = ()=>{ $("relatorio").hidden = true; };
@@ -1074,9 +1111,12 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
   try{
     const pm = await import("https://cdn.jsdelivr.net/npm/pmtiles@4.3.0/+esm");
     maplibregl.addProtocol("pmtiles", new pm.Protocol().tile);
+    try{ const vs = await fetch("dados/versoes.json").then(r=>r.json()); DADOS = vs.versoes[vs.atual].pasta; }catch(e){}
     const [cat, idx] = await Promise.all([j("catalogo.json"), fetch("geo/indice.json").then(r=>r.json())]);
     try{ E.base = localStorage.getItem("ybyra-base2") || E.base; if(!BASE[E.base]) E.base = "cinza"; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
-    CAT = cat; IDX = idx;
+    CAT = cat; IDX = idx; VD = "v" + (CAT.versao_dados || String(CAT.versao_modelo).replace(/^v/,"").replace(/_/g,"."));
+    $("versao-topo").textContent = `· dados ${VD}`;
+    $("versao-nota").textContent = `Dados: modelo YbYrá-BR ${VD} (atualizados em ${dataBR(new Date(CAT.gerado_em))}) · plataforma v${VERSAO}.`;
     for(const [f, lista] of Object.entries(IDX)){ NOMES[f] = new Map(lista.map(e=>[e[0], e[1]])); for(const e of lista) BBOX[f+":"+e[0]] = e.slice(2,6); }
     $("aviso-ficticio").hidden = !CAT.ficticio; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);

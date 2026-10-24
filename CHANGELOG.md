@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.15.0 — 2026-10-24
+- **Versão dos dados (v1.2.0) em toda a plataforma**: barra superior, créditos do mapa, painel do recorte, citação (com "Disponível em" e "Acesso em"), CSV (colunas `id`, `versao_dados`, `acesso`), tabela longa e relatório (cabeçalho e rodapé, com data e hora de acesso). A versão vem de `dados/brutos/<modelo>/VERSAO.txt`.
+- **Verificação de autenticidade dos relatórios**: cada relatório traz um código (SHA-256 da versão dos dados, recorte, ano, data e hora de geração e série completa), o código completo e um QR code; a nova página `verificar.html` recalcula o código a partir dos dados oficiais e mostra os valores para comparação (`web/verificacao.js` v0.1.0).
+- Versões de dados preservadas: o workflow (v0.3.0) agrega cada pasta de `dados/brutos/` separadamente e publica `dados/versoes.json`; relatórios de versões anteriores continuam verificáveis.
+- `R/agregar.R` v0.3.0: `versao_dados` e data de geração (UTC) no catálogo.
+- Site v0.11.0.
+
 ## 0.14.0 — 2026-10-24
 - **Revisão da acentuação de todos os nomes** (`scripts/revisar_nomes.py` v0.1.1; relatório de 596 trocas em `dados/nomes/revisao_acentos.csv`):
   - terras indígenas (299 nomes) e territórios quilombolas (190): acentos que vinham como "?" restaurados, com correções conferidas de etnônimos e topônimos (Karajá, Apinayé, Krahô, Kadiwéu, Hãm Yĩxux, Taego Ãwa, Tekoha Añetete, Iròdu Iràna, Vera Tupã'i, Kampa do Rio Amônia, Mimbó…), mantendo a caixa original;
