@@ -1,0 +1,597 @@
+recorte,id,antes,depois
+unidade_conservacao,9,Area de Proteção Ambiental de Jenipabu,Área de Proteção Ambiental de Jenipabu
+unidade_conservacao,16,Área de Proteção Ambiental das Nascentes de Araguaina,Área de Proteção Ambiental das Nascentes de Araguaína
+unidade_conservacao,34,Área de Proteção Ambiental do Lago de Tucurui,Área de Proteção Ambiental do Lago de Tucuruí
+unidade_conservacao,74,Area de Relevante Interesse Ecológico- Ilhas do Rio Paraiba do Sul,Área de Relevante Interesse Ecológico- Ilhas do Rio Paraíba do Sul
+unidade_conservacao,169,Parque Estadual Acarai,Parque Estadual Acaraí
+unidade_conservacao,205,Area de Proteção Ambiental Municipal Serra do Sambé,Área de Proteção Ambiental Municipal Serra do Sambé
+unidade_conservacao,255,Reserva de Desenvolvimento Sustentavel do Rio Madeira,Reserva de Desenvolvimento Sustentável do Rio Madeira
+unidade_conservacao,263,Area de Proteção Ambiental de Campinas,Área de Proteção Ambiental de Campinas
+unidade_conservacao,283,Area de Relevante Interesse Ecologico Parque Ambiental Antonio Danubio Lourenço da Silva,Área de Relevante Interesse Ecológico Parque Ambiental Antônio Danúbio Lourenço da Silva
+unidade_conservacao,306,Área de Proteção Ambiental do Arquipelago de Santana,Área de Proteção Ambiental do Arquipélago de Santana
+unidade_conservacao,327,Reserva Particular do Patrimônio Natural Aguas Claras II,Reserva Particular do Patrimônio Natural Águas Claras II
+unidade_conservacao,330,Reserva Particular do Patrimônio Natural Aguas Claras I,Reserva Particular do Patrimônio Natural Águas Claras I
+unidade_conservacao,344,Reserva Particular do Patrimônio Natural Fazenda Sambaiba,Reserva Particular do Patrimônio Natural Fazenda Sambaíba
+unidade_conservacao,347,Reserva Particular do Patrimônio Natural Santo Antonio (CNUC 0000.33.2298),Reserva Particular do Patrimônio Natural Santo Antônio (CNUC 0000.33.2298)
+unidade_conservacao,383,Reserva Particular do Patrimônio Natural Alto do Palacio,Reserva Particular do Patrimônio Natural Alto do Palácio
+unidade_conservacao,400,Reserva Particular do Patrimônio Natural Debora,Reserva Particular do Patrimônio Natural Débora
+unidade_conservacao,417,Reserva Particular do Patrimonio Natural Mutinga,Reserva Particular do Patrimônio Natural Mutinga
+unidade_conservacao,451,Area de Relevante Interesse Ecologico Museu Parque Seringal,Área de Relevante Interesse Ecológico Museu Parque Seringal
+unidade_conservacao,481,Area de Proteção Ambiental Taruma/Ponta Negra,Área de Proteção Ambiental Tarumã/Ponta Negra
+unidade_conservacao,533,Reserva Particular do Patrimônio Natural Rancho Chapadao II,Reserva Particular do Patrimônio Natural Rancho Chapadão II
+unidade_conservacao,555,Reserva de Desenvolvimento Sustentável Municipal Piraque-Açu e Piraque-Mirim,Reserva de Desenvolvimento Sustentável Municipal Piraquê-Açu e Piraquê-Mirim
+unidade_conservacao,564,Reserva Particular do Patrimonio Natural Palmares,Reserva Particular do Patrimônio Natural Palmares
+unidade_conservacao,568,Area de Proteção Ambiental Ribeirão D Laje,Área de Proteção Ambiental Ribeirão D Laje
+unidade_conservacao,572,Area de Proteção Ambiental Posse/Guarita,Área de Proteção Ambiental Posse/Guarita
+unidade_conservacao,589,Reserva Biologica da Serra de Santa Rita Mitzi Brandao,Reserva Biológica da Serra de Santa Rita Mitzi Brandão
+unidade_conservacao,592,Area de Protecao Ambiental Corrego da Mata,Área de Proteção Ambiental Córrego da Mata
+unidade_conservacao,601,Refugio de Vida Silvestre do Chaua,Refúgio de Vida Silvestre do Chaua
+unidade_conservacao,615,Reserva de Desenvolvimento Sustentavel Puranga Conquista,Reserva de Desenvolvimento Sustentável Puranga Conquista
+unidade_conservacao,623,Reserva Particular do Patrimonio Natural Estadual das Cascatas,Reserva Particular do Patrimônio Natural Estadual das Cascatas
+unidade_conservacao,624,Reserva Particular do Patrimonio Natural Estadual Reserva de Fontes e Verdes,Reserva Particular do Patrimônio Natural Estadual Reserva de Fontes e Verdes
+unidade_conservacao,653,Estação Ecológica Governador Mario Covas,Estação Ecológica Governador Mário Covas
+unidade_conservacao,668,Parque Natural Municipal do Forte de Tamandare,Parque Natural Municipal do Forte de Tamandaré
+unidade_conservacao,675,Area de Proteção Ambiental - Pedregulho,Área de Proteção Ambiental - Pedregulho
+unidade_conservacao,715,Reserva Particular do Patrimônio Natural Mario e Alba Corral,Reserva Particular do Patrimônio Natural Mário e Alba Corral
+unidade_conservacao,742,Área de Relevante Interesse Ecológico Serra Bonita de Adelandia,Área de Relevante Interesse Ecológico Serra Bonita de Adelândia
+unidade_conservacao,759,Parque Natural Municipal Colonizador Jose Bianchini,Parque Natural Municipal Colonizador José Bianchini
+unidade_conservacao,760,Refugio da Vida Silvestre de Colíder,Refúgio da Vida Silvestre de Colíder
+unidade_conservacao,776,Area de Protecao Ambiental da Bacia do Corrego Capao Grande,Área de Proteção Ambiental da Bacia do Córrego Capão Grande
+unidade_conservacao,794,Refugio da Vida Silvestre Municipal Andre Ruschi,Refúgio da Vida Silvestre Municipal André Ruschi
+unidade_conservacao,795,Refugio da Vida Silvestre Municipal da Mata Paludosa,Refúgio da Vida Silvestre Municipal da Mata Paludosa
+unidade_conservacao,796,Area de Proteção Ambiental Baía das Tartarugas,Área de Proteção Ambiental Baía das Tartarugas
+unidade_conservacao,797,Area de Relevante Interesse Ecologico Mata das Perobas Tim Ferreira,Área de Relevante Interesse Ecológico Mata das Perobas Tim Ferreira
+unidade_conservacao,818,Área de Protecao Ambiental Municipal Piracanjubinha,Área de Proteção Ambiental Municipal Piracanjubinha
+unidade_conservacao,822,Parque Natural Muncipal Paulo Viriato Correa da Costa,Parque Natural Muncipal Paulo Viriato Corrêa da Costa
+unidade_conservacao,823,Parque Natural Municipal Zabele,Parque Natural Municipal Zabelê
+unidade_conservacao,891,Reserva Particular do Patrimonio Natural Cisalpina,Reserva Particular do Patrimônio Natural Cisalpina
+unidade_conservacao,892,Reserva Particular do Patrimonio Natural Fazenda Lagoa,Reserva Particular do Patrimônio Natural Fazenda Lagoa
+unidade_conservacao,894,Reserva Particular do Patrimonio Natural Ernesto Vargas Batista,Reserva Particular do Patrimônio Natural Ernesto Vargas Batista
+unidade_conservacao,895,Reserva Particular do Patrimonio Natural Fazenda Rio Negro,Reserva Particular do Patrimônio Natural Fazenda Rio Negro
+unidade_conservacao,905,Refugio de Vida Silvestre Estadual dos Rios Tijuco e da Prata,Refúgio de Vida Silvestre Estadual dos Rios Tijuco e da Prata
+unidade_conservacao,912,Área de Proteção Ambiental do Rio Sucuriu- Paraíso,Área de Proteção Ambiental do Rio Sucuriú- Paraíso
+unidade_conservacao,940,Parque Estadual Aguas do Paraiso,Parque Estadual Águas do Paraíso
+unidade_conservacao,948,Área de Proteção Ambiental Castelandia,Área de Proteção Ambiental Castelândia
+unidade_conservacao,951,Área de Proteção Ambiental São Patricio,Área de Proteção Ambiental São Patrício
+unidade_conservacao,952,Area de Proteção Ambiental de Caiaponia,Área de Proteção Ambiental de Caiapônia
+unidade_conservacao,1032,Área de Proteção Ambiental da Bacia do Rio Iguatemi no Municipio de Paranhos,Área de Proteção Ambiental da Bacia do Rio Iguatemi no Município de Paranhos
+unidade_conservacao,1044,Refugio da Vida Silvestre Nascentes do Sai,Refúgio da Vida Silvestre Nascentes do Sai
+unidade_conservacao,1051,Area de Protecao Ambiental Xeriuini,Área de Proteção Ambiental Xeriuini
+unidade_conservacao,1052,Reserva Particular do Patrimônio Natural Estadual Icap - Industria e Comércio Catarinense de Pescados Ltda,Reserva Particular do Patrimônio Natural Estadual Icap - Indústria e Comércio Catarinense de Pescados Ltda
+unidade_conservacao,1059,Parque Natural Municipal das Lagoas Claudia Mingorance Duram,Parque Natural Municipal das Lagoas Cláudia Mingorance Duram
+unidade_conservacao,1064,Parque Estadual da Serra de Jaragua,Parque Estadual da Serra de Jaraguá
+unidade_conservacao,1095,Monumento Natural Olho D?Agua Monge Joao Maria de Jesus,Monumento Natural Olho D'Água Monge João Maria de Jesus
+unidade_conservacao,1116,Reserva Particular do Patrimônio Natural Sitio Kon Tiki,Reserva Particular do Patrimônio Natural Sítio Kon Tiki
+unidade_conservacao,1117,Reserva Particular do Patrimônio Natural Sítio Manaca,Reserva Particular do Patrimônio Natural Sítio Manacá
+unidade_conservacao,1122,Reserva Particular do Patrimônio Natural Chacara Santa Inez,Reserva Particular do Patrimônio Natural Chácara Santa Inez
+unidade_conservacao,1153,Reserva Particular do Patrimônio Natural Chacara Sananduva,Reserva Particular do Patrimônio Natural Chácara Sananduva
+unidade_conservacao,1208,Reserva Particular do Patrimônio Natural Sitio Caete,Reserva Particular do Patrimônio Natural Sítio Caete
+unidade_conservacao,1219,Reserva Particular do Patrimônio Natural Corredeiras do Rio Itajai II,Reserva Particular do Patrimônio Natural Corredeiras do Rio Itajaí II
+unidade_conservacao,1310,Reserva Particular do Patrimônio Natural Usina Mauricio,Reserva Particular do Patrimônio Natural Usina Maurício
+unidade_conservacao,1457,Reserva Particular do Patrimônio Natural Fazenda Ararauna,Reserva Particular do Patrimônio Natural Fazenda Araraúna
+unidade_conservacao,1458,Reserva Particular do Patrimônio Natural Fazenda Pedra D'Agua,Reserva Particular do Patrimônio Natural Fazenda Pedra D'Água
+unidade_conservacao,1582,Reserva Particular do Patrimônio Natural Emilio Fiorentino Battistella,Reserva Particular do Patrimônio Natural Emílio Fiorentino Battistella
+unidade_conservacao,1641,Reserva Particular do Patrimônio Natural Fazenda Butia,Reserva Particular do Patrimônio Natural Fazenda Butiá
+unidade_conservacao,1772,Reserva Particular do Patrimônio Natural Santo Antonio (CNUC 0000.26.3785),Reserva Particular do Patrimônio Natural Santo Antônio (CNUC 0000.26.3785)
+unidade_conservacao,1846,Estação Ecologica Bita e Utinga,Estação Ecológica Bita e Utinga
+unidade_conservacao,1866,Refugio de Vida Silvestre da Ventania,Refúgio de Vida Silvestre da Ventania
+unidade_conservacao,1867,Area de Relevante Interesse Ecológico Décio Ribeiro dos Reis,Área de Relevante Interesse Ecológico Décio Ribeiro dos Reis
+unidade_conservacao,1868,Area de Proteção Ambiental Miracema,Área de Proteção Ambiental Miracema
+unidade_conservacao,1891,Reserva de Fauna Pau D'Oleo,Reserva de Fauna Pau D'Óleo
+unidade_conservacao,1942,Parque Natural Municipal Dormitório das Garças ?Walter Bessa?,Parque Natural Municipal Dormitório das Garças “Walter Bessa”
+unidade_conservacao,2039,Refúgio de Vida Silvestre Antonio Conselheiro,Refúgio de Vida Silvestre Antônio Conselheiro
+unidade_conservacao,2055,Refugio de Vida Silvestre Ingá,Refúgio de Vida Silvestre Ingá
+unidade_conservacao,2059,Parque Natural Municipal Engenho Sao Jorge dos Erasmos,Parque Natural Municipal Engenho São Jorge dos Erasmos
+unidade_conservacao,2117,Reserva Particular do Patrimônio Natural ? RPPN Cantagalo,Reserva Particular do Patrimônio Natural – RPPN Cantagalo
+unidade_conservacao,2129,Reserva Biologica Arco Verde,Reserva Biológica Arco Verde
+unidade_conservacao,2238,Reserva Biologica do Dindi,Reserva Biológica do Dindi
+unidade_conservacao,2265,Área de Proteção Ambiental do Engenho D?Agua,Área de Proteção Ambiental do Engenho D'Água
+unidade_conservacao,2279,Area de Proteção Ambiental do Rio Guandu,Área de Proteção Ambiental do Rio Guandu
+unidade_conservacao,2334,Refugio de Vida Silvestre Municipal Meiembipe,Refúgio de Vida Silvestre Municipal Meiembipe
+unidade_conservacao,2337,Refugio de Vida Silvestre Municipal do Morro do Lampião,Refúgio de Vida Silvestre Municipal do Morro do Lampião
+unidade_conservacao,2409,Área de Proteção Ambiental Cabreuva,Área de Proteção Ambiental Cabreúva
+unidade_conservacao,2430,Área de Proteção Ambiental Piracicaba Juquerê-Mirim Area II,Área de Proteção Ambiental Piracicaba Juquerê-Mirim Área II
+unidade_conservacao,2444,Area de Proteção Ambiental Barreiro Rico,Área de Proteção Ambiental Barreiro Rico
+unidade_conservacao,2511,Area de Proteção Ambiental da Lagoa Verde,Área de Proteção Ambiental da Lagoa Verde
+unidade_conservacao,2539,Área de Proteção Ambiental Delta do Parnaiba,Área de Proteção Ambiental Delta do Parnaíba
+unidade_conservacao,2563,Reserva Particular do Patrimônio Natural Tuiuiu,Reserva Particular do Patrimônio Natural Tuiuiú
+unidade_conservacao,2617,Reserva Particular do Patrimônio Natural Sitio Talismã,Reserva Particular do Patrimônio Natural Sítio Talismã
+unidade_conservacao,2648,Reserva Particular do Patrimônio Natural Emilio Einsfeld Filho,Reserva Particular do Patrimônio Natural Emílio Einsfeld Filho
+unidade_conservacao,2692,Parque Natural Municipal das Araucarias,Parque Natural Municipal das Araucárias
+unidade_conservacao,2885,Parque Nacional das Nascentes do Rio Parnaiba,Parque Nacional das Nascentes do Rio Parnaíba
+unidade_conservacao,2914,Refugio de Vida Silvestre das Veredas do Oeste Baiano,Refúgio de Vida Silvestre das Veredas do Oeste Baiano
+unidade_conservacao,2960,Parque Municipal Veu da Noiva,Parque Municipal Véu da Noiva
+unidade_conservacao,2985,Reserva Particular do Patrimônio Natural Cachoeira da Luisa,Reserva Particular do Patrimônio Natural Cachoeira da Luísa
+unidade_conservacao,3037,Reserva Biologica Estadual do Sassafras,Reserva Biológica Estadual do Sassafrás
+unidade_conservacao,3063,Reserva Extrativista do Ciriaco,Reserva Extrativista do Ciríaco
+unidade_conservacao,3139,Refugio de Vida Silvestre da Serra dos Montes Altos,Refúgio de Vida Silvestre da Serra dos Montes Altos
+unidade_conservacao,3217,Reserva Particular do Patrimonio Natural Estadual Rio da Prata Bugiu,Reserva Particular do Patrimônio Natural Estadual Rio da Prata Bugiu
+terra_indigena,1,Acim?,Acimã
+terra_indigena,2,Acon?,Aconá
+terra_indigena,6,Aldeia Kond?,Aldeia Kondá
+terra_indigena,7,Aldeia Lim?o Verde,Aldeia Limão Verde
+terra_indigena,9,Aldeia P? M?g,Aldeia PÉ Móg
+terra_indigena,11,Alto Rio Guam?,Alto Rio Guamá
+terra_indigena,15,Alto Tarauac?,Alto Tarauacá
+terra_indigena,16,Alto Turia?u,Alto Turiaçu
+terra_indigena,18,Amanay?,Amanayé
+terra_indigena,19,Amaral/Teko? Kuriy,Amaral/Tekoá Kuriy
+terra_indigena,20,Amba Por?,Amba Porã
+terra_indigena,21,Anamb?,Anambé
+terra_indigena,22,Anan?s,Ananás
+terra_indigena,24,Andir?-Marau,Andirá-Marau
+terra_indigena,28,Apiak? do Pontal e Isolados,Apiaká do Pontal e Isolados
+terra_indigena,29,Apinay?,Apinayé
+terra_indigena,32,Apurin? Igarap? Tauamirim,Apuriná Igarapé Tauamirim
+terra_indigena,33,Apurin? Km 124 BR-317,Apuriná Km 124 BR-317
+terra_indigena,34,Apurin? do Igarap? Mucuim,Apuriná do Igarapé Mucuim
+terra_indigena,35,Apurin? do Igarap? S?o Jo?o,Apuriná do Igarapé São João
+terra_indigena,37,Arac?-Padauiri (Baixo Rio Negro),Aracê-Padauiri (Baixo Rio Negro)
+terra_indigena,40,Arara do Igarap? Humait?,Arara do Igarapé Humaitá
+terra_indigena,41,Arara do Rio Am?nia,Arara do Rio Amônia
+terra_indigena,44,Ararib?,Araribá
+terra_indigena,46,Arawet? Igarap? Ipixuna,Araweté Igarapé Ipixuna
+terra_indigena,47,Ara??,Araçá
+terra_indigena,48,Are?es,Areões
+terra_indigena,49,Aripuan?,Aripuanã
+terra_indigena,51,Arroio-Kor?,Arroio-Korá
+terra_indigena,53,Av?-Canoeiro,Avó-Canoeiro
+terra_indigena,54,Av?-Guarani do Oco?,Avó-Guarani do Ocoí
+terra_indigena,61,Banaw?,Banawá
+terra_indigena,67,Barreira da Miss?o,Barreira da Missão
+terra_indigena,70,Bar?o de Antonina,Barão de Antonina
+terra_indigena,71,Batel?o,Batelão
+terra_indigena,73,Ba?a dos Guat?,Baía dos Guató
+terra_indigena,74,Ba?,Baú
+terra_indigena,75,Betania,Betânia
+terra_indigena,78,Boa Vista Sert?o do Promirim,Boa Vista Sertão do Promirim
+terra_indigena,79,Boa Vista Sert?o do Promirim,Boa Vista Sertão do Promirim
+terra_indigena,83,Boqueir?o,Boqueirão
+terra_indigena,84,Bragan?a-Marituba,Bragança-Marituba
+terra_indigena,89,Caarap?,Caarapó
+terra_indigena,91,Cacau do Tarauaca,Cacau do Tarauacá
+terra_indigena,93,Cachoeira dos In?cios,Cachoeira dos Inácios
+terra_indigena,100,Cai?ara/Ilha de S?o Pedro,Caiçara/Ilha de São Pedro
+terra_indigena,116,Carret?o I,Carretão I
+terra_indigena,117,Carret?o II,Carretão II
+terra_indigena,120,Caxix?,Caxixó
+terra_indigena,123,Ch?o Preto,Chão Preto
+terra_indigena,124,Coata-Laranjal,Coatá-Laranjal
+terra_indigena,127,Comexatib?,Comexatibá
+terra_indigena,130,Cuiu-Cuiu,Cuiú-Cuiú
+terra_indigena,131,Cunh?-Sapucaia,Cunhã-Sapucaia
+terra_indigena,132,Curri?,Currié
+terra_indigena,133,Cu? Cu?/ Marabitanas,Cuê Cuê/ Marabitanas
+terra_indigena,134,C?rrego Jo?o Pereira,Córrego João Pereira
+terra_indigena,139,Dourados-Amambaipegu? I,Dourados-Amambaipeguá I
+terra_indigena,140,Enawen?-Naw?,Enawenê-Nawê
+terra_indigena,142,Erikpats?,Erikpatsé
+terra_indigena,144,Esp?rito Santo,Espírito Santo
+terra_indigena,145,Esta??o Parecis,Estação Parecis
+terra_indigena,156,Fazenda Mabel (Gavi?o/Akr?tikat?j?),Fazenda Mabel (Gavião/Akrãtikatêjê)
+terra_indigena,157,Fazenda Per?,Fazenda Peré
+terra_indigena,160,Fazenda S?tio,Fazenda Sítio
+terra_indigena,163,Fortaleza do Patau?,Fortaleza do Patauá
+terra_indigena,164,Fulni-?,Fulni-à
+terra_indigena,167,Gavi?o,Gavião
+terra_indigena,168,Gavi?ozinho,Gaviãozinho
+terra_indigena,170,Geripanc?,Geripancó
+terra_indigena,172,Guaimb?,Guaimbê
+terra_indigena,173,Guajah?,Guajahã
+terra_indigena,174,Guajana?ra,Guajanaíra
+terra_indigena,180,Guarani de Ara?ai,Guarani de Araçai
+terra_indigena,181,Guarani de Bracui,Guarani de Bracuí
+terra_indigena,182,Guarani de ?guas Brancas,Guarani de Águas Brancas
+terra_indigena,184,Guarani do Ribeir?o Silveira,Guarani do Ribeirão Silveira
+terra_indigena,187,Guat?,Guató
+terra_indigena,189,Guyrarok?,Guyraroká
+terra_indigena,190,Herarek? Xet?,Herarekã Xetá
+terra_indigena,191,Hi Merim?,Hi Merimã
+terra_indigena,192,H?m Y?xux,Hãm Yĩxux
+terra_indigena,194,Ibirama-La Kl?n?,Ibirama-La Klãnõ
+terra_indigena,196,Igarap? Capana,Igarapé Capaná
+terra_indigena,197,Igarap? Grande,Igarapé Grande
+terra_indigena,198,Igarap? Lage,Igarapé Lage
+terra_indigena,199,Igarap? Lourdes,Igarapé Lourdes
+terra_indigena,200,Igarap? Ribeir?o,Igarapé Ribeirão
+terra_indigena,201,Igarap? Taboca do Alto Tarauac?,Igarapé Taboca do Alto Tarauacá
+terra_indigena,202,Igarap? do Caucho,Igarapé do Caucho
+terra_indigena,205,Ilha do Camale?o,Ilha do Camaleão
+terra_indigena,206,Ilhas da Tapera/S?o F?lix/Porto,Ilhas da Tapera/São Félix/Porto
+terra_indigena,210,Inhacor?,Inhacorá
+terra_indigena,213,Irapu?,Irapuã
+terra_indigena,215,Ita?ca,Itaóca
+terra_indigena,217,Ituna/Itat? (restri??o de uso),Ituna/Itatã (restrição de uso)
+terra_indigena,218,It?nury Pupykary (antiga Baixo Seruini),Itônury Pupykary (antiga Baixo Seruini)
+terra_indigena,219,Ivai,Ivaí
+terra_indigena,222,Jacare?ba/Katauixi (restri??o uso),Jacareíba/Katauixi (restrição uso)
+terra_indigena,223,Jacar? de S?o Domingos,Jacaré de São Domingos
+terra_indigena,224,Jaguapir?,Jaguapiré
+terra_indigena,226,Jaminaua/Envira,Jaminauá/Envira
+terra_indigena,227,Jaminawa Arara do Rio Bag?,Jaminawa Arara do Rio Bagé
+terra_indigena,228,Jaminawa do Igarap? Preto,Jaminawa do Igarapé Preto
+terra_indigena,229,Japuira,Japuíra
+terra_indigena,231,Jaragu?,Jaraguá
+terra_indigena,232,Jaragu?,Jaraguá
+terra_indigena,242,Jurubaxi-t?a,Jurubaxi-téa
+terra_indigena,244,Kadiw?u,Kadiwéu
+terra_indigena,245,Kaingang de Ira?,Kaingang de Iraí
+terra_indigena,246,Kambiw?,Kambiwá
+terra_indigena,247,Kampa do Igarap? Primavera,Kampa do Igarapé Primavera
+terra_indigena,248,Kampa do Rio Am?nia,Kampa do Rio Amônia
+terra_indigena,250,Kanamari do Rio Juru?,Kanamari do Rio Juruá
+terra_indigena,252,Kanela Memortumr?,Kanela Memortumré
+terra_indigena,253,Kantarur?,Kantaruré
+terra_indigena,254,Kapinaw?,Kapinawá
+terra_indigena,255,Kap?t Nhinore,Kapôt Nhinore
+terra_indigena,256,Karaj? Santana do Araguaia,Karajá Santana do Araguaia
+terra_indigena,257,Karaj? de Aruan? I,Karajá de Aruanã I
+terra_indigena,258,Karaj? de Aruan? II,Karajá de Aruanã II
+terra_indigena,259,Karaj? de Aruan? III,Karajá de Aruanã III
+terra_indigena,260,Karapot?,Karapotó
+terra_indigena,261,Karara?,Kararaô
+terra_indigena,264,Kariri-Xoc?,Kariri-Xocó
+terra_indigena,265,Kariri-Xoc?,Kariri-Xocó
+terra_indigena,267,Katukina/Kaxinaw?,Katukina/Kaxinawá
+terra_indigena,270,Kaxinaw? Ashaninka do Rio Breu,Kaxinawá Ashaninka do Rio Breu
+terra_indigena,271,Kaxinaw? Col?nia Vinte e Sete,Kaxinawá Colônia Vinte e Sete
+terra_indigena,272,Kaxinaw? Nova Olinda,Kaxinawá Nova Olinda
+terra_indigena,273,Kaxinaw? Seringal Independ?ncia,Kaxinawá Seringal Independência
+terra_indigena,274,Kaxinaw? da Praia do Carapan?,Kaxinawá da Praia do Carapaná
+terra_indigena,275,Kaxinaw? do Baixo Rio Jord?o,Kaxinawá do Baixo Rio Jordão
+terra_indigena,276,Kaxinaw? do Rio Humait?,Kaxinawá do Rio Humaitá
+terra_indigena,277,Kaxinaw? do Rio Jord?o,Kaxinawá do Rio Jordão
+terra_indigena,280,Kayap?,Kayapó
+terra_indigena,281,Ka?aguy Hovy,Ka'aguy Hovy
+terra_indigena,282,Ka?aguy Mirim,Ka'aguy Mirim
+terra_indigena,286,Krah?-Kanela,Krahô-Kanela
+terra_indigena,289,Krenak de Sete Sal?es,Krenak de Sete Salões
+terra_indigena,290,Krenreh?,Krenrehé
+terra_indigena,291,Kreny?,Krenyê
+terra_indigena,294,Kulina Igarap? do Pau,Kulina Igarapé do Pau
+terra_indigena,295,Kulina do Medio Jurua,Kulina do Médio Juruá
+terra_indigena,297,Kulina do Rio Uer? (Matatibem),Kulina do Rio Uerá (Matatibem)
+terra_indigena,298,Kumaru do Lago Ual?,Kumaru do Lago Ualá
+terra_indigena,299,Kuru?ya,Kuruáya
+terra_indigena,300,Kwaz? do Rio S?o Pedro,Kwazá do Rio São Pedro
+terra_indigena,301,Lago Aiapua,Lago Aiapuá
+terra_indigena,302,Lago Capan?,Lago Capaná
+terra_indigena,306,Lago do Lim?o,Lago do Limão
+terra_indigena,314,Lauro Sodr?,Lauro Sodré
+terra_indigena,316,Lim?o Verde,Limão Verde
+terra_indigena,317,Macarr?o,Macarrão
+terra_indigena,322,Manoa/Pium,Manoá/Pium
+terra_indigena,326,Marait?,Maraitá
+terra_indigena,330,Mara? Urubaxi,Maraã Urubaxi
+terra_indigena,333,Mar?,Mará
+terra_indigena,343,Mbigua?u,Mbiguaçu
+terra_indigena,345,Menk?,Menkü
+terra_indigena,360,Murutinga/Tracaja,Murutinga/Tracajá
+terra_indigena,361,Mu? Mimatxi (Fazenda Modelo Diniz),Muá Mimatxi (Fazenda Modelo Diniz)
+terra_indigena,362,M?e Maria,Mãe Maria
+terra_indigena,363,M?dio Rio Negro I,Médio Rio Negro I
+terra_indigena,364,M?dio Rio Negro II,Médio Rio Negro II
+terra_indigena,367,Nhamund?/Mapuera,Nhamundá/Mapuera
+terra_indigena,370,Nonoai/Rio da V?rzea,Nonoai/Rio da Várzea
+terra_indigena,371,Nossa Senhora de F?tima,Nossa Senhora de Fátima
+terra_indigena,372,Nova Esperan?a do Rio Jandiatuba,Nova Esperança do Rio Jandiatuba
+terra_indigena,373,Nova Jacund?,Nova Jacundá
+terra_indigena,376,Ofay?-Xavante,Ofayé-Xavante
+terra_indigena,377,Ofay?-Xavante,Ofayé-Xavante
+terra_indigena,379,Pacaas Novas,Pacaás Novas
+terra_indigena,386,Panar?,Panará
+terra_indigena,388,Pankarar?,Pankararé
+terra_indigena,389,Pankar? da Serra do Arapu?,Pankará da Serra do Arapuã
+terra_indigena,390,Paqui?amba,Paquiçamba
+terra_indigena,391,Paqui?amba,Paquiçamba
+terra_indigena,394,Parakan?,Parakanã
+terra_indigena,395,Parana do Boa Boa,Paraná do Boa Boa
+terra_indigena,396,Parana do Paric?,Paraná do Paricá
+terra_indigena,397,Paran? do Arauat?,Paraná do Arauató
+terra_indigena,401,Parque do Aripuan?,Parque do Aripuanã
+terra_indigena,405,Patau?,Patauá
+terra_indigena,408,Paumari do Lago Manissu?,Paumari do Lago Manissuã
+terra_indigena,409,Paumari do Lago Marah?,Paumari do Lago Marahã
+terra_indigena,410,Paumari do Lago Paric?,Paumari do Lago Paricá
+terra_indigena,415,Pequizal do Naruv?tu,Pequizal do Naruvôtu
+terra_indigena,417,Peru?be,Peruíbe
+terra_indigena,418,Pia?aguera,Piaçaguera
+terra_indigena,419,Pilad Rebu?,Pilad Rebuá
+terra_indigena,423,Pindoty/Ara??-Mirim,Pindoty/Araçá-Mirim
+terra_indigena,424,Pind? Poty (Lami),Pindá Poty (Lami)
+terra_indigena,427,Pipip?,Pipipã
+terra_indigena,428,Pirah?,Pirahã
+terra_indigena,429,Pirai,Piraí
+terra_indigena,430,Piraju?,Pirajuí
+terra_indigena,433,Piripkura ( restri??o de uso ),Piripkura ( restrição de uso )
+terra_indigena,441,Porquinhos dos Canela-Ap?njekra,Porquinhos dos Canela-Apãnjekra
+terra_indigena,448,Potrero Gua?u,Potrero Guaçu
+terra_indigena,451,Praia do ?ndio,Praia do Índio
+terra_indigena,455,Raimund?o,Raimundão
+terra_indigena,456,Rancho Jacar?,Rancho Jacaré
+terra_indigena,458,Recreio/S?o F?lix,Recreio/São Félix
+terra_indigena,459,Reserva Ind?gena Av? Canoeiro,Reserva Indígena Avó Canoeiro
+terra_indigena,460,Ribeir?o Silveira,Ribeirão Silveira
+terra_indigena,463,Rio Bi?,Rio Biá
+terra_indigena,465,Rio Branco Itanha?m,Rio Branco Itanhaém
+terra_indigena,467,Rio Greg?rio,Rio Gregório
+terra_indigena,468,Rio Guapor?,Rio Guaporé
+terra_indigena,470,Rio Manicor?,Rio Manicoré
+terra_indigena,474,Rio Omer?,Rio Omerê
+terra_indigena,476,Rio Pindar?,Rio Pindaré
+terra_indigena,477,Rio T?a,Rio Téa
+terra_indigena,481,Rio dos ?ndios,Rio dos Índios
+terra_indigena,490,Salto Grande do Jacu?,Salto Grande do Jacuí
+terra_indigena,493,Santa Cruz da Nova Alian?a,Santa Cruz da Nova Aliança
+terra_indigena,497,Sarar?,Sararé
+terra_indigena,498,Sarau?,Sarauê
+terra_indigena,499,Sassor?,Sassoró
+terra_indigena,500,Sawr? Bap in (Apompu),Sawré Bap in (Apompu)
+terra_indigena,501,Sawr? Muybu (Pimental),Sawré Muybu (Pimental)
+terra_indigena,504,Serra da Mo?a,Serra da Moça
+terra_indigena,510,Setem?,Setemã
+terra_indigena,511,Sissa?ma,Sissaíma
+terra_indigena,513,Soror?,Sororó
+terra_indigena,516,Sururu?,Sururuá
+terra_indigena,517,S?o Domingos - MT,São Domingos - MT
+terra_indigena,518,S?o Domingos do Jacapari e Esta??o,São Domingos do Jacapari e Estação
+terra_indigena,519,S?o Francisco do Canimari,São Francisco do Canimari
+terra_indigena,520,S?o Jeronimo,São Jerônimo
+terra_indigena,521,S?o Leopoldo,São Leopoldo
+terra_indigena,522,S?o Marcos - MT,São Marcos - MT
+terra_indigena,523,S?o Marcos - RR,São Marcos - RR
+terra_indigena,524,S?o Pedro,São Pedro
+terra_indigena,525,S?o Pedro do Sepatini,São Pedro do Sepatini
+terra_indigena,526,S?o Sebasti?o,São Sebastião
+terra_indigena,527,Taba dos Anac?,Taba dos Anacá
+terra_indigena,531,Taego ?wa,Taego Ãwa
+terra_indigena,535,Tanaru ( restri??o de uso ),Tanaru ( restrição de uso )
+terra_indigena,537,Tapirap?/Karaj?,Tapirapé/Karajá
+terra_indigena,541,Tarum?,Tarumã
+terra_indigena,545,Tekoha Guas? Guavir?,Tekoha Guasú Guavirá
+terra_indigena,546,Tekoha Itamar?,Tekoha Itamarã
+terra_indigena,548,Tekoh? A?etete,Tekohã Añetete
+terra_indigena,549,Teko? Guavir?,Tekoá Guavirá
+terra_indigena,550,Temb?,Tembé
+terra_indigena,553,Tenharim do Igarap? Preto,Tenharim do Igarapé Preto
+terra_indigena,554,Tenond? Por?,Tenondé Porã
+terra_indigena,558,Tikuna de Santo Antonio,Tikuna de Santo Antônio
+terra_indigena,559,Tik?na de Feijoal,Tikúna de Feijoal
+terra_indigena,560,Tingui Bot?,Tingui Botó
+terra_indigena,566,Tor?,Toró
+terra_indigena,567,Trememb? da Barra do Munda?,Tremembé da Barra do Mundaú
+terra_indigena,568,Trememb? de Almofala,Tremembé de Almofala
+terra_indigena,569,Trememb? de Queimadas,Tremembé de Queimadas
+terra_indigena,572,Trocar?,Trocará
+terra_indigena,573,Trocar? - Doa??o,Trocará - Doação
+terra_indigena,576,Truk?,Truká
+terra_indigena,577,Truk? - Ilha da Assun??o,Truká - Ilha da Assunção
+terra_indigena,578,Tubar?o Latunde,Tubarão Latunde
+terra_indigena,580,Tukuna Umaria?u,Tukuna Umariaçu
+terra_indigena,581,Tumbalal?,Tumbalalá
+terra_indigena,582,Tumi?,Tumiá
+terra_indigena,583,Tupinamb? de Belmonte,Tupinambá de Belmonte
+terra_indigena,584,Tupinamb? de Oliven?a,Tupinambá de Olivença
+terra_indigena,586,Tup?-Sup?,Tupã-Supá
+terra_indigena,587,Tur?/Mariquita,Turé/Mariquita
+terra_indigena,588,Tur?/Mariquita II,Turé/Mariquita II
+terra_indigena,590,Tux? Setsor Bragag?,Tuxá Setsor Bragagá
+terra_indigena,591,Tux? de Ibotirama,Tuxá de Ibotirama
+terra_indigena,592,Tux? de Inaj?,Tuxá de Inajá
+terra_indigena,593,Uati-Paran?,Uati-Paraná
+terra_indigena,594,Ua??,Uaçá
+terra_indigena,602,Urucu/Juru?,Urucu/Juruá
+terra_indigena,603,Utaria Wyhyna/Ir?du Ir?na,Utaria Wyhyna/Iròdu Iràna
+terra_indigena,606,Vale do Guapor?,Vale do Guaporé
+terra_indigena,612,Vera Tup??i,Vera Tupã'i
+terra_indigena,615,Votouro/Kand?ia,Votouro/Kandóia
+terra_indigena,617,WaiW?i,WaiWái
+terra_indigena,619,Wai?pi,Waiãpi
+terra_indigena,623,Wedez?,Wedezé
+terra_indigena,624,Xacriab?,Xacriabá
+terra_indigena,625,Xacriab?,Xacriabá
+terra_indigena,626,Xakriab? Rancharia,Xakriabá Rancharia
+terra_indigena,627,Xambio?,Xambioá
+terra_indigena,628,Xapec?,Xapecó
+terra_indigena,629,Xapec? (Pinhalzinho-Canhad?o),Xapecó (Pinhalzinho-Canhadão)
+terra_indigena,637,Ygua Por? (Am?ncio),Ygua Porã (Amâncio)
+terra_indigena,640,Yvypor? Laranjinha,Yvyporã Laranjinha
+terra_indigena,641,Zoe,Zoé
+terra_indigena,642,Zor?,Zorá
+terra_indigena,643,Zuruah?,Zuruahã
+terra_indigena,644,?gua Preta/Inari,Água Preta/Inari
+terra_indigena,645,?guas Belas,Águas Belas
+terra_indigena,646,?guas Claras,Águas Claras
+terra_indigena,647,?vare I,Évare I
+terra_indigena,648,?vare II,Évare II
+terra_indigena,649,?ande Ru Marangatu,Ñande Ru Marangatu
+territorio_quilombola,0,Concei??o do Macacoari,Conceição do Macacoari
+territorio_quilombola,4,Curia?,Curiaú
+territorio_quilombola,5,Tom?s Cardoso,Tomás Cardoso
+territorio_quilombola,7,Santo In?cio,Santo Inácio
+territorio_quilombola,13,Porto dos Pil?es,Porto dos Pilões
+territorio_quilombola,14,Santa Quit?ria e Itaco?zinho,Santa Quitéria e Itacoãzinho
+territorio_quilombola,15,S?o Pedro,São Pedro
+territorio_quilombola,20,Galv?o,Galvão
+territorio_quilombola,21,Abacatal-Aur?,Abacatal-Aurá
+territorio_quilombola,22,Prod?gio,Prodígio
+territorio_quilombola,27,Timbo,Timbó
+territorio_quilombola,28,Jatob?,Jatobá
+territorio_quilombola,31,"Abui, Parana do Abui, Tapagem, Sagrado Cora??o - essas s?o as comunidades integrantes do TQ Alto Trombetas 1, esse deve ser o nome do TQ que aparece.","Alto Trombetas 1 (Abui, Paraná do Abui, Tapagem e Sagrado Coração)"
+territorio_quilombola,36,Territ?rio Quilombola Bela Vista/Quebra-Chifre,Território Quilombola Bela Vista/Quebra-Chifre
+territorio_quilombola,38,Timbauba,Timbaúba
+territorio_quilombola,43,Ch?cara das Rosas,Chácara das Rosas
+territorio_quilombola,44,?gua Fria,Água Fria
+territorio_quilombola,45,S?o Jorge,São Jorge
+territorio_quilombola,46,Fam?lia Silva,Família Silva
+territorio_quilombola,49,Cambar?,Cambará
+territorio_quilombola,51,Col?nia de S?o Miguel,Colônia de São Miguel
+territorio_quilombola,54,S?o Miguel,São Miguel
+territorio_quilombola,56,Rinc?o dos Martimianos,Rincão dos Martimianos
+territorio_quilombola,59,Fazenda Jatob?,Fazenda Jatobá
+territorio_quilombola,62,Rio das R?s,Rio das Rãs
+territorio_quilombola,63,Fam?lia Fid?lix,Família Fidélix
+territorio_quilombola,65,"Cabeceiras - TQ Cabeceiras formado pelas comunidades S?o Jos?, Sil?ncio, Mata, Cuec?, Apui e Castanhaduba","Cabeceiras (São José, Silêncio, Mata, Cuecé, Apuí e Castanhaduba)"
+territorio_quilombola,66,S?o Domingos,São Domingos
+territorio_quilombola,68,Anast?cia,Anastácia
+territorio_quilombola,70,Rinc?o dos Negros,Rincão dos Negros
+territorio_quilombola,72,Caj? dos Negros,Cajá dos Negros
+territorio_quilombola,74,"Alto Itacuru??, Baixo Itacuru??, Bom Rem?dio","Alto Itacuruçá, Baixo Itacuruçá, Bom Remédio"
+territorio_quilombola,76,Linha F?o,Linha Fão
+territorio_quilombola,78,Laranjituba e ?frica,Laranjituba e África
+territorio_quilombola,79,Tamba?-A??,Tambaú-AÇU
+territorio_quilombola,81,Campinho da Independ?ncia,Campinho da Independência
+territorio_quilombola,83,Mat?es dos Moreira,Matões dos Moreira
+territorio_quilombola,85,Gurup?,Gurupá
+territorio_quilombola,88,Sacop?,Sacopá
+territorio_quilombola,90,Santo Ant?nio do Guapor?,Santo Antônio do Guaporé
+territorio_quilombola,92,Santana Axe do Baixo Jambua?u,Santana Axe do Baixo Jambuaçu
+territorio_quilombola,99,S?o Sebasti?o,São Sebastião
+territorio_quilombola,100,Ros?rio,Rosário
+territorio_quilombola,102,Bracu? (Santa Rita do Bracu?),Bracuí (Santa Rita do Bracuí)
+territorio_quilombola,106,S?o Judas Tadeu,São Judas Tadeu
+territorio_quilombola,108,Alcantara,Alcântara
+territorio_quilombola,109,Arvores Verdes e Estreito,Árvores Verdes e Estreito
+territorio_quilombola,111,S?o Domingos,São Domingos
+territorio_quilombola,114,Burac?o,Buracão
+territorio_quilombola,115,Pitanga de Palmares (Sim?es Filho),Pitanga de Palmares (Simões Filho)
+territorio_quilombola,116,Rio dos Macacos ( Sim?es Filho),Rio dos Macacos (Simões Filho)
+territorio_quilombola,122,"Gurup? Mirim, Jocojo, Flexinha, Carrazedo","Gurupá Mirim, Jocojo, Flexinha, Carrazedo"
+territorio_quilombola,124,Nossa Senhora da Gra?a,Nossa Senhora da Graça
+territorio_quilombola,128,S?o Francisco Malaquias,São Francisco Malaquias
+territorio_quilombola,130,Barreiro do Rio Pardo (Vit?ria da Conquista),Barreiro do Rio Pardo (Vitória da Conquista)
+territorio_quilombola,133,Ilha de Mar? (Salvador),Ilha de Mará (Salvador)
+territorio_quilombola,138,Familia Cardoso,Família Cardoso
+territorio_quilombola,145,Santana e S?o Patr?cio,Santana e São Patrício
+territorio_quilombola,149,Jacare? dos Pretos,Jacareí dos Pretos
+territorio_quilombola,153,Porto Leuc?dio,Porto Leucádio
+territorio_quilombola,159,Dep?sito,Depósito
+territorio_quilombola,160,S?tio Arruda,Sítio Arruda
+territorio_quilombola,162,Boa Esperan?a,Boa Esperança
+territorio_quilombola,163,Tr?s Irm?os,Três Irmãos
+territorio_quilombola,166,Corrego do Alexandre,Córrego do Alexandre
+territorio_quilombola,167,Morro do On?a,Morro do Onça
+territorio_quilombola,180,Mam?s,Mamãs
+territorio_quilombola,181,S?o Jo?o,São João
+territorio_quilombola,182,Varze?o,Varzeão
+territorio_quilombola,183,Alian?a / Santa Joana,Aliança / Santa Joana
+territorio_quilombola,184,Estiva dos Cot?s,Estiva dos Cotós
+territorio_quilombola,185,Mata de S?o Benedito,Mata de São Benedito
+territorio_quilombola,186,Sapat?,Sapaté
+territorio_quilombola,187,Pitor? dos Pretos,Pitoró dos Pretos
+territorio_quilombola,189,Nhunguar?,Nhunguará
+territorio_quilombola,191,Po?a,Poça
+territorio_quilombola,197,Manoel Ciriaco,Manoel Ciríaco
+territorio_quilombola,209,Tanque de Valen?a,Tanque de Valença
+territorio_quilombola,212,Cant?o das Lombas,Cantão das Lombas
+territorio_quilombola,214,C?rrego do Franco,Córrego do Franco
+territorio_quilombola,215,Pared?o,Paredão
+territorio_quilombola,217,Ribeir?o Grande / Terra Seca,Ribeirão Grande / Terra Seca
+territorio_quilombola,220,Andre Lopes,André Lopes
+territorio_quilombola,222,Programa Ra?zes,Programa Raízes
+territorio_quilombola,223,S?o Tom? A??,São Tomé AÇU
+territorio_quilombola,224,"Tatituquara, S?o Sebasti?o","Tatituquara, São Sebastião"
+territorio_quilombola,225,Uni?o S?o Jo?o,União São João
+territorio_quilombola,226,Caju?pe,Cajuípe
+territorio_quilombola,229,Jiquiri e S?o Raimundo,Jiquiri e São Raimundo
+territorio_quilombola,230,Recurso e Nossa Senhora da Concei??o,Recurso e Nossa Senhora da Conceição
+territorio_quilombola,234,Santo Ant?nio,Santo Antônio
+territorio_quilombola,236,Tom?s Nunes,Tomás Nunes
+territorio_quilombola,238,Santa Lu?za Santa Luzia,Santa Luíza Santa Luzia
+territorio_quilombola,239,Rei Zumbi da Comunidade S?tio Bosque,Rei Zumbi da Comunidade Sítio Bosque
+territorio_quilombola,240,S?o Miguel Arcanjo de Nova Ludiceia,São Miguel Arcanjo de Nova Ludiceia
+territorio_quilombola,242,S?o Sebasti?o,São Sebastião
+territorio_quilombola,246,Santo Ant?nio dos Pretos,Santo Antônio dos Pretos
+territorio_quilombola,247,Acau?,Acauã
+territorio_quilombola,250,Tijua?u,Tijuaçu
+territorio_quilombola,252,Jatob?,Jatobá
+territorio_quilombola,253,Monte Alegre e Olho D?gua dos Grilos,Monte Alegre e Olho D'água dos Grilos
+territorio_quilombola,258,S?tio Pavilh?o,Sítio Pavilhão
+territorio_quilombola,265,Sambaiba,Sambaíba
+territorio_quilombola,266,S?o Francisco do Paragua?u,São Francisco do Paraguaçu
+territorio_quilombola,269,Esp?rito Santo,Espírito Santo
+territorio_quilombola,270,Mata do Sap?,Mata do Sapé
+territorio_quilombola,275,Olhos d'?gua do Bas?lio,Olhos d'água do Basílio
+territorio_quilombola,276,Fam?lia Jarcem,Família Jarcem
+territorio_quilombola,277,Fam?lias Ara?jo e Ribeiro,Famílias Araújo e Ribeiro
+territorio_quilombola,283,Vila S?o Jo?o / Cavalos,Vila São João / Cavalos
+territorio_quilombola,285,Cap?o das Gamelas,Capão das Gamelas
+territorio_quilombola,286,Caonge/ Dend? / Engenho da Ponte e outras,Caonge/ Dendê / Engenho da Ponte e outras
+territorio_quilombola,288,Ara?? / Cariac? / Pato / Pedras / Retiro,Araçá / Cariacá / Pato / Pedras / Retiro
+territorio_quilombola,301,Fam?lia Teodoro de Oliveira e Ventura,Família Teodoro de Oliveira e Ventura
+territorio_quilombola,302,Olho D'?gua dos Pires,Olho D'água dos Pires
+territorio_quilombola,307,S?tio Velho,Sítio Velho
+territorio_quilombola,308,Concei??o das Crioulas,Conceição das Crioulas
+territorio_quilombola,310,Sert?o de Itamambuca,Sertão de Itamambuca
+territorio_quilombola,313,Santa F?,Santa FÉ
+territorio_quilombola,314,Rio Andir?,Rio Andirá
+territorio_quilombola,315,Boqueir?o,Boqueirão
+territorio_quilombola,317,S?o Felipe,São Felipe
+territorio_quilombola,321,Caraiba,Caraíba
+territorio_quilombola,326,Guajar? Miri,Guajará Miri
+territorio_quilombola,327,Igarap? do Lago,Igarapé do Lago
+territorio_quilombola,339,?gua Morna,Água Morna
+territorio_quilombola,341,Nossa Senhora da Concei??o,Nossa Senhora da Conceição
+territorio_quilombola,344,Santa Maria do Traquateu?,Santa Maria do Traquateuá
+territorio_quilombola,345,Jo?o Sur?,João Surá
+territorio_quilombola,346,S?o Manoel - PA,São Manoel - PA
+territorio_quilombola,347,S?o Jos? do Mata Fome,São José do Mata Fome
+territorio_quilombola,350,Ilha de S?o Vicente,Ilha de São Vicente
+territorio_quilombola,352,S?o Benedito dos Carneiros,São Benedito dos Carneiros
+territorio_quilombola,355,Ribeira do Jambu-A?u,Ribeira do Jambu-Açu
+territorio_quilombola,364,S?o Manoel,São Manoel
+territorio_quilombola,370,?gua Preta,Água Preta
+territorio_quilombola,371,Nossa Senhora F?tima do Crauateua,Nossa Senhora Fátima do Crauateua
+territorio_quilombola,372,"Centro Ouro - TQ Centro Ouro formado pelas comunidades Centro Ouro, Nossa Senhora das Gra?as e S?o Bernardino","Centro Ouro (Centro Ouro, Nossa Senhora das Graças e São Bernardino)"
+territorio_quilombola,374,Boqueir?o da Arara,Boqueirão da Arara
+territorio_quilombola,383,Ca?andoca,Caçandoca
+territorio_quilombola,386,S?o Miguel do Morro Seco,São Miguel do Morro Seco
+territorio_quilombola,391,?guas do Velho Chico,Águas do Velho Chico
+territorio_quilombola,393,Serraria e S?o Crist?v?o,Serraria e São Cristóvão
+territorio_quilombola,394,Feij?o e Posse,Feijão e Posse
+territorio_quilombola,395,"Balique (TQ BAILIQUE composto das comunidades Bailique Beira, Bailique Centro, Po??o e S?o Bernardo)","Bailique (Bailique Beira, Bailique Centro, Poção e São Bernardo)"
+territorio_quilombola,396,S?o Pedro,São Pedro
+territorio_quilombola,397,Rio das R?s II,Rio das Rãs II
+territorio_quilombola,399,"Igarap? Preto, Baixinha, Panpel?nia, Te?filo","Igarapé Preto, Baixinha, Pampelônia, Teófilo"
+territorio_quilombola,402,Ju?-Bandeira,Juá-Bandeira
+territorio_quilombola,405,Iuna,Iúna
+territorio_quilombola,406,Mimb?,Mimbó
+territorio_quilombola,407,Santo Ant?nio do Matapi,Santo Antônio do Matapi
+territorio_quilombola,408,Santa F? e Santo Ant?nio,Santa FÉ e Santo Antônio
+territorio_quilombola,411,S?o Francisco do Matapi,São Francisco do Matapi
+territorio_quilombola,412,Itacu?-Miri,Itacuã-Miri
+territorio_quilombola,413,C?rrego dos I?s,Córrego dos Iás
+territorio_quilombola,414,Sao Joao I do Marunum II,São João I do Marunum II
+territorio_quilombola,415,S?o Jos? do Icatu,São José do Icatu
+territorio_quilombola,417,S?tio Veiga,Sítio Veiga
+territorio_quilombola,419,C?rrego Ubaranas,Córrego Ubaranas
+territorio_quilombola,424,"Guer?m Baix?o do Gua?, Quizanga, Tabatinga, Guaru??, Giral","Guerém Baixão do Guaí, Quizanga, Tabatinga, Guaruçá, Giral"
+territorio_quilombola,429,Mat?o,Matão
+territorio_quilombola,430,Pedra d?gua,Pedra d'água
+territorio_quilombola,431,Ja?,Jaú
+territorio_quilombola,432,S?o Miguel do Macacoari,São Miguel do Macacoari
+territorio_quilombola,433,S?o Pedro dos Bois,São Pedro dos Bois
+territorio_quilombola,435,S?o Tom? do Aporema,São Tomé do Aporema
+territorio_quilombola,439,Lagoa dos ?ndios,Lagoa dos Índios
+territorio_quilombola,441,Olho D'?gua do Raposo,Olho D'água do Raposo
+territorio_quilombola,443,Cip?,Cipó
+territorio_quilombola,447,Rinc?o dos Caix?es,Rincão dos Caixões
+territorio_quilombola,454,Morma?a,Mormaça
+territorio_quilombola,456,Ch?cara Buriti,Chácara Buriti
+territorio_quilombola,459,Furnas do Dion?sio,Furnas do Dionísio
+territorio_quilombola,462,"Porto Grande, Mangabeira, S?o Benedito Viseu","Porto Grande, Mangabeira, São Benedito Viseu"
+territorio_quilombola,468,S?o Sebasti?o dos Pretos,São Sebastião dos Pretos
+territorio_quilombola,469,S?o Br?s,São Brás
+territorio_quilombola,470,S?o Raimundo da Pirativa,São Raimundo da Pirativa
+territorio_quilombola,474,Fam?lia Magalh?es,Família Magalhães
+territorio_quilombola,475,Quilombos do M?dio Ribeira,Quilombos do Médio Ribeira
+territorio_quilombola,476,Massap?,Massapê
+territorio_quilombola,477,S?o Roque,São Roque
+territorio_quilombola,478,Familia Thomaz,Família Thomaz
+territorio_quilombola,479,S?o Jos? da Serra,São José da Serra
+territorio_quilombola,481,S?o Benedito,São Benedito
+territorio_quilombola,485,Igarap? do Lago do Maraca,Igarapé do Lago do Maraca
+territorio_quilombola,487,Igarap? do Palha,Igarapé do Palha
+territorio_quilombola,490,Grot?o,Grotão
+territorio_quilombola,492,Porto do C?u,Porto do Céu
+territorio_quilombola,494,Cafund?,Cafundó

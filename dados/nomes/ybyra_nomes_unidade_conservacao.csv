@@ -161,7 +161,7 @@ id,nome,codigo,categoria,esfera
 159,APA do Morro da Saudade,0455.33.1817,Área de Proteção Ambiental,Municipal
 160,Floresta Estadual do Uaimii,0000.31.0896,Floresta,Estadual
 161,Refúgio Estadual de Vida Silvestre Libélulas da Serra de São José,0000.31.0937,Refúgio de Vida Silvestre,Estadual
-162,Estação Ecológica do Tripuã,0000.31.0367,Estação Ecológica,Estadual
+162,Estação Ecológica do Tripuí,0000.31.0367,Estação Ecológica,Estadual
 163,APA do Várzea Country Club,0455.33.1822,Área de Proteção Ambiental,Municipal
 164,APA de Grumari,0455.33.1823,Área de Proteção Ambiental,Municipal
 165,APA das Pontas de Copacabana e Arpoador e Seus Entornos,0455.33.1824,Área de Proteção Ambiental,Municipal
@@ -404,7 +404,7 @@ id,nome,codigo,categoria,esfera
 402,Reserva Particular do Patrimônio Natural Estadual Córrego Cascata,0000.32.2361,Reserva Particular do Patrimônio Natural,Estadual
 403,Reserva Particular do Patrimônio Natural Pau a Pique,0000.32.2366,Reserva Particular do Patrimônio Natural,Estadual
 404,Parque Estadual Mãe Bonifácia,0000.51.0464,Parque,Estadual
-405,Parque Estadual Zé Bolo Flã,0000.51.1903,Parque,Estadual
+405,Parque Estadual Zé Bolo Flô,0000.51.1903,Parque,Estadual
 406,Reserva Particular do Patrimônio Natural Oiutrem,0000.32.2348,Reserva Particular do Patrimônio Natural,Estadual
 407,Reserva Particular do Patrimônio Natural Linda Laís,0000.32.2349,Reserva Particular do Patrimônio Natural,Estadual
 408,Reserva Particular do Patrimônio Natural Florindo Vidas,0000.32.2344,Reserva Particular do Patrimônio Natural,Estadual
@@ -554,7 +554,7 @@ id,nome,codigo,categoria,esfera
 552,Parque Natural Municipal do Aricanga Waldemar Devens,0060.32.1565,Parque,Municipal
 553,Área de Proteção Ambiental do Rio dos Bugres,1500.42.2944,Área de Proteção Ambiental,Municipal
 554,Área de Proteção Ambiental da Represa Alto Rio Preto,1500.42.2945,Área de Proteção Ambiental,Municipal
-555,Reserva de Desenvolvimento Sustentável Municipal Piraque-Açã e Piraque-Mirim,0060.32.2919,Reserva de Desenvolvimento Sustentável,Municipal
+555,Reserva de Desenvolvimento Sustentável Municipal Piraque-Açu e Piraque-Mirim,0060.32.2919,Reserva de Desenvolvimento Sustentável,Municipal
 556,Reserva Particular do Patrimônio Natural Estância Rio do Ouro,0000.33.2900,Reserva Particular do Patrimônio Natural,Estadual
 557,Reserva Particular do Patrimônio Natural Néga Fulá,0000.33.2949,Reserva Particular do Patrimônio Natural,Estadual
 558,Reserva Particular do Patrimônio Natural Caldeirão,0000.33.2950,Reserva Particular do Patrimônio Natural,Estadual
@@ -1136,7 +1136,7 @@ id,nome,codigo,categoria,esfera
 1134,Parque Natural Municipal das Águas de Guapimirim,1850.33.4453,Parque,Municipal
 1135,Reserva de Desenvolvimento Sustentável Bom Jardim,0000.11.4454,Reserva de Desenvolvimento Sustentável,Estadual
 1136,Parque Natural Municipal Salito João Fiorentin,9658.41.4455,Parque,Municipal
-1137,Área de Proteção Ambiental da Bacia do Rio Iguatemi do Município de Japorã-Ms,4809.50.4459,Área de Proteção Ambiental,Municipal
+1137,Área de Proteção Ambiental da Bacia do Rio Iguatemi do Município de Japorã-MS,4809.50.4459,Área de Proteção Ambiental,Municipal
 1138,Parque Estadual Serra da Boa Esperança,0000.31.1780,Parque,Estadual
 1139,Parque Natural Municipal Engenheiro Geraldo Rocha,3201.29.4555,Parque,Municipal
 1140,Reserva Particular do Patrimônio Natural Costa do Serro,0000.00.1104,Reserva Particular do Patrimônio Natural,Federal
@@ -2425,7 +2425,7 @@ id,nome,codigo,categoria,esfera
 2423,Área de Proteção Ambiental São Francisco Xavier,0000.35.1714,Área de Proteção Ambiental,Estadual
 2424,Floresta Nacional de Negreiros,0000.00.1605,Floresta,Federal
 2425,Área de Proteção Ambiental Jundiaí,0000.35.1704,Área de Proteção Ambiental,Estadual
-2426,Área de Proteção Ambiental Mata do Iguatemã,0000.35.1705,Área de Proteção Ambiental,Estadual
+2426,Área de Proteção Ambiental Mata do Iguatemí,0000.35.1705,Área de Proteção Ambiental,Estadual
 2427,Área de Proteção Ambiental Morro de São Bento,0000.35.1706,Área de Proteção Ambiental,Estadual
 2428,Área de Proteção Ambiental Parque e Fazenda do Carmo,0000.35.1707,Área de Proteção Ambiental,Estadual
 2429,Área de Proteção Ambiental Piracicaba Juqueri Mirim Área I,0000.35.1974,Área de Proteção Ambiental,Estadual

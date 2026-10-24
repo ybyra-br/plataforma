@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.14.0 — 2026-10-24
+- **Revisão da acentuação de todos os nomes** (`scripts/revisar_nomes.py` v0.1.1; relatório de 596 trocas em `dados/nomes/revisao_acentos.csv`):
+  - terras indígenas (299 nomes) e territórios quilombolas (190): acentos que vinham como "?" restaurados, com correções conferidas de etnônimos e topônimos (Karajá, Apinayé, Krahô, Kadiwéu, Hãm Yĩxux, Taego Ãwa, Tekoha Añetete, Iròdu Iràna, Vera Tupã'i, Kampa do Rio Amônia, Mimbó…), mantendo a caixa original;
+  - unidades de conservação (107): palavras que vinham sem acento da base oficial (Área, Refúgio, Patrimônio, Sítio, João…), sem tocar em siglas e nomes que se escrevem sem acento (ARIE, Goiana, Amambai, Cananeia…); apóstrofo, aspas e travessão perdidos (Olho D'Água, “Walter Bessa”, – RPPN); siglas de UF em maiúsculas; Piraquê-Açu, Zé Bolo Flô, Tripuí;
+  - quatro quilombos com anotações da base no lugar do nome (ex.: Alto Trombetas 1, Bailique) passam a ter o nome e, entre parênteses, as comunidades.
+- Estados, municípios, biomas, bacias, Amazônia Legal e MATOPIBA conferidos, sem problemas.
+- `scripts/reparar_acentos.py` v0.1.1: novas correções conferidas e siglas de UF.
+
 ## 0.13.1 — 2026-10-24
 - Site v0.10.1: fonte **Inter** (Google Fonts, SIL OFL) no lugar da Ubuntu: algarismos tabulares nos números, espessura semibold (600) nos títulos e dígitos abertos (`ss01`) para leitura de valores pequenos.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-reparar_acentos.py · v0.1.0
+reparar_acentos.py · v0.1.1
 ===========================
 Restaura os acentos perdidos ("�") nos nomes das malhas do MapBiomas exportadas do GEE.
 Na origem, cada letra acentuada virou um único "�"; aqui cada palavra com "�" é comparada com um
@@ -17,6 +17,7 @@ Saída: CSV UTF-8 com id, nome, codigo, categoria, esfera (as três últimas se 
 
 Histórico de versões
   0.1.0 (2026-10-24) — versão inicial (unidades de conservação, CNUC 2026).
+  0.1.1 (2026-10-24) — correções conferidas de etnônimos e nomes de terras indígenas e quilombos.
 """
 import csv
 import json
@@ -31,7 +32,8 @@ ACENTUADAS = "áàâãéêíóôõúüç"
 MINUSC = {"de", "da", "do", "das", "dos", "e", "a", "o", "em", "na", "no", "nas", "nos", "à", "ao", "aos", "às"}
 SIGLAS = {"APA", "ARIE", "RDS", "RPPN", "RESEX", "REBIO", "FLONA", "PARNA", "ESEC", "MONA", "REVIS", "RVS",
           "FLOTA", "PE", "PES", "PNM", "UC", "II", "III", "IV", "VI", "VII", "VIII", "IX", "XI", "XII", "SESC", "CEMIG",
-          "CESP", "CHESF", "CPFL", "FURNAS", "RFFSA", "IBAMA", "ICMBIO"}
+          "CESP", "CHESF", "CPFL", "FURNAS", "RFFSA", "IBAMA", "ICMBIO", "TQ", "AC", "AL", "AM", "AP", "BA", "CE",
+          "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SP", "TO"}
 TERMOS = """estação ecológica biológica área proteção ambiental relevante interesse ecológico reserva particular
 patrimônio natural floresta nacional estadual municipal parque monumento refúgio vida silvestre extrativista
 desenvolvimento sustentável fauna jardim botânico lagoa ilha ilhas igarapé várzea cachoeira córrego ribeirão serra
@@ -113,6 +115,80 @@ CORRECOES = {
     "cuni�": "cuniã", "catagu�s": "cataguás", "itangu�": "itanguá", "sui�a": "suíça", "vel�so": "velôso",
     "cam�lo": "camêlo", "l�bo": "lôbo", "c�do": "codó", "paran�": "paraná", "carna�ba": "carnaúba",
     "ita�ba": "itaúba", "timb�": "timbó", "jequi�": "jequiá", "itapu�": "itapuã", "apor�": "aporé",
+    "karaj�": "karajá",
+    "ka�aguy": "ka'aguy",
+    "ofay�": "ofayé",
+    "sawr�": "sawré",
+    "trocar�": "trocará",
+    "tur�": "turé",
+    "xapec�": "xapecó",
+    "acim�": "acimã",
+    "amanay�": "amanayé",
+    "apinay�": "apinayé",
+    "arawet�": "araweté",
+    "caxix�": "caxixó",
+    "akr�tikat�j�": "akrãtikatêjê",
+    "gavi�ozinho": "gaviãozinho",
+    "geripanc�": "geripancó",
+    "guyrarok�": "guyraroká",
+    "herarek�": "herarekã",
+    "kl�n�": "klãnõ",
+    "jaguapir�": "jaguapiré",
+    "kadiw�u": "kadiwéu",
+    "memortumr�": "memortumré",
+    "kap�t": "kapôt",
+    "karara�": "kararaô",
+    "krah�": "krahô",
+    "krenreh�": "krenrehé",
+    "kreny�": "krenyê",
+    "menk�": "menkü",
+    "panar�": "panará",
+    "pankarar�": "pankararé",
+    "parakan�": "parakanã",
+    "naruv�tu": "naruvôtu",
+    "ap�njekra": "apãnjekra",
+    "sarar�": "sararé",
+    "sissa�ma": "sissaíma",
+    "tik�na": "tikúna",
+    "wai�pi": "waiãpi",
+    "wedez�": "wedezé",
+    "�ande": "ñande",
+    "guas�": "guasú",
+    "itamar�": "itamarã",
+    "enawen�": "enawenê",
+    "naw�": "nawê",
+    "itat�": "itatã",
+    "kambiw�": "kambiwá",
+    "manissu�": "manissuã",
+    "itacuru��": "itacuruçá",
+    "itaco�zinho": "itacoãzinho",
+    "fid�lix": "fidélix",
+    "anast�cia": "anastácia",
+    "panpel�nia": "pampelônia",
+    "guaru��": "guaruçá",
+    "cajua�pe": "cajuaípe",
+    "kond�": "kondá",
+    "kor�": "korá",
+    "h�m": "hãm",
+    "y�xux": "yĩxux",
+    "t�a": "téa",
+    "rebu�": "rebuá",
+    "�wa": "ãwa",
+    "a�etete": "añetete",
+    "ir�du": "iròdu",
+    "ir�na": "iràna",
+    "tup��i": "tupã'i",
+    "kand�ia": "kandóia",
+    "mimb�": "mimbó",
+    "waiw�i": "waiwái",
+    "guavir�": "guavirá",
+    "teko�": "tekoá",
+    "tekoh�": "tekohã",
+    "am�nia": "amônia",
+    "a��": "açu",
+    "fl�": "flô",
+    "iguatem�": "iguatemí",
+    "tripu�": "tripuí",
 }
 
 
