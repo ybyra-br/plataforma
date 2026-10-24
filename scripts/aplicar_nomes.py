@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-aplicar_nomes.py · v0.1.1
+aplicar_nomes.py · v0.1.2
 =========================
 Atualiza os nomes de web/geo/indice.json a partir dos CSV UTF-8 exportados pelo GEE
 (gee/ybyra_estatisticas.js, MODO = 'nomes', ou gee/ybyra_nomes_uc.js: ybyra_nomes_<recorte>.csv).
@@ -14,6 +14,7 @@ Uso: python scripts/aplicar_nomes.py <pasta com ybyra_nomes_*.csv>
 Histórico de versões
   0.1.0 (2026-10-24) — versão inicial.
   0.1.1 (2026-10-24) — aceita a tabela completa de atributos (detecta a coluna de nome; --coluna fixa).
+  0.1.2 (2026-10-24) — nomes repetidos diferenciados pelo código oficial (coluna "codigo", ex.: CNUC), se houver.
 """
 import csv
 import json
@@ -68,10 +69,12 @@ def main():
             print(f"{rec}: nenhuma coluna de nome encontrada; colunas: {cab}")
             continue
         print(f"{rec}: coluna de nome = {col}")
-        nomes = {}
+        nomes, codigos = {}, {}
         for r in linhas:
             try:
-                nomes[int(float(r["id"]))] = limpar(r[col])
+                i = int(float(r["id"]))
+                nomes[i] = limpar(r[col])
+                codigos[i] = (r.get("codigo") or "").strip()
             except (ValueError, KeyError, TypeError):
                 continue
         trocados = vazios = 0
@@ -88,7 +91,8 @@ def main():
             cont[e[1]] = cont.get(e[1], 0) + 1
         for e in indice[rec]:
             if cont[e[1]] > 1:
-                e[1] = f"{e[1]} (nº {e[0]})"
+                cod = codigos.get(int(e[0]))
+                e[1] = f"{e[1]} ({'CNUC ' + cod if rec == 'unidade_conservacao' and cod else 'nº ' + str(e[0])})"
         print(f"{rec}: {len(nomes)} nomes no CSV · {trocados} alterados · {vazios} sem nome no CSV")
     INDICE.write_text(json.dumps(indice, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
