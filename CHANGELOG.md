@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.16.0 — 2026-10-24
+- **Aviso importante** (natureza técnico-científica das estimativas; não calcula créditos de carbono nem produz laudos; responsabilidades), exibido no primeiro acesso e no rodapé de cada relatório; responsável: Projeto YbYrá-BR.
+- **Termos de uso e privacidade** (`web/termos.html` v1.0): responsável, aceite, natureza das informações, uso e citação, verificação de relatórios, privacidade (LGPD: a plataforma não coleta nem guarda dados pessoais), armazenamento local sem cookies, serviços de terceiros, contato e legislação. Link na barra superior, no painel e no aviso.
+- **Sem banner de cookies**: a plataforma não usa cookies; o aviso inicial informa que as preferências ficam só no navegador.
+- **Campos opcionais do relatório** (nome, instituição e objetivo): aparecem só no documento ("Solicitado por"), sem envio nem armazenamento.
+- **Estatística de uso anônima** pronta (GoatCounter, sem cookies e sem guardar IP): conta relatórios gerados por recorte e objetivo declarado; fica desligada até o código do serviço ser configurado.
+- Correção: relatórios gerados com o catálogo antigo em cache traziam a versão "1.2"; a verificação aceita a versão abreviada quando há uma só correspondente (`verificar.html` v0.1.1), e o catálogo e `versoes.json` passam a ser lidos sem cache.
+- Site v0.12.0.
+
 ## 0.15.0 — 2026-10-24
 - **Versão dos dados (v1.2.0) em toda a plataforma**: barra superior, créditos do mapa, painel do recorte, citação (com "Disponível em" e "Acesso em"), CSV (colunas `id`, `versao_dados`, `acesso`), tabela longa e relatório (cabeçalho e rodapé, com data e hora de acesso). A versão vem de `dados/brutos/<modelo>/VERSAO.txt`.
 - **Verificação de autenticidade dos relatórios**: cada relatório traz um código (SHA-256 da versão dos dados, recorte, ano, data e hora de geração e série completa), o código completo e um QR code; a nova página `verificar.html` recalcula o código a partir dos dados oficiais e mostra os valores para comparação (`web/verificacao.js` v0.1.0).

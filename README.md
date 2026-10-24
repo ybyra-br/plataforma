@@ -57,6 +57,10 @@ O código é aberto. O histórico de versões está em [`CHANGELOG.md`](CHANGELO
 
 Silva-Junior, C. H. L. (2026). *Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR v1.2.0* (versão de prévia). Projeto YbYrá-BR, CNPq 401741/2023-0. Disponível em: https://ybyra-br.github.io/plataforma/. Acesso em: [data].
 
+## Aviso importante e privacidade
+
+Os valores são estimativas técnico-científicas: a plataforma não calcula créditos de carbono, não certifica reduções de emissões e não produz laudos periciais. A plataforma não usa cookies nem coleta dados pessoais. Veja os [Termos de uso e privacidade](https://ybyra-br.github.io/plataforma/termos.html).
+
 ## Apoio
 
 Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq), processo 401741/2023-0.

@@ -284,6 +284,18 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 .rel tr.at td{font-weight:700;background:var(--fill)}
 .rel .lista{columns:2;column-gap:28px;font-size:0.8125rem;padding-left:18px;margin:0}
 .rel .rod{font-size:0.7188rem;color:var(--label2);border-top:.5px solid var(--sep);padding-top:10px}
+.rel .solic{font-size:0.8125rem}
+.rel .aviso-rel{font-size:0.6875rem;color:var(--label2);line-height:1.45}
+.fundo-dlg{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;padding:16px}
+.dlg{background:var(--cell);color:var(--label);border-radius:20px;box-shadow:var(--sombra);max-width:560px;width:100%;max-height:calc(100dvh - 32px);overflow:auto;padding:22px 24px;display:flex;flex-direction:column;gap:12px;font-size:0.9375rem;line-height:1.5}
+.dlg h2{margin:0;font-size:1.25rem;letter-spacing:-.01em}
+.dlg p{margin:0}
+.dlg .nota-dlg{font-size:0.8125rem;color:var(--label2)}
+.dlg a{color:var(--tint)}
+.dlg label{display:flex;flex-direction:column;gap:4px;font-size:0.8125rem;color:var(--label2);font-weight:500}
+.dlg input,.dlg select{min-height:44px;border:.5px solid var(--sep);border-radius:10px;padding:0 12px;background:var(--bg);color:var(--label);font:inherit;font-size:0.9375rem}
+.acoes-dlg{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
+.acoes-dlg a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .rel .verif{display:flex;gap:16px;align-items:center;border:.5px solid var(--sep);border-radius:12px;padding:12px 14px;break-inside:avoid}
 .rel .verif .qr svg{width:92px;height:92px;display:block}
 .rel .verif .qr{background:#fff;padding:6px;border-radius:6px}
@@ -340,7 +352,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
     <span class="tx"><span class="proj">Projeto <b>YbYrá-BR</b><span id="versao-topo"></span></span><span class="tit">Emissões e Remoções de CO₂</span></span>
   </a>
   <span class="esp"></span>
-  <nav class="links" aria-label="Seções"><button type="button" id="abrir-metodo">Método</button><a href="https://github.com/ybyra-br/plataforma" target="_blank" rel="noopener">Código aberto</a><button type="button" class="tema" id="b-tema" aria-label="Aparência: automática" title="Aparência: automática (segue o sistema)"><svg viewBox="0 0 16 16" aria-hidden="true"></svg></button></nav>
+  <nav class="links" aria-label="Seções"><button type="button" id="abrir-metodo">Método</button><a href="termos.html">Termos</a><a href="https://github.com/ybyra-br/plataforma" target="_blank" rel="noopener">Código aberto</a><button type="button" class="tema" id="b-tema" aria-label="Aparência: automática" title="Aparência: automática (segue o sistema)"><svg viewBox="0 0 16 16" aria-hidden="true"></svg></button></nav>
   <div class="apoio">
     <span class="rot">Apoio<br>Processo 401741/2023-0</span>
     <img class="claro" src="img/cnpq-64.png" srcset="img/cnpq-64.png 1x, img/cnpq-128.png 2x" alt="CNPq">
@@ -438,6 +450,29 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
     <p class="lead">Em preparação.</p>
   </article>
 </div>
+<div class="fundo-dlg" id="aviso-inicial" role="dialog" aria-modal="true" aria-labelledby="aviso-tit" hidden>
+  <div class="dlg">
+    <h2 id="aviso-tit">Aviso importante</h2>
+    <p>Esta plataforma é uma ferramenta técnico-científica que apresenta <b>estimativas</b> de emissões e remoções de CO₂ associadas às mudanças de uso e cobertura da terra, geradas pelo modelo YbYrá-BR. Ela <b>não calcula créditos de carbono</b>, não certifica reduções de emissões e não produz laudos periciais.</p>
+    <p>O Projeto YbYrá-BR responde pela correção metodológica dentro dos parâmetros técnico-científicos adotados, mas não por decisões administrativas, judiciais ou comerciais baseadas nas informações. A interpretação e a aplicação dos dados são de responsabilidade de quem os utiliza; para autoridades públicas, recomenda-se a interpretação por profissionais qualificados e, quando couber, acordo de cooperação técnica.</p>
+    <p class="nota-dlg">A plataforma não usa cookies nem coleta dados pessoais: suas preferências (tema, mapa e painéis) ficam apenas neste navegador. Saiba mais nos <a href="termos.html">Termos de uso e privacidade</a>.</p>
+    <div class="acoes-dlg"><a class="btn" href="termos.html">Ler os termos</a><button type="button" class="btn btn-pri" id="aviso-ok">Entendi</button></div>
+  </div>
+</div>
+<div class="fundo-dlg" id="pre-rel" role="dialog" aria-modal="true" aria-labelledby="pre-rel-tit" hidden>
+  <form class="dlg" id="form-rel">
+    <h2 id="pre-rel-tit">Gerar relatório</h2>
+    <p class="nota-dlg">Campos opcionais para identificar o documento. Eles aparecem só no relatório e <b>não são enviados nem guardados</b>; apenas o objetivo é contado de forma anônima nas estatísticas de uso.</p>
+    <label>Nome<input id="rel-nome" autocomplete="name" maxlength="120"></label>
+    <label>Instituição<input id="rel-inst" autocomplete="organization" maxlength="160"></label>
+    <label>Objetivo do relatório<select id="rel-obj">
+      <option value="">Prefiro não informar</option>
+      <option>Pesquisa científica</option><option>Ensino</option><option>Gestão pública e políticas públicas</option>
+      <option>Fiscalização e controle</option><option>Organização da sociedade civil</option><option>Jornalismo</option>
+      <option>Setor privado</option><option>Uso pessoal</option><option>Outro</option></select></label>
+    <div class="acoes-dlg"><button type="button" class="btn" id="pre-rel-cancelar">Cancelar</button><button type="submit" class="btn btn-pri">Gerar relatório</button></div>
+  </form>
+</div>
 <div id="relatorio" role="dialog" aria-modal="true" aria-label="Relatório do recorte" hidden>
   <div class="rel-barra"><button type="button" class="btn btn-ic" id="fechar-rel" aria-label="Fechar relatório"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button><span class="tit">Relatório</span><span class="esp"></span><button type="button" class="btn btn-pri" id="imprimir-rel">Imprimir ou salvar PDF</button></div>
   <article class="rel" id="rel-conteudo"></article>
@@ -450,6 +485,11 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 <script src="verificacao.js"></script>
 <script>
 /* plataforma de emissões YbYrá-BR · v0.8.0
+   0.12.0 (2026-10-24) — Aviso importante no primeiro acesso (com nota de que não há cookies nem dados pessoais) e no
+                        relatório; página termos.html (termos de uso e privacidade, LGPD) e link na barra superior; campos
+                        opcionais nome, instituição e objetivo antes do relatório, só impressos; contagem anônima de uso
+                        (GoatCounter, sem cookies) pronta e desligada até receber o código; versão abreviada aceita na
+                        verificação; catálogo sem cache.
    0.11.0 (2026-10-24) — versão dos dados (v1.2.0) na barra superior, nos créditos do mapa, no painel, na citação, no CSV e
                         no relatório; citação com "Disponível em" e "Acesso em"; CSV com id, versao_dados e acesso;
                         relatório com data e hora de acesso e código de verificação de autenticidade (QR code e
@@ -503,7 +543,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.11.0"; let DADOS = "dados/v1_2/";
+const VERSAO = "0.12.0"; let DADOS = "dados/v1_2/";
 Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "Inter, sans-serif";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
@@ -555,7 +595,7 @@ const RAMPAS = {
 const E = {tipo:"uf", v:"liquida", ano:2024, modo:"total", sel:{tipo:"brasil", id:1}, base:"cinza", proj:"globe"};
 let CAT, ANOS, mapa, IDX = {}, NOMES = {}, BBOX = {}, VD = "";
 const cache = new Map();
-const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
+const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u, u==="catalogo.json" ? {cache:"no-cache"} : {}).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
 const nomeDe = (tipo,id) => {
   id = +id;
   if(tipo==="brasil") return "Brasil";
@@ -939,6 +979,7 @@ async function relatorio(){
     <div class="cabrel"><img class="y claro" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><img class="y escuro" src="img/ybyra-logo-branco-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
       <div class="ap">Apoio<img src="img/cnpq-128.png" alt="CNPq">Processo 401741/2023-0</div></div>
     <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)} · modelo YbYrá-BR ${VD}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
+    ${SOLIC.nome||SOLIC.inst||SOLIC.obj ? `<p class="solic"><b>Solicitado por:</b> ${[SOLIC.nome, SOLIC.inst].filter(Boolean).map(esc).join(" — ") || "não informado"}${SOLIC.obj?` · <b>Objetivo:</b> ${esc(SOLIC.obj)}`:""}</p>` : ""}
     ${CAT.ficticio ? `<p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>` : ""}
     <p>${resumo}</p>
     <div class="kpis">${$("kpis").innerHTML}</div>
@@ -952,6 +993,7 @@ async function relatorio(){
     <div class="tabw"><table><thead><tr>${cab.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${linhas}</tbody></table></div>
     ${rk?`<h2>${$("rank-tit").textContent}</h2><p class="meta">${$("rank-nota").textContent}</p><ol class="lista">${rk}</ol>`:""}
     <div class="verif" id="rel-verif"></div>
+    <p class="aviso-rel"><b>Aviso importante.</b> Os valores são estimativas técnico-científicas do modelo YbYrá-BR ${VD}, sujeitas às incertezas dos dados de origem; não constituem cálculo de créditos de carbono, certificação de reduções de emissões nem laudo pericial. A interpretação e a aplicação dos dados são de responsabilidade do usuário. Termos de uso: ${URL_SITE}termos.html</p>
     <p class="rod">Área do recorte: ${nf(s.area_ha[i]/100,0)} km². Fonte: modelo YbYrá-BR ${VD} (coleção emissions_removals_${CAT.versao_modelo}, dados atualizados em ${dataBR(new Date(CAT.gerado_em))}); somente CO₂. Plataforma v${VERSAO}. Relatório gerado e dados acessados em ${quando}.<br>${$("cit").textContent}</p>`;
   await verificacaoRelatorio({v: VD.slice(1), t: tipo, i: id, a: E.ano, g}, s);
   $("relatorio").hidden = false; $("relatorio").scrollTop = 0;
@@ -974,7 +1016,24 @@ async function verificacaoRelatorio(p, s){
       Leia o QR code ou acesse <span class="lk">${new URL("verificar.html", URL_SITE).href}</span> e informe o código completo para conferir os valores deste relatório com os dados oficiais da versão ${VD}.</div>`;
   }catch(e){ el.remove(); }
 }
-$("abrir-rel").onclick = relatorio;
+/* pré-relatório (campos opcionais, só impressos) e estatística anônima */
+const SOLIC = {nome:"", inst:"", obj:""};
+const esc = t => String(t).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+$("abrir-rel").onclick = ()=>{ $("pre-rel").hidden = false; $("rel-nome").focus(); };
+$("pre-rel-cancelar").onclick = ()=>{ $("pre-rel").hidden = true; $("abrir-rel").focus(); };
+$("form-rel").onsubmit = async ev=>{ ev.preventDefault();
+  SOLIC.nome = $("rel-nome").value.trim(); SOLIC.inst = $("rel-inst").value.trim(); SOLIC.obj = $("rel-obj").value;
+  $("pre-rel").hidden = true; await relatorio();
+  contar(`relatorio/${E.sel.tipo}/${E.sel.id}`, `Relatório · ${TIPO_NOME[E.sel.tipo]} · ${SOLIC.obj || "objetivo não informado"}`);
+  if(SOLIC.obj) contar(`objetivo/${SOLIC.obj}`, `Objetivo do relatório: ${SOLIC.obj}`); };
+/* contagem anônima de uso (GoatCounter, sem cookies e sem guardar IP); desligada enquanto GOATCOUNTER = "" */
+const GOATCOUNTER = "";
+function contar(path, title){ try{ if(window.goatcounter && goatcounter.count) goatcounter.count({path, title, event:true}); }catch(e){} }
+if(GOATCOUNTER){ const sc = document.createElement("script"); sc.async = true; sc.src = "https://gc.zgo.at/count.js";
+  sc.dataset.goatcounter = `https://${GOATCOUNTER}.goatcounter.com/count`; document.head.appendChild(sc); }
+/* aviso importante no primeiro acesso */
+try{ if(!localStorage.getItem("ybyra-aviso-1")) $("aviso-inicial").hidden = false; }catch(e){ $("aviso-inicial").hidden = false; }
+$("aviso-ok").onclick = ()=>{ $("aviso-inicial").hidden = true; try{ localStorage.setItem("ybyra-aviso-1","1"); }catch(e){} };
 $("fechar-rel").onclick = ()=>{ $("relatorio").hidden = true; };
 $("imprimir-rel").onclick = ()=>window.print();
 
@@ -1047,7 +1106,7 @@ $("abrir-metodo").onclick = ()=>{ $("metodo").hidden=false; $("metodo").scrollTo
 $("fechar-metodo").onclick = ()=>{ $("metodo").hidden=true; };
 $("marca").onclick = e=>{ e.preventDefault(); $("metodo").hidden=true; selecionar("brasil",1,true); };
 addEventListener("keydown",e=>{
-  if(e.key==="Escape"){ $("metodo").hidden=true; $("relatorio").hidden=true; if(!$("pop-camadas").hidden){ popCamadas(false); $("b-camadas").focus(); } }
+  if(e.key==="Escape"){ $("metodo").hidden=true; $("relatorio").hidden=true; $("pre-rel").hidden=true; if(!$("pop-camadas").hidden){ popCamadas(false); $("b-camadas").focus(); } }
   const digitando = /INPUT|TEXTAREA/.test(document.activeElement?.tagName);
   if(!digitando && (e.key==="/" || ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==="k"))){ e.preventDefault(); $("busca").focus(); }
 });
@@ -1111,12 +1170,13 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
   try{
     const pm = await import("https://cdn.jsdelivr.net/npm/pmtiles@4.3.0/+esm");
     maplibregl.addProtocol("pmtiles", new pm.Protocol().tile);
-    try{ const vs = await fetch("dados/versoes.json").then(r=>r.json()); DADOS = vs.versoes[vs.atual].pasta; }catch(e){}
+    let vAtual = "";
+    try{ const vs = await fetch("dados/versoes.json", {cache:"no-cache"}).then(r=>r.json()); DADOS = vs.versoes[vs.atual].pasta; vAtual = vs.atual; }catch(e){}
     const [cat, idx] = await Promise.all([j("catalogo.json"), fetch("geo/indice.json").then(r=>r.json())]);
     try{ E.base = localStorage.getItem("ybyra-base2") || E.base; if(!BASE[E.base]) E.base = "cinza"; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
-    CAT = cat; IDX = idx; VD = "v" + (CAT.versao_dados || String(CAT.versao_modelo).replace(/^v/,"").replace(/_/g,"."));
+    CAT = cat; IDX = idx; VD = "v" + (CAT.versao_dados || vAtual || String(CAT.versao_modelo).replace(/^v/,"").replace(/_/g,"."));
     $("versao-topo").textContent = `· dados ${VD}`;
-    $("versao-nota").textContent = `Dados: modelo YbYrá-BR ${VD} (atualizados em ${dataBR(new Date(CAT.gerado_em))}) · plataforma v${VERSAO}.`;
+    $("versao-nota").innerHTML = `Dados: modelo YbYrá-BR ${VD} (atualizados em ${dataBR(new Date(CAT.gerado_em))}) · plataforma v${VERSAO} · <a href="termos.html">Termos de uso e privacidade</a>`;
     for(const [f, lista] of Object.entries(IDX)){ NOMES[f] = new Map(lista.map(e=>[e[0], e[1]])); for(const e of lista) BBOX[f+":"+e[0]] = e.slice(2,6); }
     $("aviso-ficticio").hidden = !CAT.ficticio; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
