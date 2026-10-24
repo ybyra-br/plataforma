@@ -1,5 +1,8 @@
 # Histórico de versões
 
+## 0.11.2 — 2026-10-24
+- Site v0.9.2: em telas de até 900 px, o painel do recorte ficava fixo por cima do painel Explorar; agora os dois se empilham sob o mapa, como previsto.
+
 ## 0.11.1 — 2026-10-24
 - Site v0.9.1: retirado o link **Alerta de Queimadas** da barra superior (e o ícone correspondente no celular).
 
