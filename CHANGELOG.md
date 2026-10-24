@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 0.12.1 — 2026-10-24
+- `gee/ybyra_nomes_uc.js` v0.1.0: exporta a tabela de atributos das unidades de conservação (sem geometria, CSV UTF-8), com o mesmo identificador das estatísticas e do mapa, para recuperar os nomes.
+- `scripts/aplicar_nomes.py` v0.1.1: aceita a tabela completa de atributos e detecta a coluna de nome (`--coluna` fixa à mão).
+
 ## 0.12.0 — 2026-10-24
 - `gee/ybyra_estatisticas.js` v0.4.0: modo `nomes`, que exporta em CSV UTF-8 só o id e o nome de cada malha (o shapefile perdia os acentos de terras indígenas e quilombos); campo de nome detectado também por padrão (`nome`, `name`, `nm_`…), o que resolve as unidades de conservação sem nome; `NOME_RECORTE` permite fixar o campo à mão.
 - `scripts/aplicar_nomes.py` v0.1.0: aplica esses nomes em `web/geo/indice.json` (busca, rótulos e catálogo), sem refazer as camadas do mapa; nomes repetidos ganham o identificador.

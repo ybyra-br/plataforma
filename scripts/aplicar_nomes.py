@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-aplicar_nomes.py · v0.1.0
+aplicar_nomes.py · v0.1.1
 =========================
 Atualiza os nomes de web/geo/indice.json a partir dos CSV UTF-8 exportados pelo GEE
-(gee/ybyra_estatisticas.js, MODO = 'nomes': ybyra_nomes_<recorte>.csv, colunas id,nome).
+(gee/ybyra_estatisticas.js, MODO = 'nomes', ou gee/ybyra_nomes_uc.js: ybyra_nomes_<recorte>.csv).
+O CSV precisa da coluna id; a de nome é "nome" ou, se não houver, a coluna cujo título lembra
+nome (nome, name, nm_…) com mais valores preenchidos. Use --coluna NOME para fixá-la.
 Só os nomes mudam; as camadas PMTiles e as extensões ficam como estão. O workflow do site
 lê os nomes deste índice ao gerar o catálogo.
 
@@ -11,6 +13,7 @@ Uso: python scripts/aplicar_nomes.py <pasta com ybyra_nomes_*.csv>
 
 Histórico de versões
   0.1.0 (2026-10-24) — versão inicial.
+  0.1.1 (2026-10-24) — aceita a tabela completa de atributos (detecta a coluna de nome; --coluna fixa).
 """
 import csv
 import json
@@ -34,21 +37,43 @@ def limpar(nome: str) -> str:
     return nome
 
 
+def coluna_nome(linhas, cabecalho, fixa=None):
+    if fixa:
+        return fixa
+    if "nome" in cabecalho and any((r.get("nome") or "").strip() for r in linhas):
+        return "nome"
+    padrao = re.compile(r"nome|name|(^|_)(nm|no|nom)(_|$)|denomina", re.I)
+    cand = [c for c in cabecalho if padrao.search(c) and not re.search(r"(^|_)(id|cod|cd)(_|$)", c, re.I)]
+    cand.sort(key=lambda c: -sum(1 for r in linhas if (r.get(c) or "").strip()))
+    return cand[0] if cand else None
+
+
 def main():
-    pasta = Path(sys.argv[1])
+    args = sys.argv[1:]
+    fixa = None
+    if "--coluna" in args:
+        k = args.index("--coluna"); fixa = args[k + 1]; del args[k:k + 2]
+    pasta = Path(args[0])
     indice = json.loads(INDICE.read_text(encoding="utf-8"))
     for arq in sorted(pasta.glob("ybyra_nomes_*.csv")):
         rec = arq.stem.replace("ybyra_nomes_", "")
         if rec in IGNORAR or rec not in indice:
             print(f"{rec}: ignorado")
             continue
-        nomes = {}
         with open(arq, encoding="utf-8-sig", newline="") as fh:
-            for r in csv.DictReader(fh):
-                try:
-                    nomes[int(float(r["id"]))] = limpar(r["nome"])
-                except (ValueError, KeyError):
-                    continue
+            leitor = csv.DictReader(fh)
+            linhas, cab = list(leitor), leitor.fieldnames or []
+        col = coluna_nome(linhas, cab, fixa)
+        if not col:
+            print(f"{rec}: nenhuma coluna de nome encontrada; colunas: {cab}")
+            continue
+        print(f"{rec}: coluna de nome = {col}")
+        nomes = {}
+        for r in linhas:
+            try:
+                nomes[int(float(r["id"]))] = limpar(r[col])
+            except (ValueError, KeyError, TypeError):
+                continue
         trocados = vazios = 0
         for e in indice[rec]:
             n = nomes.get(int(e[0]))
