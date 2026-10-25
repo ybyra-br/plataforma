@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Termos de uso e privacidade · Emissões YbYrá-BR</title>
 <meta name="description" content="Termos de uso, aviso importante e aviso de privacidade da plataforma de emissões e remoções de CO₂ do Projeto YbYrá-BR.">
-<script>try{var t=localStorage.getItem("ybyra-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>try{var th=localStorage.getItem("ybyra-tema");if(th==="light"||th==="dark")document.documentElement.dataset.theme=th;}catch(e){}</script>
 <link rel="icon" type="image/png" href="img/ybyra-simbolo-96.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap">
 <style>
-/* termos.html · v1.0.0 (2026-10-24) — termos de uso, aviso importante e aviso de privacidade */
+/* termos.html · v1.1.0 (2026-10-24) — termos de uso, aviso importante e aviso de privacidade
+   1.1.0 — versões em inglês e espanhol (a portuguesa prevalece); idioma no armazenamento local. */
 :root{--font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
   --bg:#f2f2f7;--cell:#fff;--label:#000;--label2:rgba(60,60,67,.68);--sep:rgba(60,60,67,.18);--tint:#007AFF;
   --aviso-bg:#fff4d6;--aviso-fg:#5c3a00;color-scheme:light}
@@ -45,14 +46,19 @@ th,td{text-align:left;padding:8px 12px;border-bottom:.5px solid var(--sep);verti
 th{color:var(--label2);font-weight:500}
 .tabw{overflow-x:auto;margin:6px 0 12px}
 a{color:var(--tint)}
+header select{margin-left:auto;min-height:36px;border:.5px solid var(--sep);border-radius:8px;background:var(--cell);color:inherit;font:600 .8125rem var(--font);padding:0 8px}
+[hidden]{display:none!important}
+.nota-trad{font-size:.875rem;color:var(--label2);font-style:italic}
 .rod{margin-top:36px;padding-top:12px;border-top:.5px solid var(--sep);font-size:.8125rem;color:var(--label2)}
 </style>
 </head>
 <body>
 <main>
   <header><a href="./"><img class="claro" src="img/ybyra-simbolo-96.png" alt=""><img class="escuro" src="img/ybyra-simbolo-branco-96.png" alt=""></a>
-    <a href="./"><span class="proj">Projeto <b>YbYrá-BR</b></span><span class="tit">Emissões e Remoções de CO₂</span></a></header>
+    <a href="./" class="volta"><span class="proj"><span data-i18n="topo.proj">Projeto</span> <b>YbYrá-BR</b></span><span class="tit" data-i18n="topo.tit">Emissões e Remoções de CO₂</span></a>
+    <select id="sel-idioma" aria-label="Idioma"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option></select></header>
 
+<div class="ver" data-lang="pt">
   <h1>Termos de uso e privacidade</h1>
   <p class="sub">Versão 1.0 · atualizada em 24 de outubro de 2026</p>
 
@@ -113,7 +119,7 @@ a{color:var(--tint)}
   <div class="tabw"><table>
     <thead><tr><th>Item</th><th>Para que serve</th></tr></thead>
     <tbody>
-      <tr><td>Aparência</td><td>Tema claro, escuro ou automático</td></tr>
+      <tr><td>Aparência e idioma</td><td>Tema claro, escuro ou automático; idioma escolhido</td></tr>
       <tr><td>Mapa de fundo e projeção</td><td>Mapa de fundo escolhido e visualização em globo ou plano</td></tr>
       <tr><td>Painéis</td><td>Painéis abertos ou recolhidos</td></tr>
       <tr><td>Aviso importante</td><td>Registra que o aviso já foi lido, para não exibi-lo a cada acesso</td></tr>
@@ -137,7 +143,144 @@ a{color:var(--tint)}
   <h2 id="legislacao">11. Legislação aplicável</h2>
   <p>Estes termos são regidos pela legislação brasileira, em especial pela Lei nº 13.709/2018 (LGPD) e pela Lei nº 12.965/2014 (Marco Civil da Internet).</p>
 
-  <p class="rod">Projeto YbYrá-BR · CNPq 401741/2023-0 · <a href="./">Voltar à plataforma</a></p>
+</div>
+<div class="ver" data-lang="en" hidden>
+  <h1>Terms of use and privacy</h1>
+  <p class="sub">Version 1.0 · updated on 24 October 2026</p>
+  <p class="nota-trad">This English version is provided for convenience. In case of any discrepancy, the Portuguese version prevails.</p>
+
+  <section class="aviso" id="aviso-en">
+    <h2>Important notice</h2>
+    <p>The CO₂ Emissions and Removals platform of the YbYrá-BR Project is a technical and scientific tool that presents estimates of CO₂ emissions and removals associated with land use and land cover change and with the dynamics of native vegetation. The platform does not calculate carbon credits, does not certify emission reductions and does not produce expert reports.</p>
+    <p>The values are technical estimates from the YbYrá-BR model, based on scientific methodology and on open and official monitoring data, and are subject to the uncertainties inherent in those data. The YbYrá-BR Project is responsible for methodological soundness within the adopted technical and scientific parameters, but assumes no responsibility for administrative, judicial or commercial decisions based on this information.</p>
+    <p>Interpreting and applying the data is the responsibility of those who use them, who should assess whether the tool meets their needs. For use by public authorities, it is recommended that the data be interpreted by qualified professionals and that use be preceded, where appropriate, by a technical cooperation agreement.</p>
+  </section>
+
+  <h2>1. Platform owner</h2>
+  <p>The platform is maintained by the <b>YbYrá-BR Project</b>, with support from Brazil's National Council for Scientific and Technological Development (CNPq, grant 401741/2023-0), and is available at <a href="https://ybyra-br.github.io/plataforma/">ybyra-br.github.io/plataforma</a>. The source code is open and available at <a href="https://github.com/ybyra-br/plataforma">github.com/ybyra-br/plataforma</a>.</p>
+  <h2>2. Acceptance</h2>
+  <p>By using the platform, you agree to these terms. If you do not agree, do not use the platform.</p>
+  <h2>3. Nature of the information</h2>
+  <ul>
+    <li>The information consists of model estimates, with the limitations described in the Important notice above and in the <i>Method</i> section of the platform.</li>
+    <li>Each set of results is identified by a <b>data version</b> (for example, v1.2.0). New versions may change previously published values; the version appears on the site, in files, in the citation and in reports.</li>
+    <li>Territorial boundaries come from public datasets (IBGE, FUNAI, CNUC/MMA, INCRA, ANA and EMBRAPA, via MapBiomas). Names and boundaries follow those datasets and do not represent any position of the Project on the land tenure or legal status of any territory.</li>
+  </ul>
+  <h2>4. Use of data and citation</h2>
+  <ul>
+    <li>Data and reports may be used, reproduced and disseminated provided the source is cited with the data version and access date, as indicated on the platform.</li>
+    <li>The data may not be presented as an expert report, certification or carbon credit calculation, nor may values be altered and presented as platform results.</li>
+    <li>Trademarks, logos and visual identity of the YbYrá-BR Project and CNPq belong to their respective owners and may not be used to suggest endorsement.</li>
+  </ul>
+  <h2>5. Reports and verification</h2>
+  <p>Each report includes the data version, the date and time of generation and a <b>verification code</b> with a QR code. On the <a href="verificar.html?lang=en">Verify report</a> page, anyone can check whether the values in a report match the official data of the stated version. Previous data versions remain published so that older reports can be verified. The date and time indicate when the report was generated but are not attested by third parties.</p>
+  <h2>6. Privacy and data protection</h2>
+  <p>The platform <b>does not collect, store or share personal data</b> of its users, in compliance with Brazil's General Data Protection Law (LGPD, Law No. 13,709/2018).</p>
+  <ul>
+    <li><b>There is no registration, login or submitted form.</b> The optional report fields (name, institution and purpose) only identify the document: they are filled in and printed in your browser and are neither sent to nor stored by the Project.</li>
+    <li><b>Anonymous usage statistics.</b> To assess platform use, page views, territorial units viewed, reports generated and the stated purpose of the report (when provided) may be counted in aggregate, anonymous form. This count uses no cookies, stores no IP address and creates no personal identifier; it cannot identify who used the platform.</li>
+    <li>Since we do not process personal data, there is no data of yours to access, correct or delete. Questions can be sent through the <a href="#contato-en">contact</a> channel.</li>
+  </ul>
+  <h2>7. Cookies and browser storage</h2>
+  <p>The platform <b>does not use</b> advertising, tracking or analytics <b>cookies</b>. For the interface to work, it stores the preferences below in your own browser (local storage). This information does not leave your device and can be deleted at any time in your browser settings.</p>
+  <div class="tabw"><table>
+    <thead><tr><th>Item</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Appearance and language</td><td>Light, dark or automatic theme; chosen language</td></tr>
+      <tr><td>Basemap and projection</td><td>Chosen basemap and globe or flat view</td></tr>
+      <tr><td>Panels</td><td>Open or collapsed panels</td></tr>
+      <tr><td>Important notice</td><td>Records that the notice has been read, so it is not shown on every visit</td></tr>
+    </tbody></table></div>
+  <h2>8. Third-party services</h2>
+  <p>To work, the platform loads resources from external services. When you access it, your browser connects to them, and they may record technical connection data (such as IP address) under their own policies:</p>
+  <ul>
+    <li>GitHub Pages (hosting of the site and data);</li>
+    <li>Google Fonts (Inter typeface) and jsDelivr (MapLibre, Chart.js, PMTiles and QR code libraries);</li>
+    <li>basemap providers, depending on the chosen option: Esri, OpenStreetMap, OpenTopoMap and EOX (Sentinel-2);</li>
+    <li>anonymous visit counting service, when enabled.</li>
+  </ul>
+  <h2>9. Availability and changes</h2>
+  <p>The platform is provided as is, without any guarantee of uninterrupted operation. Content, features and these terms may change at any time; the version and update date appear at the top of this page. The Project is not responsible for content or services of third-party sites accessed through links.</p>
+  <h2 id="contato-en">10. Contact</h2>
+  <p>Questions, corrections and requests may be sent to the YbYrá-BR Project through the public channel <a href="https://github.com/ybyra-br/plataforma/issues">github.com/ybyra-br/plataforma/issues</a>.</p>
+  <h2>11. Applicable law</h2>
+  <p>These terms are governed by Brazilian law, in particular Law No. 13,709/2018 (LGPD) and Law No. 12,965/2014 (Brazilian Internet Civil Rights Framework).</p>
+</div>
+<div class="ver" data-lang="es" hidden>
+  <h1>Términos de uso y privacidad</h1>
+  <p class="sub">Versión 1.0 · actualizada el 24 de octubre de 2026</p>
+  <p class="nota-trad">Esta versión en español se ofrece por conveniencia. En caso de divergencia, prevalece la versión en portugués.</p>
+
+  <section class="aviso" id="aviso-es">
+    <h2>Aviso importante</h2>
+    <p>La plataforma de Emisiones y Remociones de CO₂ del Proyecto YbYrá-BR es una herramienta técnico-científica que presenta estimaciones de emisiones y remociones de CO₂ asociadas a los cambios de uso y cobertura del suelo y a la dinámica de la vegetación nativa. La plataforma no calcula créditos de carbono, no certifica reducciones de emisiones y no produce dictámenes periciales.</p>
+    <p>Los valores son estimaciones técnicas del modelo YbYrá-BR, basadas en metodología científica y en datos abiertos y oficiales de monitoreo, y están sujetos a las incertidumbres propias de esos datos. El Proyecto YbYrá-BR responde por la corrección metodológica dentro de los parámetros técnico-científicos adoptados, pero no asume responsabilidad por decisiones administrativas, judiciales o comerciales tomadas con base en esta información.</p>
+    <p>La interpretación y la aplicación de los datos son responsabilidad de quien los utiliza, que debe evaluar si la herramienta atiende sus necesidades. Para el uso por autoridades públicas, se recomienda que los datos sean interpretados por profesionales calificados y que el uso sea precedido, cuando corresponda, de un acuerdo de cooperación técnica.</p>
+  </section>
+
+  <h2>1. Responsable de la plataforma</h2>
+  <p>La plataforma es mantenida por el <b>Proyecto YbYrá-BR</b>, con apoyo del Consejo Nacional de Desarrollo Científico y Tecnológico de Brasil (CNPq, proceso 401741/2023-0), y está disponible en <a href="https://ybyra-br.github.io/plataforma/">ybyra-br.github.io/plataforma</a>. El código fuente es abierto y está en <a href="https://github.com/ybyra-br/plataforma">github.com/ybyra-br/plataforma</a>.</p>
+  <h2>2. Aceptación</h2>
+  <p>Al usar la plataforma, usted acepta estos términos. Si no está de acuerdo, no utilice la plataforma.</p>
+  <h2>3. Naturaleza de la información</h2>
+  <ul>
+    <li>La información consiste en estimaciones de modelo, con las limitaciones descritas en el Aviso importante anterior y en la sección <i>Método</i> de la plataforma.</li>
+    <li>Cada conjunto de resultados se identifica por una <b>versión de los datos</b> (por ejemplo, v1.2.0). Las nuevas versiones pueden modificar valores ya publicados; la versión aparece en el sitio, en los archivos, en la cita y en los informes.</li>
+    <li>Los límites territoriales provienen de bases públicas (IBGE, FUNAI, CNUC/MMA, INCRA, ANA y EMBRAPA, a través de MapBiomas). Los nombres y límites siguen esas bases y no representan una posición del Proyecto sobre la situación de tenencia o jurídica de ningún territorio.</li>
+  </ul>
+  <h2>4. Uso de los datos y cita</h2>
+  <ul>
+    <li>Los datos y los informes pueden usarse, reproducirse y divulgarse siempre que se cite la fuente con la versión de los datos y la fecha de consulta, como se indica en la plataforma.</li>
+    <li>No se permite presentar los datos como dictamen, certificación o cálculo de créditos de carbono, ni alterar valores y presentarlos como resultados de la plataforma.</li>
+    <li>Las marcas, logotipos e identidad visual del Proyecto YbYrá-BR y del CNPq pertenecen a sus respectivos titulares y no pueden usarse para sugerir respaldo.</li>
+  </ul>
+  <h2>5. Informes y verificación</h2>
+  <p>Cada informe incluye la versión de los datos, la fecha y hora de generación y un <b>código de verificación</b> con código QR. En la página <a href="verificar.html?lang=es">Verificar informe</a>, cualquier persona puede comprobar si los valores de un informe corresponden a los datos oficiales de la versión indicada. Las versiones anteriores de los datos siguen publicadas para que se puedan verificar informes antiguos. La fecha y la hora indican cuándo se generó el informe, pero no están certificadas por terceros.</p>
+  <h2>6. Privacidad y protección de datos</h2>
+  <p>La plataforma <b>no recopila, no almacena y no comparte datos personales</b> de quienes la utilizan, en cumplimiento de la Ley General de Protección de Datos Personales de Brasil (LGPD, Ley n.º 13.709/2018).</p>
+  <ul>
+    <li><b>No hay registro, inicio de sesión ni formulario enviado.</b> Los campos opcionales del informe (nombre, institución y objetivo) solo sirven para identificar el documento: se completan e imprimen en su navegador y no se envían ni se guardan por el Proyecto.</li>
+    <li><b>Estadísticas de uso anónimas.</b> Para evaluar el uso de la plataforma, se pueden contar, de forma agregada y anónima, las visitas a las páginas, las unidades consultadas, los informes generados y el objetivo declarado del informe (cuando se informe). Este conteo no usa cookies, no almacena la dirección IP y no crea identificadores de personas; no permite identificar quién usó la plataforma.</li>
+    <li>Como no tratamos datos personales, no hay datos suyos para consultar, corregir o eliminar. Las dudas pueden enviarse por el canal de <a href="#contato-es">contacto</a>.</li>
+  </ul>
+  <h2>7. Cookies y almacenamiento en el navegador</h2>
+  <p>La plataforma <b>no usa cookies</b> de publicidad, seguimiento ni análisis. Guarda en su propio navegador (almacenamiento local), solo para el funcionamiento de la interfaz, las preferencias siguientes. Esta información no sale de su dispositivo y puede borrarse en cualquier momento en la configuración del navegador.</p>
+  <div class="tabw"><table>
+    <thead><tr><th>Elemento</th><th>Para qué sirve</th></tr></thead>
+    <tbody>
+      <tr><td>Apariencia e idioma</td><td>Tema claro, oscuro o automático; idioma elegido</td></tr>
+      <tr><td>Mapa base y proyección</td><td>Mapa base elegido y vista en globo o plano</td></tr>
+      <tr><td>Paneles</td><td>Paneles abiertos o contraídos</td></tr>
+      <tr><td>Aviso importante</td><td>Registra que el aviso ya fue leído, para no mostrarlo en cada visita</td></tr>
+    </tbody></table></div>
+  <h2>8. Servicios de terceros</h2>
+  <p>Para funcionar, la plataforma carga recursos de servicios externos. Al acceder a ella, su navegador se conecta a ellos, que pueden registrar datos técnicos de conexión (como la dirección IP) según sus propias políticas:</p>
+  <ul>
+    <li>GitHub Pages (alojamiento del sitio y de los datos);</li>
+    <li>Google Fonts (tipografía Inter) y jsDelivr (bibliotecas MapLibre, Chart.js, PMTiles y generador de códigos QR);</li>
+    <li>proveedores de mapas base, según la opción elegida: Esri, OpenStreetMap, OpenTopoMap y EOX (Sentinel-2);</li>
+    <li>servicio de conteo anónimo de visitas, cuando esté activado.</li>
+  </ul>
+  <h2>9. Disponibilidad y cambios</h2>
+  <p>La plataforma se ofrece tal como está, sin garantía de funcionamiento ininterrumpido. Los contenidos, las funciones y estos términos pueden cambiar en cualquier momento; la versión y la fecha de actualización aparecen al inicio de esta página. El Proyecto no responde por contenidos o servicios de sitios de terceros a los que se acceda mediante enlaces.</p>
+  <h2 id="contato-es">10. Contacto</h2>
+  <p>Las dudas, correcciones y solicitudes pueden enviarse al Proyecto YbYrá-BR por el canal público <a href="https://github.com/ybyra-br/plataforma/issues">github.com/ybyra-br/plataforma/issues</a>.</p>
+  <h2>11. Legislación aplicable</h2>
+  <p>Estos términos se rigen por la legislación brasileña, en particular por la Ley n.º 13.709/2018 (LGPD) y la Ley n.º 12.965/2014 (Marco Civil de Internet de Brasil).</p>
+</div>
+  <p class="rod">YbYrá-BR · CNPq 401741/2023-0 · <a href="./" id="voltar">Voltar à plataforma</a></p>
 </main>
+<script src="i18n.js"></script>
+<script>
+const TT = {pt:{tit:"Termos de uso e privacidade", volta:"Voltar à plataforma"}, en:{tit:"Terms of use and privacy", volta:"Back to the platform"}, es:{tit:"Términos de uso y privacidad", volta:"Volver a la plataforma"}};
+function aplicar(){
+  document.querySelectorAll(".ver").forEach(d=>d.hidden = d.dataset.lang !== LANG);
+  document.title = TT[LANG].tit + " · YbYrá-BR"; document.getElementById("voltar").textContent = TT[LANG].volta;
+  traduzirDOM(); document.getElementById("sel-idioma").value = LANG;
+  const q = LANG==="pt" ? "" : "?lang="+LANG; document.querySelectorAll("a.volta, #voltar").forEach(a=>a.setAttribute("href", "./"+q));
+}
+document.getElementById("sel-idioma").onchange = e=>{ definirIdioma(e.target.value); aplicar(); };
+aplicar();
+</script>
 </body>
 </html>

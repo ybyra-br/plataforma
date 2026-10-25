@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.17.0 — 2026-10-24
+- **Plataforma em português, inglês e espanhol** (`web/i18n.js` v0.1.0): seletor de idioma na barra superior (visível também no celular); idioma escolhido por `?lang=`, pela preferência salva ou pelo idioma do navegador.
+- Traduzidos: interface, nomes de recortes, variáveis e processos, mapas de fundo e créditos, legendas, indicadores, gráficos (inclusive descrições para leitores de tela), ranking, citação ("Available at / Accessed on", "Disponible en / Consultado el"), relatório (resumo automático, tabela, aviso, verificação e rodapé), aviso importante, campos do relatório e página de verificação (`verificar.html` v0.2.0).
+- Números, datas e unidades no formato de cada idioma (ano⁻¹, yr⁻¹, año⁻¹). Nomes de territórios ficam no original; biomas, "Brasil" e "Amazônia Legal" são traduzidos.
+- Termos de uso e privacidade em inglês e espanhol (`termos.html` v1.1.0), com nota de que a versão em português prevalece.
+- Site v0.13.0.
+
 ## 0.16.0 — 2026-10-24
 - **Aviso importante** (natureza técnico-científica das estimativas; não calcula créditos de carbono nem produz laudos; responsabilidades), exibido no primeiro acesso e no rodapé de cada relatório; responsável: Projeto YbYrá-BR.
 - **Termos de uso e privacidade** (`web/termos.html` v1.0): responsável, aceite, natureza das informações, uso e citação, verificação de relatórios, privacidade (LGPD: a plataforma não coleta nem guarda dados pessoais), armazenamento local sem cookies, serviços de terceiros, contato e legislação. Link na barra superior, no painel e no aviso.

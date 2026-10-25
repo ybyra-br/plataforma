@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Verificar relatório · Emissões YbYrá-BR</title>
 <meta name="description" content="Confira se um relatório da plataforma de emissões e remoções de CO₂ do projeto YbYrá-BR corresponde aos dados oficiais publicados.">
-<script>try{var t=localStorage.getItem("ybyra-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>try{var th=localStorage.getItem("ybyra-tema");if(th==="light"||th==="dark")document.documentElement.dataset.theme=th;}catch(e){}</script>
 <link rel="icon" type="image/png" href="img/ybyra-simbolo-96.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap">
 <style>
-/* verificar.html · v0.1.1 (2026-10-24) — confere o código de verificação dos relatórios (ver verificacao.js)
+/* verificar.html · v0.2.0 (2026-10-24) — confere o código de verificação dos relatórios (ver verificacao.js)
+   0.2.0 — português, inglês e espanhol (i18n.js) com seletor de idioma.
    0.1.1 — aceita versão abreviada (1.2 → 1.2.0); versoes.json sem cache. */
 :root{--font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
   --bg:#f2f2f7;--cell:#fff;--label:#000;--label2:rgba(60,60,67,.66);--sep:rgba(60,60,67,.18);--fill:rgba(118,118,128,.12);
@@ -25,6 +26,7 @@
 body{margin:0;background:var(--bg);color:var(--label);font:0.9375rem/1.45 var(--font);font-feature-settings:"ss01";-webkit-font-smoothing:antialiased}
 main{max-width:720px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:16px}
 header{display:flex;align-items:center;gap:10px}
+header select{margin-left:auto;min-height:36px;border:.5px solid var(--sep);border-radius:8px;background:var(--cell);color:inherit;font:600 .8125rem var(--font);padding:0 8px}
 header img{width:40px;height:40px}
 header a{color:inherit;text-decoration:none}
 header .proj{font-size:.75rem;color:var(--label2);display:block}
@@ -60,67 +62,107 @@ code{font:600 .875rem ui-monospace,SFMono-Regular,Menlo,monospace}
 </head>
 <body>
 <main>
-  <header><a href="./"><img class="claro" src="img/ybyra-simbolo-96.png" alt=""><img class="escuro" src="img/ybyra-simbolo-branco-96.png" alt=""></a>
-    <a href="./"><span class="proj">Projeto <b>YbYrá-BR</b></span><span class="tit">Emissões e Remoções de CO₂</span></a></header>
+  <header><a href="./" class="volta"><img class="claro" src="img/ybyra-simbolo-96.png" alt=""><img class="escuro" src="img/ybyra-simbolo-branco-96.png" alt=""></a>
+    <a href="./" class="volta"><span class="proj"><span data-i18n="topo.proj">Projeto</span> <b>YbYrá-BR</b></span><span class="tit" data-i18n="topo.tit">Emissões e Remoções de CO₂</span></a>
+    <select id="sel-idioma" aria-label="Idioma" data-i18n-attr="aria-label:idioma"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option></select></header>
 
   <section class="cx">
-    <h1>Verificar relatório</h1>
-    <p class="sub">Informe o <b>código completo</b> impresso no rodapé do relatório (ou leia o QR code). A verificação recalcula o código a partir dos dados oficiais publicados para a versão indicada.</p>
-    <form id="form"><input id="cod" placeholder="1.2.0/municipio/2111300/2024/20261024T2105Z/XXXX-XXXX-XXXX-XXXX" aria-label="Código completo do relatório" autocomplete="off" spellcheck="false"><button type="submit">Verificar</button></form>
+    <h1 data-i18n="vf.tit"></h1>
+    <p class="sub" data-i18n="vf.sub"></p>
+    <form id="form"><input id="cod" placeholder="1.2.0/municipio/2111300/2024/20261024T2105Z/XXXX-XXXX-XXXX-XXXX" aria-label="Código completo do relatório" data-i18n-attr="aria-label:vf.aria" autocomplete="off" spellcheck="false"><button type="submit" data-i18n="vf.btn"></button></form>
   </section>
 
   <section id="resultado" hidden></section>
 
   <section class="cx nota">
-    <h2>Como funciona</h2>
-    <p>O código de cada relatório é calculado (SHA-256) a partir da versão dos dados, do recorte, do ano de referência, da data e hora de geração e de toda a série do recorte. Se o código confere, os números do relatório são os publicados pela plataforma para aquele recorte e versão. Compare os valores abaixo com os do documento: qualquer alteração nos números impressos aparece como diferença. Versões anteriores dos dados continuam publicadas para que relatórios antigos possam ser verificados. A data e a hora de geração informam quando o relatório foi produzido, mas não são atestadas por terceiros.</p>
+    <h2 data-i18n="vf.como"></h2>
+    <p data-i18n="vf.como.txt"></p>
   </section>
 </main>
 <script src="verificacao.js"></script>
+<script src="i18n.js"></script>
 <script>
 const $ = id => document.getElementById(id);
-const nf = (x,d=1) => x.toLocaleString("pt-BR",{maximumFractionDigits:d, minimumFractionDigits:d});
-const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma",
-  amazonia_legal:"Região", matopiba:"Região", bacia_nivel1:"Bacia hidrográfica (nível 1)", bacia_nivel2:"Bacia hidrográfica (nível 2)",
-  terra_indigena:"Terra indígena", unidade_conservacao:"Unidade de conservação", territorio_quilombola:"Território quilombola"};
+const TXT = {
+ pt:{"vf.tit":"Verificar relatório","vf.sub":"Informe o <b>código completo</b> impresso no rodapé do relatório (ou leia o QR code). A verificação recalcula o código a partir dos dados oficiais publicados para a versão indicada.",
+  "vf.aria":"Código completo do relatório","vf.btn":"Verificar","vf.como":"Como funciona",
+  "vf.como.txt":"O código de cada relatório é calculado (SHA-256) a partir da versão dos dados, do recorte, do ano de referência, da data e hora de geração e de toda a série do recorte. Se o código confere, os números do relatório são os publicados pela plataforma para aquele recorte e versão. Compare os valores abaixo com os do documento: qualquer alteração nos números impressos aparece como diferença. Versões anteriores dos dados continuam publicadas para que relatórios antigos possam ser verificados. A data e a hora de geração informam quando o relatório foi produzido, mas não são atestadas por terceiros.",
+  "vf.invalido":"Código inválido","vf.invalido.d":"Confira o código completo: versão/recorte/id/ano/data e hora/código.",
+  "vf.semdados":"Não foi possível consultar os dados","vf.semdados.d":"Tente de novo em instantes.",
+  "vf.versao":"Versão dos dados não encontrada","vf.versao.d":"A versão v{v} não está publicada na plataforma (versões disponíveis: {l}).",
+  "vf.recorte":"Recorte não encontrado","vf.recorte.d":"Não há o recorte {t} {i} na versão v{v} dos dados.",
+  "vf.nao":"Relatório não confere","vf.nao.d":"O código {c} não corresponde aos dados oficiais de {n} (versão v{v}, gerado em {q}). O documento pode ter sido alterado ou o código foi digitado errado.",
+  "vf.ok":"Relatório autêntico","vf.ok.d":"Os valores conferem com os dados oficiais publicados pela plataforma.",
+  "vf.recorte.l":"Recorte","vf.versao.l":"Versão dos dados","vf.ficticio":" (prévia com dados fictícios)","vf.ano":"Ano de referência","vf.gerado":"Gerado em","vf.codigo":"Código",
+  "vf.serie":"Série oficial ({u})","vf.rem":"Remoção"},
+ en:{"vf.tit":"Verify report","vf.sub":"Enter the <b>full code</b> printed at the bottom of the report (or scan the QR code). Verification recomputes the code from the official data published for the stated version.",
+  "vf.aria":"Full report code","vf.btn":"Verify","vf.como":"How it works",
+  "vf.como.txt":"Each report code is computed (SHA-256) from the data version, the territorial unit, the reference year, the date and time of generation and the full series of the unit. If the code matches, the numbers in the report are those published by the platform for that unit and version. Compare the values below with those in the document: any change to the printed numbers shows up as a difference. Previous data versions remain published so that older reports can be verified. The date and time of generation indicate when the report was produced but are not attested by third parties.",
+  "vf.invalido":"Invalid code","vf.invalido.d":"Check the full code: version/unit/id/year/date and time/code.",
+  "vf.semdados":"The data could not be retrieved","vf.semdados.d":"Please try again shortly.",
+  "vf.versao":"Data version not found","vf.versao.d":"Version v{v} is not published on the platform (available versions: {l}).",
+  "vf.recorte":"Unit not found","vf.recorte.d":"Unit {t} {i} does not exist in data version v{v}.",
+  "vf.nao":"Report does not match","vf.nao.d":"Code {c} does not match the official data for {n} (version v{v}, generated on {q}). The document may have been altered or the code mistyped.",
+  "vf.ok":"Authentic report","vf.ok.d":"The values match the official data published by the platform.",
+  "vf.recorte.l":"Unit","vf.versao.l":"Data version","vf.ficticio":" (preview with fictitious data)","vf.ano":"Reference year","vf.gerado":"Generated on","vf.codigo":"Code",
+  "vf.serie":"Official series ({u})","vf.rem":"Removals"},
+ es:{"vf.tit":"Verificar informe","vf.sub":"Ingrese el <b>código completo</b> impreso al pie del informe (o lea el código QR). La verificación recalcula el código a partir de los datos oficiales publicados para la versión indicada.",
+  "vf.aria":"Código completo del informe","vf.btn":"Verificar","vf.como":"Cómo funciona",
+  "vf.como.txt":"El código de cada informe se calcula (SHA-256) a partir de la versión de los datos, la unidad territorial, el año de referencia, la fecha y hora de generación y toda la serie de la unidad. Si el código coincide, los números del informe son los publicados por la plataforma para esa unidad y versión. Compare los valores a continuación con los del documento: cualquier alteración en los números impresos aparece como diferencia. Las versiones anteriores de los datos siguen publicadas para que se puedan verificar informes antiguos. La fecha y la hora de generación indican cuándo se produjo el informe, pero no están certificadas por terceros.",
+  "vf.invalido":"Código no válido","vf.invalido.d":"Revise el código completo: versión/unidad/id/año/fecha y hora/código.",
+  "vf.semdados":"No fue posible consultar los datos","vf.semdados.d":"Inténtelo de nuevo en unos instantes.",
+  "vf.versao":"Versión de los datos no encontrada","vf.versao.d":"La versión v{v} no está publicada en la plataforma (versiones disponibles: {l}).",
+  "vf.recorte":"Unidad no encontrada","vf.recorte.d":"No existe la unidad {t} {i} en la versión v{v} de los datos.",
+  "vf.nao":"El informe no coincide","vf.nao.d":"El código {c} no corresponde a los datos oficiales de {n} (versión v{v}, generado el {q}). El documento puede haber sido alterado o el código se digitó mal.",
+  "vf.ok":"Informe auténtico","vf.ok.d":"Los valores coinciden con los datos oficiales publicados por la plataforma.",
+  "vf.recorte.l":"Unidad","vf.versao.l":"Versión de los datos","vf.ficticio":" (versión preliminar con datos ficticios)","vf.ano":"Año de referencia","vf.gerado":"Generado el","vf.codigo":"Código",
+  "vf.serie":"Serie oficial ({u})","vf.rem":"Remoción"}};
+for(const l in TXT) Object.assign(I18N[l], TXT[l]);
+const nf = (x,d=1) => x.toLocaleString(LOCALES[LANG],{maximumFractionDigits:d, minimumFractionDigits:d});
+let ULTIMO = null;
+function aplicar(){ document.title = t("vf.tit") + " · YbYrá-BR"; traduzirDOM(); $("sel-idioma").value = LANG; }
+$("sel-idioma").onchange = e=>{ definirIdioma(e.target.value); aplicar(); if(ULTIMO) verificar(ULTIMO); };
+aplicar();
+const TIPO_NOME = new Proxy({}, {get:(_,k)=>t("tipo."+String(k))});
 const ICONE_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.5 3 3 6-6.5"/></svg>';
 const ICONE_ERRO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>';
-function escala(m){ if(m>=1e9) return {f:1e9,u:"Gt CO₂ ano⁻¹",d:2}; if(m>=1e6) return {f:1e6,u:"Mt CO₂ ano⁻¹",d:m>=1e8?0:1}; if(m>=1e3) return {f:1e3,u:"kt CO₂ ano⁻¹",d:m>=1e5?0:1}; return {f:1,u:"t CO₂ ano⁻¹",d:0}; }
+function escala(m){ const a = "CO₂" + t("u.ano"); if(m>=1e9) return {f:1e9,u:"Gt "+a,d:2}; if(m>=1e6) return {f:1e6,u:"Mt "+a,d:m>=1e8?0:1}; if(m>=1e3) return {f:1e3,u:"kt "+a,d:m>=1e5?0:1}; return {f:1,u:"t "+a,d:0}; }
 function mostrar(html){ const r = $("resultado"); r.innerHTML = html; r.hidden = false; r.scrollIntoView({behavior:"smooth", block:"start"}); }
-function erro(t, d){ mostrar(`<div class="res erro">${ICONE_ERRO}<div><b>${t}</b><span>${d}</span></div></div>`); }
+function erro(tt, d){ mostrar(`<div class="res erro">${ICONE_ERRO}<div><b>${tt}</b><span>${d}</span></div></div>`); }
 
 async function verificar(p){
-  if(!p){ erro("Código inválido", "Confira o código completo: versão/recorte/id/ano/data e hora/código."); return; }
+  ULTIMO = p;
+  if(!p){ erro(t("vf.invalido"), t("vf.invalido.d")); return; }
   $("cod").value = YBV.completo(p);
   let vs;
-  try{ vs = await fetch("dados/versoes.json", {cache:"no-cache"}).then(r=>r.json()); }catch(e){ erro("Não foi possível consultar os dados", "Tente de novo em instantes."); return; }
+  try{ vs = await fetch("dados/versoes.json", {cache:"no-cache"}).then(r=>r.json()); }catch(e){ erro(t("vf.semdados"), t("vf.semdados.d")); return; }
   // aceita versão abreviada (ex.: 1.2 → 1.2.0) quando houver uma só correspondente
   let chave = p.v in vs.versoes ? p.v : null;
   if(!chave){ const c = Object.keys(vs.versoes).filter(k=>k.startsWith(p.v + ".")); if(c.length===1) chave = c[0]; }
   const ver = chave ? vs.versoes[chave] : null;
-  if(!ver){ erro("Versão dos dados não encontrada", `A versão v${p.v} não está publicada na plataforma (versões disponíveis: ${Object.keys(vs.versoes).map(x=>"v"+x).join(", ")}).`); return; }
+  if(!ver){ erro(t("vf.versao"), t("vf.versao.d",{v:p.v, l:Object.keys(vs.versoes).map(x=>"v"+x).join(", ")})); return; }
   const j = u => fetch(ver.pasta + u).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); });
   let cat, s;
   try{ cat = await j("catalogo.json"); if(!cat.tipos[p.t]) throw 0; const d = await j(`serie/${p.t}/${YBV.lote(cat,p.t,p.i)}.json`); s = d.series[String(p.i)]; if(!s) throw 0; }
-  catch(e){ erro("Recorte não encontrado", `Não há o recorte ${p.t} ${p.i} na versão v${p.v} dos dados.`); return; }
+  catch(e){ erro(t("vf.recorte"), t("vf.recorte.d",{t:p.t, i:p.i, v:p.v})); return; }
   const c = await YBV.codigo(p, s);
-  const nome = p.t==="brasil" ? "Brasil" : (cat.tipos[p.t].ids.find(o=>o.id===p.i)||{}).nome || String(p.i);
+  const nome = p.t==="brasil" ? t("nome.brasil") : (NOMES_TRAD[LANG]||{})[(p.t==="bioma"?"bioma:"+p.i:p.t==="amazonia_legal"?"amazonia_legal:*":"-")] || (cat.tipos[p.t].ids.find(o=>o.id===p.i)||{}).nome || String(p.i);
   const g = new Date(p.g.replace("Z", ":00Z"));
-  const quando = `${g.toLocaleDateString("pt-BR")} às ${g.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",timeZoneName:"short"})}`;
+  const quando = `${g.toLocaleDateString(LOCALES[LANG])} ${t("as")} ${g.toLocaleTimeString(LOCALES[LANG],{hour:"2-digit",minute:"2-digit",timeZoneName:"short"})}`;
   if(c !== p.c){
-    erro("Relatório não confere", `O código ${YBV.curto(p.c)} não corresponde aos dados oficiais de ${nome} (versão v${p.v}, gerado em ${quando}). O documento pode ter sido alterado ou o código foi digitado errado.`);
+    erro(t("vf.nao"), t("vf.nao.d",{c:YBV.curto(p.c), n:nome, v:p.v, q:quando}));
     return;
   }
   const anos = (cat.tipos[p.t].anos || []), i = anos.indexOf(p.a);
   const bruta = s.total_primary_co2.map((v,k)=>v + s.defor_sf_co2[k]), rem = s.removal_sf_co2.map(Math.abs), liq = bruta.map((v,k)=>v - rem[k]);
   const e = escala(Math.max(...bruta)), f = x => nf(x/e.f, e.d);
   const linhas = anos.map((a,k)=>`<tr class="${a===p.a?"at":""}"><td>${a}</td><td>${f(bruta[k])}</td><td>${f(rem[k])}</td><td>${f(liq[k])}</td></tr>`).join("");
-  mostrar(`<div class="res ok">${ICONE_OK}<div><b>Relatório autêntico</b><span>Os valores conferem com os dados oficiais publicados pela plataforma.</span></div></div>
+  mostrar(`<div class="res ok">${ICONE_OK}<div><b>${t("vf.ok")}</b><span>${t("vf.ok.d")}</span></div></div>
     <div class="cx" style="margin-top:16px"><h2>${nome}</h2>
-      <dl><dt>Recorte</dt><dd>${TIPO_NOME[p.t]||p.t} (id ${p.i})</dd><dt>Versão dos dados</dt><dd>modelo YbYrá-BR v${chave}${ver.ficticio?" (prévia com dados fictícios)":""}</dd>
-      <dt>Ano de referência</dt><dd>${p.a}</dd><dt>Gerado em</dt><dd>${quando}</dd><dt>Código</dt><dd><code>${YBV.curto(p.c)}</code></dd>
-      ${i>=0?`<dt>Emissão bruta ${p.a}</dt><dd>${f(bruta[i])} ${e.u}</dd><dt>Remoção ${p.a}</dt><dd>${f(rem[i])} ${e.u}</dd><dt>Emissão líquida ${p.a}</dt><dd>${f(liq[i])} ${e.u}</dd>`:""}</dl></div>
-    <div class="cx" style="margin-top:16px"><h2>Série oficial (${e.u})</h2><div class="tabw"><table><thead><tr><th>Ano</th><th>Bruta</th><th>Remoção</th><th>Líquida</th></tr></thead><tbody>${linhas}</tbody></table></div></div>`);
+      <dl><dt>${t("vf.recorte.l")}</dt><dd>${TIPO_NOME[p.t]||p.t} (id ${p.i})</dd><dt>${t("vf.versao.l")}</dt><dd>${t("rel.modelo")} v${chave}${ver.ficticio?t("vf.ficticio"):""}</dd>
+      <dt>${t("vf.ano")}</dt><dd>${p.a}</dd><dt>${t("vf.gerado")}</dt><dd>${quando}</dd><dt>${t("vf.codigo")}</dt><dd><code>${YBV.curto(p.c)}</code></dd>
+      ${i>=0?`<dt>${t("kpi.bruta")} ${p.a}</dt><dd>${f(bruta[i])} ${e.u}</dd><dt>${t("kpi.rem")} ${p.a}</dt><dd>${f(rem[i])} ${e.u}</dd><dt>${t("kpi.liq")} ${p.a}</dt><dd>${f(liq[i])} ${e.u}</dd>`:""}</dl></div>
+    <div class="cx" style="margin-top:16px"><h2>${t("vf.serie",{u:e.u})}</h2><div class="tabw"><table><thead><tr><th>${t("rel.ano")}</th><th>${t("rel.bruta")}</th><th>${t("vf.rem")}</th><th>${t("rel.liq")}</th></tr></thead><tbody>${linhas}</tbody></table></div></div>`);
 }
 $("form").onsubmit = ev=>{ ev.preventDefault(); const v = $("cod").value.trim(); verificar(v.includes("#") ? YBV.lerURL(v.slice(v.indexOf("#"))) : YBV.lerCompleto(v)); };
 if(location.hash.length > 1) verificar(YBV.lerURL(location.hash));

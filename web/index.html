@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<script>try{var t=localStorage.getItem("ybyra-tema");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>try{var th=localStorage.getItem("ybyra-tema");if(th==="light"||th==="dark")document.documentElement.dataset.theme=th;}catch(e){}</script>
 <link rel="icon" type="image/png" href="img/ybyra-simbolo-96.png">
 <link rel="apple-touch-icon" href="img/ybyra-simbolo-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -304,6 +304,10 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 .rel .verif code{font:600 0.875rem/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--label);letter-spacing:.02em}
 .rel .verif .lk{word-break:break-all}
 #versao-topo{margin-left:6px;font-variant-numeric:tabular-nums}
+.barra-proj .links .idioma{position:relative;display:inline-flex;align-items:center;gap:3px;min-height:32px;padding:0 6px 0 8px;border-radius:8px;cursor:pointer;font-size:0.8125rem;font-weight:600}
+.barra-proj .links .idioma:hover{background:var(--fill)}
+.barra-proj .links .idioma svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.3}
+.barra-proj .links .idioma select{appearance:none;-webkit-appearance:none;border:0;background:none;color:inherit;font:inherit;padding:4px 2px;cursor:pointer}
 @media (max-width:640px){.rel{padding:20px 16px}.rel .lista{columns:1}.rel .kpis{grid-template-columns:1fr}}
 @media print{
   body{overflow:visible;background:#fff}
@@ -320,7 +324,7 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 
 @media (max-width:900px){
   body{overflow:auto}
-  .barra-proj .links>:not(.tema),.apoio .rot{display:none}
+  .barra-proj .links>:not(.tema):not(.idioma),.apoio .rot{display:none}
   .marca-proj .tit{font-size:0.9375rem}
   #area-mapa{position:relative;inset:auto;margin-top:calc(var(--topo) + env(safe-area-inset-top,0px));height:56vh}
   .info-mapa{left:12px;bottom:30px} .creditos{left:8px;right:8px}
@@ -348,83 +352,83 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
 
 <header class="barra-proj">
   <a class="marca-proj" href="#" id="marca">
-    <img class="claro" src="img/ybyra-simbolo-96.png" srcset="img/ybyra-simbolo-96.png 1x, img/ybyra-simbolo-192.png 2x" alt="Símbolo do projeto YbYrá-BR"><img class="escuro" src="img/ybyra-simbolo-branco-96.png" srcset="img/ybyra-simbolo-branco-96.png 1x, img/ybyra-simbolo-branco-192.png 2x" alt="Símbolo do projeto YbYrá-BR">
-    <span class="tx"><span class="proj">Projeto <b>YbYrá-BR</b><span id="versao-topo"></span></span><span class="tit">Emissões e Remoções de CO₂</span></span>
+    <img class="claro" src="img/ybyra-simbolo-96.png" srcset="img/ybyra-simbolo-96.png 1x, img/ybyra-simbolo-192.png 2x" alt="Símbolo do projeto YbYrá-BR" data-i18n-attr="alt:alt.simbolo"><img class="escuro" src="img/ybyra-simbolo-branco-96.png" srcset="img/ybyra-simbolo-branco-96.png 1x, img/ybyra-simbolo-branco-192.png 2x" alt="Símbolo do projeto YbYrá-BR" data-i18n-attr="alt:alt.simbolo">
+    <span class="tx"><span class="proj"><span data-i18n="topo.proj">Projeto</span> <b>YbYrá-BR</b><span id="versao-topo"></span></span><span class="tit" data-i18n="topo.tit">Emissões e Remoções de CO₂</span></span>
   </a>
   <span class="esp"></span>
-  <nav class="links" aria-label="Seções"><button type="button" id="abrir-metodo">Método</button><a href="termos.html">Termos</a><a href="https://github.com/ybyra-br/plataforma" target="_blank" rel="noopener">Código aberto</a><button type="button" class="tema" id="b-tema" aria-label="Aparência: automática" title="Aparência: automática (segue o sistema)"><svg viewBox="0 0 16 16" aria-hidden="true"></svg></button></nav>
+  <nav class="links" aria-label="Seções" data-i18n-attr="aria-label:nav.secoes"><button type="button" id="abrir-metodo" data-i18n="nav.metodo">Método</button><a href="termos.html" data-i18n="nav.termos">Termos</a><a href="https://github.com/ybyra-br/plataforma" target="_blank" rel="noopener" data-i18n="nav.codigo">Código aberto</a><label class="idioma" title="Idioma" data-i18n-attr="title:idioma"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M1.8 8h12.4M8 1.8c1.8 1.9 2.6 3.9 2.6 6.2S9.8 12.3 8 14.2M8 1.8C6.2 3.7 5.4 5.7 5.4 8s.8 4.3 2.6 6.2"/></svg><select id="sel-idioma" aria-label="Idioma" data-i18n-attr="aria-label:idioma"><option value="pt">PT</option><option value="en">EN</option><option value="es">ES</option></select></label><button type="button" class="tema" id="b-tema" aria-label="Aparência: automática" title="Aparência: automática (segue o sistema)"><svg viewBox="0 0 16 16" aria-hidden="true"></svg></button></nav>
   <div class="apoio">
-    <span class="rot">Apoio<br>Processo 401741/2023-0</span>
+    <span class="rot" data-i18n="apoio">Apoio<br>Processo 401741/2023-0</span>
     <img class="claro" src="img/cnpq-64.png" srcset="img/cnpq-64.png 1x, img/cnpq-128.png 2x" alt="CNPq">
     <img class="escuro" src="img/cnpq-branco-128.png" alt="CNPq">
   </div>
 </header>
 
 <div id="area-mapa">
-<div id="mapa" role="application" aria-label="Mapa de emissões por recorte"></div>
+<div id="mapa" role="application" aria-label="Mapa de emissões por recorte" data-i18n-attr="aria-label:mapa.aria"></div>
 <div class="sobre-mapa vidro info-mapa" aria-hidden="true"><div class="escala"><span id="escala-txt" class="num">500 km</span><div class="barra-esc" id="escala-barra" style="width:80px"></div></div></div>
 <div class="sobre-mapa creditos" id="creditos"></div>
-<div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar" title="Aproximar"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></button><button type="button" id="z-menos" aria-label="Afastar" title="Afastar"><svg viewBox="0 0 16 16"><path d="M3 8h10"/></svg></button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Ver o Brasil inteiro"><svg viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button></div>
+<div class="zoom" aria-label="Zoom"><button type="button" id="z-mais" aria-label="Aproximar" title="Aproximar" data-i18n-attr="aria-label:z.mais;title:z.mais"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></button><button type="button" id="z-menos" aria-label="Afastar" title="Afastar" data-i18n-attr="aria-label:z.menos;title:z.menos"><svg viewBox="0 0 16 16"><path d="M3 8h10"/></svg></button><button type="button" id="z-br" aria-label="Ver o Brasil inteiro" title="Ver o Brasil inteiro" data-i18n-attr="aria-label:z.br;title:z.br"><svg viewBox="0 0 16 16"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button></div>
 </div>
 <div class="camadas">
-  <button type="button" class="vidro b-camadas" id="b-camadas" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop-camadas" aria-label="Mapa de fundo e projeção" title="Mapa de fundo"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18 7l-8 4.5L2 7Z"/><path d="M2 10.5l8 4.5 8-4.5"/><path d="M2 14l8 4.5 8-4.5"/></svg></button>
-  <div class="pop vidro" id="pop-camadas" role="dialog" aria-label="Mapa de fundo e projeção" hidden>
-    <div class="pop-tit">Mapa de fundo</div>
-    <div id="lista-base" role="radiogroup" aria-label="Mapa de fundo"></div>
-    <div class="pop-tit">Projeção</div>
-    <div class="seg" id="seg-proj" style="--n:2"><button type="button" data-p="globe">Globo</button><button type="button" data-p="mercator">Plano</button></div>
+  <button type="button" class="vidro b-camadas" id="b-camadas" aria-haspopup="dialog" aria-expanded="false" aria-controls="pop-camadas" aria-label="Mapa de fundo e projeção" title="Mapa de fundo" data-i18n-attr="aria-label:cam.aria;title:cam.fundo"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5 18 7l-8 4.5L2 7Z"/><path d="M2 10.5l8 4.5 8-4.5"/><path d="M2 14l8 4.5 8-4.5"/></svg></button>
+  <div class="pop vidro" id="pop-camadas" role="dialog" aria-label="Mapa de fundo e projeção" data-i18n-attr="aria-label:cam.aria" hidden>
+    <div class="pop-tit" data-i18n="cam.fundo">Mapa de fundo</div>
+    <div id="lista-base" role="radiogroup" aria-label="Mapa de fundo" data-i18n-attr="aria-label:cam.fundo"></div>
+    <div class="pop-tit" data-i18n="cam.proj">Projeção</div>
+    <div class="seg" id="seg-proj" style="--n:2"><button type="button" data-p="globe" data-i18n="proj.globo">Globo</button><button type="button" data-p="mercator" data-i18n="proj.plano">Plano</button></div>
   </div>
 </div>
 <div id="dica" hidden></div>
 
-<aside class="painel" id="esq" aria-label="Explorar">
-  <div class="cab-painel"><h2>Explorar</h2><button type="button" class="icone" id="fechar-esq" aria-label="Esconder painel" title="Esconder painel"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button></div>
-  <div class="aviso" id="aviso-ficticio" role="note" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 0 .8.2 1 .6l5.9 10.6c.4.8-.1 1.8-1 1.8H2.1c-.9 0-1.4-1-1-1.8L7 2.1c.2-.4.6-.6 1-.6Zm-.75 4.25v4h1.5v-4h-1.5Zm0 5.25v1.5h1.5V11h-1.5Z"/></svg><span><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
+<aside class="painel" id="esq" aria-label="Explorar" data-i18n-attr="aria-label:esq.tit">
+  <div class="cab-painel"><h2 data-i18n="esq.tit">Explorar</h2><button type="button" class="icone" id="fechar-esq" aria-label="Esconder painel" title="Esconder painel" data-i18n-attr="aria-label:esq.fechar;title:esq.fechar"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button></div>
+  <div class="aviso" id="aviso-ficticio" role="note" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c.4 0 .8.2 1 .6l5.9 10.6c.4.8-.1 1.8-1 1.8H2.1c-.9 0-1.4-1-1-1.8L7 2.1c.2-.4.6-.6 1-.6Zm-.75 4.25v4h1.5v-4h-1.5Zm0 5.25v1.5h1.5V11h-1.5Z"/></svg><span data-i18n="ficticio"><b>Prévia com dados fictícios.</b> Os números servem para testar a plataforma e não representam resultados do modelo YbYrá-BR.</span></div>
   <div class="grupo">
-    <label class="rotulo" for="sel-tipo">Recorte do mapa</label>
+    <label class="rotulo" for="sel-tipo" data-i18n="rot.recorte">Recorte do mapa</label>
     <div class="sel-var sem-cor"><select id="sel-tipo"></select><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></div>
   </div>
   <div class="busca">
     <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 1a5.5 5.5 0 0 1 4.38 8.83l3.65 3.64-1.06 1.06-3.64-3.65A5.5 5.5 0 1 1 6.5 1Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
-    <input id="busca" type="search" role="combobox" aria-expanded="false" aria-autocomplete="list" placeholder="Buscar município, estado, TI, UC, bacia…" autocomplete="off" aria-label="Buscar recorte (atalho: /)" aria-controls="sugestoes">
+    <input id="busca" type="search" role="combobox" aria-expanded="false" aria-autocomplete="list" placeholder="Buscar município, estado, TI, UC, bacia…" autocomplete="off" aria-label="Buscar recorte (atalho: /)" data-i18n-attr="placeholder:busca.ph;aria-label:busca.aria" aria-controls="sugestoes">
     <ul id="sugestoes" role="listbox" hidden></ul>
   </div>
   <div class="grupo">
-    <label class="rotulo" for="sel-var">Variável</label>
+    <label class="rotulo" for="sel-var" data-i18n="rot.var">Variável</label>
     <div class="sel-var"><i id="var-cor" aria-hidden="true"></i><select id="sel-var"></select><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></div>
   </div>
   <div class="grupo">
-    <p class="rotulo">Ano</p>
-    <div class="ano"><button type="button" id="tocar" aria-label="Animar anos"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><input type="range" id="ano" min="2001" max="2024" step="1" aria-label="Ano"><output id="ano-v" class="num"></output></div>
+    <p class="rotulo" data-i18n="rot.ano">Ano</p>
+    <div class="ano"><button type="button" id="tocar" aria-label="Animar anos" data-i18n-attr="aria-label:ano.animar"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><input type="range" id="ano" min="2001" max="2024" step="1" aria-label="Ano" data-i18n-attr="aria-label:rot.ano"><output id="ano-v" class="num"></output></div>
   </div>
   <div class="grupo">
-    <p class="rotulo">Mostrar</p>
-    <div class="seg" id="seg-modo" style="--n:2"><button type="button" data-m="total">Total</button><button type="button" data-m="ha">Por hectare</button></div>
+    <p class="rotulo" data-i18n="rot.mostrar">Mostrar</p>
+    <div class="seg" id="seg-modo" style="--n:2"><button type="button" data-m="total" data-i18n="modo.total">Total</button><button type="button" data-m="ha" data-i18n="modo.ha">Por hectare</button></div>
   </div>
   <div class="legenda" id="legenda"></div>
   <section class="serie-var" aria-labelledby="sv-tit">
-    <h3 id="sv-tit">Série da variável</h3><span class="sub" id="sv-sub"></span>
-    <div class="grafico"><canvas id="g-var" role="img" aria-label="Série anual da variável selecionada"></canvas></div>
+    <h3 id="sv-tit" data-i18n="sv.tit">Série da variável</h3><span class="sub" id="sv-sub"></span>
+    <div class="grafico"><canvas id="g-var" role="img" aria-label="Série anual da variável selecionada" data-i18n-attr="aria-label:sv.aria"></canvas></div>
     <div class="chaves-var" id="sv-chaves" hidden></div>
   </section>
 </aside>
 
-<aside class="painel" id="dir" aria-label="Recorte selecionado">
-  <button type="button" class="icone" id="fechar-dir" aria-label="Esconder gráficos" title="Esconder gráficos"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button>
+<aside class="painel" id="dir" aria-label="Recorte selecionado" data-i18n-attr="aria-label:dir.aria">
+  <button type="button" class="icone" id="fechar-dir" aria-label="Esconder gráficos" title="Esconder gráficos" data-i18n-attr="aria-label:dir.fechar;title:dir.fechar"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button>
   <div class="cab-rec"><span class="tipo" id="r-tipo"></span><h2 id="r-nome"></h2><span class="sub num" id="r-sub"></span></div>
   <div class="trilha" id="trilha"></div>
   <div class="kpis" id="kpis"></div>
   <section class="caixa">
-    <h3>Emissões e remoções por processo</h3>
+    <h3 data-i18n="proc.tit">Emissões e remoções por processo</h3>
     <div class="chaves" id="chaves"></div>
-    <div class="grafico"><canvas id="g-proc" role="img" aria-label="Emissões e remoções por processo e ano"></canvas></div>
-    <p class="nota">Toque ou clique numa barra para escolher o ano. Remoções aparecem abaixo de zero.</p>
+    <div class="grafico"><canvas id="g-proc" role="img" aria-label="Emissões e remoções por processo e ano" data-i18n-attr="aria-label:proc.aria"></canvas></div>
+    <p class="nota" data-i18n="proc.nota">Toque ou clique numa barra para escolher o ano. Remoções aparecem abaixo de zero.</p>
   </section>
   <section class="caixa">
-    <h3>Estoques de carbono acima do solo</h3>
+    <h3 data-i18n="est.tit">Estoques de carbono acima do solo</h3>
     <div class="dois">
-      <div><h4>Vegetação secundária</h4><span class="u" id="u-sf"></span><div class="grafico peq"><canvas id="g-sf" role="img" aria-label="Estoque de carbono na vegetação secundária por ano"></canvas></div></div>
-      <div><h4>Floresta primária</h4><span class="u" id="u-p"></span><div class="grafico peq"><canvas id="g-p" role="img" aria-label="Estoque de carbono na floresta primária por ano"></canvas></div></div>
+      <div><h4 data-i18n="est.sf">Vegetação secundária</h4><span class="u" id="u-sf"></span><div class="grafico peq"><canvas id="g-sf" role="img" aria-label="Estoque de carbono na vegetação secundária por ano" data-i18n-attr="aria-label:est.sf.aria"></canvas></div></div>
+      <div><h4 data-i18n="est.p">Floresta primária</h4><span class="u" id="u-p"></span><div class="grafico peq"><canvas id="g-p" role="img" aria-label="Estoque de carbono na floresta primária por ano" data-i18n-attr="aria-label:est.p.aria"></canvas></div></div>
     </div>
   </section>
   <section class="caixa" id="cx-rank">
@@ -433,58 +437,62 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
     <div class="rank" id="rank"></div>
   </section>
   <section class="caixa">
-    <h3>Relatório, dados e citação</h3>
-    <div class="acoes"><button type="button" class="btn btn-pri" id="abrir-rel">Gerar relatório</button><button type="button" class="btn" id="copiar">Copiar tabela (CSV)</button><button type="button" class="btn" id="copiar-cit">Copiar citação</button></div>
+    <h3 data-i18n="acoes.tit">Relatório, dados e citação</h3>
+    <div class="acoes"><button type="button" class="btn btn-pri" id="abrir-rel" data-i18n="btn.rel">Gerar relatório</button><button type="button" class="btn" id="copiar" data-i18n="btn.csv">Copiar tabela (CSV)</button><button type="button" class="btn" id="copiar-cit" data-i18n="btn.cit">Copiar citação</button></div>
     <p class="cit" id="cit"></p>
     <p class="nota" id="versao-nota"></p>
     <textarea id="area-copia" hidden aria-hidden="true"></textarea>
   </section>
 </aside>
 
-<button type="button" class="alavanca" id="abrir-esq" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg>Painel</button>
-<button type="button" class="alavanca" id="abrir-dir" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13V8M8 13V3M13 13V6"/></svg>Gráficos</button>
-<div id="metodo" role="dialog" aria-modal="true" aria-label="Método" hidden>
+<button type="button" class="alavanca" id="abrir-esq" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"/></svg><span data-i18n="alav.painel">Painel</span></button>
+<button type="button" class="alavanca" id="abrir-dir" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13V8M8 13V3M13 13V6"/></svg><span data-i18n="alav.graficos">Gráficos</span></button>
+<div id="metodo" role="dialog" aria-modal="true" aria-label="Método" data-i18n-attr="aria-label:met.tit" hidden>
   <article>
-    <div class="barra-folha"><button type="button" class="btn btn-ic" id="fechar-metodo" aria-label="Fechar"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button><span class="esp"></span></div>
-    <h1>Método</h1>
-    <p class="lead">Em preparação.</p>
+    <div class="barra-folha"><button type="button" class="btn btn-ic" id="fechar-metodo" aria-label="Fechar" data-i18n-attr="aria-label:fechar"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button><span class="esp"></span></div>
+    <h1 data-i18n="met.tit">Método</h1>
+    <p class="lead" data-i18n="met.lead">Em preparação.</p>
   </article>
 </div>
 <div class="fundo-dlg" id="aviso-inicial" role="dialog" aria-modal="true" aria-labelledby="aviso-tit" hidden>
   <div class="dlg">
-    <h2 id="aviso-tit">Aviso importante</h2>
-    <p>Esta plataforma é uma ferramenta técnico-científica que apresenta <b>estimativas</b> de emissões e remoções de CO₂ associadas às mudanças de uso e cobertura da terra, geradas pelo modelo YbYrá-BR. Ela <b>não calcula créditos de carbono</b>, não certifica reduções de emissões e não produz laudos periciais.</p>
-    <p>O Projeto YbYrá-BR responde pela correção metodológica dentro dos parâmetros técnico-científicos adotados, mas não por decisões administrativas, judiciais ou comerciais baseadas nas informações. A interpretação e a aplicação dos dados são de responsabilidade de quem os utiliza; para autoridades públicas, recomenda-se a interpretação por profissionais qualificados e, quando couber, acordo de cooperação técnica.</p>
-    <p class="nota-dlg">A plataforma não usa cookies nem coleta dados pessoais: suas preferências (tema, mapa e painéis) ficam apenas neste navegador. Saiba mais nos <a href="termos.html">Termos de uso e privacidade</a>.</p>
-    <div class="acoes-dlg"><a class="btn" href="termos.html">Ler os termos</a><button type="button" class="btn btn-pri" id="aviso-ok">Entendi</button></div>
+    <h2 id="aviso-tit" data-i18n="aviso.tit"></h2>
+    <p data-i18n="aviso.p1"></p>
+    <p data-i18n="aviso.p2"></p>
+    <p class="nota-dlg" data-i18n="aviso.nota"></p>
+    <div class="acoes-dlg"><a class="btn" href="termos.html" data-i18n="aviso.ler">Ler os termos</a><button type="button" class="btn btn-pri" id="aviso-ok" data-i18n="aviso.ok">Entendi</button></div>
   </div>
 </div>
 <div class="fundo-dlg" id="pre-rel" role="dialog" aria-modal="true" aria-labelledby="pre-rel-tit" hidden>
   <form class="dlg" id="form-rel">
-    <h2 id="pre-rel-tit">Gerar relatório</h2>
-    <p class="nota-dlg">Campos opcionais para identificar o documento. Eles aparecem só no relatório e <b>não são enviados nem guardados</b>; apenas o objetivo é contado de forma anônima nas estatísticas de uso.</p>
-    <label>Nome<input id="rel-nome" autocomplete="name" maxlength="120"></label>
-    <label>Instituição<input id="rel-inst" autocomplete="organization" maxlength="160"></label>
-    <label>Objetivo do relatório<select id="rel-obj">
-      <option value="">Prefiro não informar</option>
-      <option>Pesquisa científica</option><option>Ensino</option><option>Gestão pública e políticas públicas</option>
-      <option>Fiscalização e controle</option><option>Organização da sociedade civil</option><option>Jornalismo</option>
-      <option>Setor privado</option><option>Uso pessoal</option><option>Outro</option></select></label>
-    <div class="acoes-dlg"><button type="button" class="btn" id="pre-rel-cancelar">Cancelar</button><button type="submit" class="btn btn-pri">Gerar relatório</button></div>
+    <h2 id="pre-rel-tit" data-i18n="prerel.tit"></h2>
+    <p class="nota-dlg" data-i18n="prerel.nota"></p>
+    <label><span data-i18n="prerel.nome"></span><input id="rel-nome" autocomplete="name" maxlength="120"></label>
+    <label><span data-i18n="prerel.inst"></span><input id="rel-inst" autocomplete="organization" maxlength="160"></label>
+    <label><span data-i18n="prerel.obj"></span><select id="rel-obj">
+      <option value="" data-i18n="obj."></option><option value="pesquisa" data-i18n="obj.pesquisa"></option><option value="ensino" data-i18n="obj.ensino"></option>
+      <option value="gestao" data-i18n="obj.gestao"></option><option value="fiscalizacao" data-i18n="obj.fiscalizacao"></option><option value="osc" data-i18n="obj.osc"></option>
+      <option value="jornalismo" data-i18n="obj.jornalismo"></option><option value="privado" data-i18n="obj.privado"></option><option value="pessoal" data-i18n="obj.pessoal"></option>
+      <option value="outro" data-i18n="obj.outro"></option></select></label>
+    <div class="acoes-dlg"><button type="button" class="btn" id="pre-rel-cancelar" data-i18n="prerel.cancelar"></button><button type="submit" class="btn btn-pri" data-i18n="prerel.gerar"></button></div>
   </form>
 </div>
-<div id="relatorio" role="dialog" aria-modal="true" aria-label="Relatório do recorte" hidden>
-  <div class="rel-barra"><button type="button" class="btn btn-ic" id="fechar-rel" aria-label="Fechar relatório"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button><span class="tit">Relatório</span><span class="esp"></span><button type="button" class="btn btn-pri" id="imprimir-rel">Imprimir ou salvar PDF</button></div>
+<div id="relatorio" role="dialog" aria-modal="true" aria-label="Relatório do recorte" data-i18n-attr="aria-label:rel.aria" hidden>
+  <div class="rel-barra"><button type="button" class="btn btn-ic" id="fechar-rel" aria-label="Fechar relatório" data-i18n-attr="aria-label:rel.fechar"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button><span class="tit" data-i18n="rel.barra">Relatório</span><span class="esp"></span><button type="button" class="btn btn-pri" id="imprimir-rel" data-i18n="rel.imprimir">Imprimir ou salvar PDF</button></div>
   <article class="rel" id="rel-conteudo"></article>
 </div>
-<div id="carregando" role="status"><i aria-hidden="true"></i><span>Carregando dados…</span></div>
+<div id="carregando" role="status"><i aria-hidden="true"></i><span data-i18n="carregando">Carregando dados…</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="verificacao.js"></script>
+<script src="i18n.js"></script>
 <script>
-/* plataforma de emissões YbYrá-BR · v0.8.0
+/* plataforma de emissões YbYrá-BR
+   0.13.0 (2026-10-24) — plataforma em português, inglês e espanhol (i18n.js): seletor de idioma na barra superior,
+                        números, datas e unidades no formato de cada idioma, relatório, citação, aviso e verificação
+                        traduzidos; nomes de território no original (biomas, Brasil e Amazônia Legal traduzidos).
    0.12.0 (2026-10-24) — Aviso importante no primeiro acesso (com nota de que não há cookies nem dados pessoais) e no
                         relatório; página termos.html (termos de uso e privacidade, LGPD) e link na barra superior; campos
                         opcionais nome, instituição e objetivo antes do relatório, só impressos; contagem anônima de uso
@@ -543,48 +551,49 @@ body.sem-esq{--off-esq:16px} body.sem-dir{--off-dir:16px}
    0.2.0 (2026-10-21) — relatório do recorte (resumo automático, indicadores, gráficos, série anual,
                         sub-recortes, citação; imprimível/salvável em PDF fora da prévia); Método em branco.
    0.1.0 (2026-10-21) — versão inicial com dados fictícios. */
-const VERSAO = "0.12.0"; let DADOS = "dados/v1_2/";
+const VERSAO = "0.13.0"; let DADOS = "dados/v1_2/";
 Chart.defaults.font.family = getComputedStyle(document.documentElement).getPropertyValue("--font").trim() || "Inter, sans-serif";
 const $ = id => document.getElementById(id);
 const UF_NOME = {11:"Rondônia",12:"Acre",13:"Amazonas",14:"Roraima",15:"Pará",16:"Amapá",17:"Tocantins",21:"Maranhão",22:"Piauí",23:"Ceará",24:"Rio Grande do Norte",25:"Paraíba",26:"Pernambuco",27:"Alagoas",28:"Sergipe",29:"Bahia",31:"Minas Gerais",32:"Espírito Santo",33:"Rio de Janeiro",35:"São Paulo",41:"Paraná",42:"Santa Catarina",43:"Rio Grande do Sul",50:"Mato Grosso do Sul",51:"Mato Grosso",52:"Goiás",53:"Distrito Federal"};
-const TIPO_NOME = {brasil:"País", uf:"Estado", bioma:"Bioma", municipio:"Município", uf_bioma:"Estado × bioma", municipio_bioma:"Município × bioma",
-  amazonia_legal:"Região", matopiba:"Região", bacia_nivel1:"Bacia hidrográfica (nível 1)", bacia_nivel2:"Bacia hidrográfica (nível 2)",
-  terra_indigena:"Terra indígena", unidade_conservacao:"Unidade de conservação", territorio_quilombola:"Território quilombola"};
+const TIPO_NOME = new Proxy({}, {get:(_,k)=>t("tipo."+String(k))});
 /* recortes do mapa: camada vetorial (PMTiles) de cada um em geo/<fonte>.pmtiles, camada "r", atributo c = id */
 const RECS = [
-  {k:"brasil", n:"Brasil", g:"Divisão político-administrativa", fonte:"uf"},
-  {k:"uf", n:"Estados", g:"Divisão político-administrativa", fonte:"uf"},
-  {k:"municipio", n:"Municípios", g:"Divisão político-administrativa", fonte:"municipio", fino:true},
-  {k:"bioma", n:"Biomas", g:"Regiões", fonte:"bioma"},
-  {k:"amazonia_legal", n:"Amazônia Legal", g:"Regiões", fonte:"amazonia_legal"},
-  {k:"matopiba", n:"MATOPIBA", g:"Regiões", fonte:"matopiba"},
-  {k:"bacia_nivel1", n:"Bacias hidrográficas — nível 1", g:"Bacias hidrográficas (ANA)", fonte:"bacia_nivel1"},
-  {k:"bacia_nivel2", n:"Bacias hidrográficas — nível 2", g:"Bacias hidrográficas (ANA)", fonte:"bacia_nivel2"},
-  {k:"terra_indigena", n:"Terras indígenas", g:"Áreas protegidas e territórios", fonte:"terra_indigena", fino:true, sobrepoe:true},
-  {k:"unidade_conservacao", n:"Unidades de conservação", g:"Áreas protegidas e territórios", fonte:"unidade_conservacao", fino:true, sobrepoe:true},
-  {k:"territorio_quilombola", n:"Territórios quilombolas", g:"Áreas protegidas e territórios", fonte:"territorio_quilombola", fino:true, sobrepoe:true}];
+  {k:"brasil", gk:"div", fonte:"uf"},
+  {k:"uf", gk:"div", fonte:"uf"},
+  {k:"municipio", gk:"div", fonte:"municipio", fino:true},
+  {k:"bioma", gk:"reg", fonte:"bioma"},
+  {k:"amazonia_legal", gk:"reg", fonte:"amazonia_legal"},
+  {k:"matopiba", gk:"reg", fonte:"matopiba"},
+  {k:"bacia_nivel1", gk:"bac", fonte:"bacia_nivel1"},
+  {k:"bacia_nivel2", gk:"bac", fonte:"bacia_nivel2"},
+  {k:"terra_indigena", gk:"prot", fonte:"terra_indigena", fino:true, sobrepoe:true},
+  {k:"unidade_conservacao", gk:"prot", fonte:"unidade_conservacao", fino:true, sobrepoe:true},
+  {k:"territorio_quilombola", gk:"prot", fonte:"territorio_quilombola", fino:true, sobrepoe:true}];
+RECS.forEach(r=>Object.defineProperties(r, {n:{get(){ return t("rec."+r.k); }}, g:{get(){ return t("recg."+r.gk); }}}));
 const REC = Object.fromEntries(RECS.map(r=>[r.k,r]));
 const cor = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const MOV = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1;
 
 /* variáveis exibidas: base (arquivos) ou derivadas */
 const VARS = [
-  {k:"liquida", n:"Emissão líquida", g:"Saldo", esc:"div", sw:"--p-liq", sinal:true, f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]-Math.abs(s.removal_sf_co2[i])), base:["total_primary_co2","defor_sf_co2","removal_sf_co2"]},
-  {k:"bruta", n:"Emissão bruta", g:"Emissões", esc:"emi", sw:"--p-defor", cg:"--p-bruta", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]), base:["total_primary_co2","defor_sf_co2"]},
-  {k:"defor_co2", n:"Desmatamento de floresta primária", g:"Emissões", esc:"emi", sw:"--p-defor"},
-  {k:"fire_co2", n:"Fogo em floresta", g:"Emissões", esc:"emi", sw:"--p-fogo"},
-  {k:"edge_co2", n:"Efeito de borda", g:"Emissões", esc:"emi", sw:"--p-borda"},
-  {k:"logging_co2", n:"Exploração madeireira", g:"Emissões", esc:"emi", sw:"--p-madeira"},
-  {k:"defor_sf_co2", n:"Desmatamento de vegetação secundária", g:"Emissões", esc:"emi", sw:"--p-dsec"},
-  {k:"removal_sf_co2", n:"Remoção pela vegetação secundária", g:"Remoções", esc:"rem", sw:"--p-rem", f:s=>s.removal_sf_co2.map(v=>Math.abs(v)), base:["removal_sf_co2"]},
-  {k:"agc_sf_co2", n:"Carbono na vegetação secundária", g:"Estoques", esc:"est", sw:"--p-rem", estoque:"CO₂"},
-  {k:"agc0_mgc", n:"Carbono na floresta primária", g:"Estoques", esc:"est", sw:"--p-rem", estoque:"C"},
+  {k:"liquida", gk:"saldo", esc:"div", sw:"--p-liq", sinal:true, f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]-Math.abs(s.removal_sf_co2[i])), base:["total_primary_co2","defor_sf_co2","removal_sf_co2"]},
+  {k:"bruta", gk:"emi", esc:"emi", sw:"--p-defor", cg:"--p-bruta", f:s=>s.total_primary_co2.map((v,i)=>v+s.defor_sf_co2[i]), base:["total_primary_co2","defor_sf_co2"]},
+  {k:"defor_co2", gk:"emi", esc:"emi", sw:"--p-defor"},
+  {k:"fire_co2", gk:"emi", esc:"emi", sw:"--p-fogo"},
+  {k:"edge_co2", gk:"emi", esc:"emi", sw:"--p-borda"},
+  {k:"logging_co2", gk:"emi", esc:"emi", sw:"--p-madeira"},
+  {k:"defor_sf_co2", gk:"emi", esc:"emi", sw:"--p-dsec"},
+  {k:"removal_sf_co2", gk:"rem", esc:"rem", sw:"--p-rem", f:s=>s.removal_sf_co2.map(v=>Math.abs(v)), base:["removal_sf_co2"]},
+  {k:"agc_sf_co2", gk:"est", esc:"est", sw:"--p-rem", estoque:"CO₂"},
+  {k:"agc0_mgc", gk:"est", esc:"est", sw:"--p-rem", estoque:"C"},
 ];
+VARS.forEach(v=>Object.defineProperties(v, {n:{get(){ return t("var."+v.k); }}, g:{get(){ return t("varg."+v.gk); }}}));
 const VAR = Object.fromEntries(VARS.map(v=>[v.k,v]));
 const PROC = [
-  {k:"defor_co2", n:"Desmatamento", c:"--p-defor"}, {k:"fire_co2", n:"Fogo", c:"--p-fogo"},
-  {k:"edge_co2", n:"Borda", c:"--p-borda"}, {k:"logging_co2", n:"Exploração madeireira", c:"--p-madeira"},
-  {k:"defor_sf_co2", n:"Desmat. de secundária", c:"--p-dsec"}, {k:"removal_sf_co2", n:"Remoção", c:"--p-rem", neg:true}];
+  {k:"defor_co2", c:"--p-defor"}, {k:"fire_co2", c:"--p-fogo"},
+  {k:"edge_co2", c:"--p-borda"}, {k:"logging_co2", c:"--p-madeira"},
+  {k:"defor_sf_co2", c:"--p-dsec"}, {k:"removal_sf_co2", c:"--p-rem", neg:true}];
+PROC.forEach(p=>Object.defineProperty(p, "n", {get(){ return t("proc."+p.k); }}));
 const RAMPAS = {
   emi:["#fff1c9","#fdd49e","#fdbb84","#fc8d59","#e34a33","#b30000","#6b0000"],
   rem:["#effaf7","#c9ece4","#97d7c9","#5fbcaa","#2f9c88","#137a68","#00594f"],
@@ -598,18 +607,19 @@ const cache = new Map();
 const j = u => { if(!cache.has(u)) cache.set(u, fetch(DADOS+u, u==="catalogo.json" ? {cache:"no-cache"} : {}).then(r=>{ if(!r.ok) throw new Error(u); return r.json(); })); return cache.get(u); };
 const nomeDe = (tipo,id) => {
   id = +id;
-  if(tipo==="brasil") return "Brasil";
-  const f = REC[tipo]?.fonte;
+  if(tipo==="brasil") return t("nome.brasil");
+  const f = REC[tipo]?.fonte, tr = NOMES_TRAD[LANG];
+  if(tr && f && (tr[f+":"+id] || tr[f+":*"])) return tr[f+":"+id] || tr[f+":*"];
   if(f && NOMES[f]?.has(id)) return NOMES[f].get(id);
   if(tipo==="uf_bioma") return `${UF_NOME[Math.floor(id/10)]??"?"} · ${nomeDe("bioma", id%10)}`;
   if(tipo==="municipio_bioma") return `${nomeDe("municipio", Math.floor(id/10))} · ${nomeDe("bioma", id%10)}`;
-  const t = CAT?.tipos?.[tipo]; if(t){ if(!t._nomes) t._nomes = new Map(t.ids.map(o=>[o.id,o.nome])); if(t._nomes.has(id)) return t._nomes.get(id); }
+  const tp = CAT?.tipos?.[tipo]; if(tp){ if(!tp._nomes) tp._nomes = new Map(tp.ids.map(o=>[o.id,o.nome])); if(tp._nomes.has(id)) return tp._nomes.get(id); }
   return String(id); };
 
 /* ---------- formatação ---------- */
-const nf = (x,d=1)=> x.toLocaleString("pt-BR",{maximumFractionDigits:d, minimumFractionDigits:d});
+const nf = (x,d=1)=> x.toLocaleString(LOCALES[LANG],{maximumFractionDigits:d, minimumFractionDigits:d});
 function escala(maxAbs, varK){
-  const est = VAR[varK]?.estoque, gas = est==="C" ? "C" : "CO₂", fl = est ? "" : " ano⁻¹";
+  const est = VAR[varK]?.estoque, gas = est==="C" ? "C" : "CO₂", fl = est ? "" : t("u.ano");
   if(E.modo==="ha") return {f:1, u:`t ${gas} ha⁻¹${fl}`, d: maxAbs<10?2:1};
   if(maxAbs>=1e9) return {f:1e9, u:`Gt ${gas}${fl}`, d:2};
   if(maxAbs>=1e6) return {f:1e6, u:`Mt ${gas}${fl}`, d: maxAbs>=1e8?0:1};
@@ -651,24 +661,25 @@ function padding(){
 }
 const escuro = ()=> document.documentElement.dataset.theme==="dark" || (document.documentElement.dataset.theme!=="light" && matchMedia("(prefers-color-scheme: dark)").matches);
 const ARC = (caminho)=> [`https://server.arcgisonline.com/ArcGIS/rest/services/${caminho}/MapServer/tile/{z}/{y}/{x}`];
-const OSM_ATR = `© colaboradores do <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>`;
+const OSM_A = () => `${t("atr.osm")} <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>`;
 const ESRI_ATR = `<a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>`;
 /* mapas de fundo gratuitos e sem chave (conferidos em 21/10/2026); rot = camada de rótulos por cima dos recortes */
 const BASES = [
-  {k:"cinza", g:"Mapas", n:"Cinza (claro ou escuro, conforme o tema)", tiles:ARC("Canvas/World_Light_Gray_Base"), escuro:ARC("Canvas/World_Dark_Gray_Base"),
-   rot:ARC("Canvas/World_Light_Gray_Reference"), rotEscuro:ARC("Canvas/World_Dark_Gray_Reference"), max:16, atr:`${ESRI_ATR}, HERE, Garmin, ${OSM_ATR}`},
-  {k:"osm", g:"Mapas", n:"OpenStreetMap", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], max:19, atr:OSM_ATR},
-  {k:"topo-esri", g:"Mapas", n:"Topográfico (Esri)", tiles:ARC("World_Topo_Map"), max:19, atr:`${ESRI_ATR}, HERE, Garmin, Intermap, USGS, NGA, ${OSM_ATR}`},
-  {k:"opentopo", g:"Mapas", n:"Relevo (OpenTopoMap)", tiles:["a","b","c"].map(l=>`https://${l}.tile.opentopomap.org/{z}/{x}/{y}.png`), max:17, atr:`Estilo © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC BY-SA), SRTM, ${OSM_ATR}`},
-  {k:"sat-esri", g:"Satélite", n:"Imagem de alta resolução (Esri)", tiles:ARC("World_Imagery"), max:19, rot:ARC("Reference/World_Boundaries_and_Places"),
-   atr:`${ESRI_ATR}, Maxar, Earthstar Geographics e comunidade de usuários GIS`},
-  {k:"sat-s2", g:"Satélite", n:"Sentinel-2 sem nuvens 2024 (EOX)", tiles:["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg"], max:15,
-   rot:ARC("Reference/World_Boundaries_and_Places"), atr:`<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless 2024</a> © EOX (dados Copernicus Sentinel 2024 modificados; CC BY-NC-SA 4.0); rótulos ${ESRI_ATR}`},
-  {k:"nenhum", g:"Sem fundo", n:"Nenhum"}];
+  {k:"cinza", gk:"mapas", tiles:ARC("Canvas/World_Light_Gray_Base"), escuro:ARC("Canvas/World_Dark_Gray_Base"),
+   rot:ARC("Canvas/World_Light_Gray_Reference"), rotEscuro:ARC("Canvas/World_Dark_Gray_Reference"), max:16, get atr(){ return `${ESRI_ATR}, HERE, Garmin, ${OSM_A()}`; }},
+  {k:"osm", gk:"mapas", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], max:19, get atr(){ return OSM_A(); }},
+  {k:"topo-esri", gk:"mapas", tiles:ARC("World_Topo_Map"), max:19, get atr(){ return `${ESRI_ATR}, HERE, Garmin, Intermap, USGS, NGA, ${OSM_A()}`; }},
+  {k:"opentopo", gk:"mapas", tiles:["a","b","c"].map(l=>`https://${l}.tile.opentopomap.org/{z}/{x}/{y}.png`), max:17, get atr(){ return `${t("atr.estilo")} © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC BY-SA), SRTM, ${OSM_A()}`; }},
+  {k:"sat-esri", gk:"sat", tiles:ARC("World_Imagery"), max:19, rot:ARC("Reference/World_Boundaries_and_Places"),
+   get atr(){ return `${ESRI_ATR}, ${t("atr.gis")}`; }},
+  {k:"sat-s2", gk:"sat", tiles:["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg"], max:15,
+   rot:ARC("Reference/World_Boundaries_and_Places"), get atr(){ return `<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless 2024</a> © EOX (${t("atr.s2")}; CC BY-NC-SA 4.0); ${t("atr.rotulos")} ${ESRI_ATR}`; }},
+  {k:"nenhum", gk:"sem"}];
+BASES.forEach(b=>Object.defineProperties(b, {n:{get(){ return t("base."+b.k); }}, g:{get(){ return t("baseg."+b.gk); }}}));
 const BASE = Object.fromEntries(BASES.map(b=>[b.k,b]));
 function creditos(){
-  const b = BASE[E.base], base = b.atr ? `Fundo: ${b.atr}` : "";
-  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · Malhas: IBGE, FUNAI, CNUC/MMA, INCRA, ANA, EMBRAPA, via <a href="https://brasil.mapbiomas.org" target="_blank" rel="noopener">MapBiomas</a> · Dados: modelo YbYrá-BR ${VD}</span>`;
+  const b = BASE[E.base], base = b.atr ? `${t("cred.fundo")}: ${b.atr}` : "";
+  $("creditos").innerHTML = `<span><a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre</a>${base?` · ${base}`:""} · ${t("cred.malhas")}: IBGE, FUNAI, CNUC/MMA, INCRA, ANA, EMBRAPA, via <a href="https://brasil.mapbiomas.org" target="_blank" rel="noopener">MapBiomas</a> · ${t("cred.dados")} ${VD}</span>`;
   $("creditos").title = $("creditos").textContent;
 }
 function aplicarBase(){
@@ -738,7 +749,7 @@ function montarCamadas(){
   CAMADA_FONTE = f; CAMADA_TIPO = E.tipo;
   ligarDica();
 }
-function opacidadeFill(){ const b = BASE[E.base]; return b && b.tiles ? (b.g==="Satélite" ? .8 : .86) : 1; }
+function opacidadeFill(){ const b = BASE[E.base]; return b && b.tiles ? (b.gk==="sat" ? .8 : .86) : 1; }
 function corFill(){
   const r = RAMPAS[VAR[E.v].esc];
   return ["match",["coalesce",["feature-state","k"],-1], 0,r[0],1,r[1],2,r[2],3,r[3],4,r[4],5,r[5],6,r[6], 9,cor("--vazio"), cor("--vazio")];
@@ -749,8 +760,7 @@ function quebras(vals, esc){
   const q = p => xs[Math.min(xs.length-1, Math.max(0, Math.round(p*(xs.length-1))))];
   if(esc==="div"){
     const ab = xs.map(Math.abs).sort((a,b)=>a-b), qa = p=>ab[Math.min(ab.length-1, Math.round(p*(ab.length-1)))];
-    const t = [qa(1/3), qa(2/3)];
-    return {div:true, t};
+    return {div:true, t:[qa(1/3), qa(2/3)]};
   }
   return {lim:[1,2,3,4,5,6].map(i=>q(i/7))};
 }
@@ -780,14 +790,14 @@ async function colorir(){
 }
 function legenda(){
   const r = RAMPAS[VAR[E.v].esc], el = $("legenda");
-  if(!QB){ el.innerHTML = `<span class="un">Sem valores para este ano.</span>`; return; }
+  if(!QB){ el.innerHTML = `<span class="un">${t("leg.sem")}</span>`; return; }
   let marcas;
   if(QB.div){ const [a,b,c]=QB.t; marcas = ["",`−${fmt(b,ESC)}`,`−${fmt(a,ESC)}`,"","",fmt(a,ESC),fmt(b,ESC)]; }
   else marcas = ["", ...QB.lim.map(x=>fmt(x,ESC))];
   el.style.setProperty("--n",7);
   el.innerHTML = `<div class="barra" style="--n:7">${r.map(c=>`<i style="background:${c}"></i>`).join("")}</div>
     <div class="marcas num" style="--n:7">${marcas.map(m=>`<span>${m}</span>`).join("")}</div>
-    <span class="un">${VAR[E.v].n}, ${E.ano} · ${ESC.u}${E.tipo!=="brasil"?` · por ${TIPO_NOME[E.tipo].toLowerCase()}`:""}</span>`;
+    <span class="un">${VAR[E.v].n}, ${E.ano} · ${ESC.u}${E.tipo!=="brasil"?` · ${t("leg.por",{t:TIPO_NOME[E.tipo].toLowerCase()})}`:""}</span>`;
 }
 
 /* dica ao passar o mouse e clique (camada "rec-fill", recriada a cada troca de recorte) */
@@ -806,7 +816,7 @@ function ligarDica(){
   mapa.on("mousemove","rec-fill",e=>{
     const id = idDoMapa(e); if(id===null) return;
     const v = VALORES.get(id);
-    d.innerHTML = `<b>${nomeDe(E.tipo,id)}</b><span class="num">${v===undefined?"sem dado":`${fmt(v,ESC)} ${ESC.u}`}</span>`;
+    d.innerHTML = `<b>${nomeDe(E.tipo,id)}</b><span class="num">${v===undefined?t("dica.sem"):`${fmt(v,ESC)} ${ESC.u}`}</span>`;
     d.hidden = false; d.style.left = (e.originalEvent.clientX+14)+"px"; d.style.top = (e.originalEvent.clientY+14)+"px";
     mapa.getCanvas().style.cursor = "pointer";
   });
@@ -833,14 +843,14 @@ function trilha(){
   const {tipo,id} = E.sel, el = $("trilha"), itens = [["brasil",1]];
   if(tipo==="municipio"||tipo==="municipio_bioma"){ const c = tipo==="municipio"?id:Math.floor(id/10); itens.push(["uf",Math.floor(c/100000)]); if(tipo==="municipio_bioma") itens.push(["municipio",c]); }
   if(tipo==="uf_bioma") itens.push(["bioma", id%10], ["uf", Math.floor(id/10)]);
-  el.innerHTML = itens.filter(([t,i])=>!(t===tipo&&i===id)).map(([t,i])=>`<button type="button" data-t="${t}" data-i="${i}">${nomeDe(t,i)}</button>`).join("");
+  el.innerHTML = itens.filter(([tp,i])=>!(tp===tipo&&i===id)).map(([tp,i])=>`<button type="button" data-t="${tp}" data-i="${i}">${nomeDe(tp,i)}</button>`).join("");
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>selecionar(b.dataset.t,+b.dataset.i,true));
 }
 async function painel(){
   const {tipo,id} = E.sel; const s = await serie(tipo,id);
   const i = ANOS.indexOf(E.ano), area = s.area_ha[i];
   $("r-tipo").textContent = TIPO_NOME[tipo]; $("r-nome").textContent = nomeDe(tipo,id);
-  $("r-sub").textContent = `Área: ${nf(area/100, 0)} km² · ${E.ano}`;
+  $("r-sub").textContent = `${t("r.area")}: ${nf(area/100, 0)} km² · ${E.ano}`;
   trilha();
   const bruta = VAR.bruta.f(s), rem = VAR.removal_sf_co2.f(s), liq = VAR.liquida.f(s);
   const div = E.modo==="ha" ? area : 1;
@@ -848,8 +858,8 @@ async function painel(){
   const kpi = (n,ser,inv)=>{ const v = ser[i]/div, a = i>0 ? ser[i-1]/div : null;
     const dl = a ? (v-a)/Math.abs(a)*100 : null, sobe = dl>0;
     const cls = dl===null ? "" : (inv ? !sobe : sobe) ? "sobe" : "desce";
-    return `<div class="kpi"><span class="n">${n}</span><span class="v num">${fmt(v,e)}</span><span class="u">${e.u}</span>${dl===null?"":`<span class="d num ${cls}">${dl>0?"▲":"▼"} ${nf(Math.abs(dl),0)}% vs ${E.ano-1}</span>`}</div>`; };
-  $("kpis").innerHTML = kpi("Emissão bruta",bruta) + kpi("Remoção",rem,true) + kpi("Emissão líquida",liq);
+    return `<div class="kpi"><span class="n">${n}</span><span class="v num">${fmt(v,e)}</span><span class="u">${e.u}</span>${dl===null?"":`<span class="d num ${cls}">${dl>0?"▲":"▼"} ${nf(Math.abs(dl),0)}% ${t("vs")} ${E.ano-1}</span>`}</div>`; };
+  $("kpis").innerHTML = kpi(t("kpi.bruta"),bruta) + kpi(t("kpi.rem"),rem,true) + kpi(t("kpi.liq"),liq);
   graficos(s, div); graficoVar(s); ranking(); citacao(s);
 }
 function opcoesBase(u){
@@ -865,14 +875,14 @@ function graficos(s, div){
   const sel = ANOS.map(a=>a===E.ano);
   const ds = PROC.map(p=>({type:"bar", label:p.n, data:s[p.k].map(v=>conv(p.neg?-Math.abs(v):v)), stack:"s",
       backgroundColor:sel.map(x=>x?cor(p.c):cor(p.c)+"b3"), borderWidth:0, order:2}));
-  ds.push({type:"line", label:"Emissão líquida", data:VAR.liquida.f(s).map(conv), borderColor:cor("--p-liq"), backgroundColor:cor("--p-liq"), borderWidth:1.8, pointRadius:sel.map(x=>x?3.5:0), tension:.25, order:1});
-  $("chaves").innerHTML = PROC.map(p=>`<span><i style="background:${cor(p.c)}"></i>${p.n}</span>`).join("") + `<span><i class="linha" style="background:${cor("--p-liq")}"></i>Líquida</span>`;
+  ds.push({type:"line", label:t("var.liquida"), data:VAR.liquida.f(s).map(conv), borderColor:cor("--p-liq"), backgroundColor:cor("--p-liq"), borderWidth:1.8, pointRadius:sel.map(x=>x?3.5:0), tension:.25, order:1});
+  $("chaves").innerHTML = PROC.map(p=>`<span><i style="background:${cor(p.c)}"></i>${p.n}</span>`).join("") + `<span><i class="linha" style="background:${cor("--p-liq")}"></i>${t("chave.liq")}</span>`;
   const o = opcoesBase(e.u); o.scales.x.stacked = true; o.scales.y.stacked = true;
   o.scales.y.title = {display:true, text:e.u, color:cor("--label2"), font:{size:11}};
   o.onClick = (ev,els)=>{ if(els.length){ mudarAno(ANOS[els[0].index]); } };
   desenhar("proc", "g-proc", {type:"bar", data:{labels:ANOS, datasets:ds}, options:o});
   { const i = ANOS.indexOf(E.ano), b = VAR.bruta.f(s)[i]/div, r = VAR.removal_sf_co2.f(s)[i]/div, l = VAR.liquida.f(s)[i]/div;
-    $("g-proc").setAttribute("aria-label", `Barras empilhadas de emissões e remoções por processo, ${ANOS[0]} a ${ANOS.at(-1)}. Em ${E.ano}: emissão bruta ${nf(b/e.f,e.d)}, remoção ${nf(r/e.f,e.d)} e líquida ${nf(l/e.f,e.d)} ${e.u}.`); }
+    $("g-proc").setAttribute("aria-label", t("aria.proc",{a0:ANOS[0], a1:ANOS.at(-1), a:E.ano, b:nf(b/e.f,e.d), r:nf(r/e.f,e.d), l:nf(l/e.f,e.d), u:e.u})); }
   const est = (canv, k, chave, unidEl)=>{
     const vals = s[k].map(v=>v/div), ee = escala(Math.max(...vals), chave);
     $(unidEl).textContent = ee.u;
@@ -898,14 +908,14 @@ function graficoVar(s){
   } else if(def.sinal){
     const pos = cor("--p-liq-pos"), neg = cor("--p-liq-neg");
     ds = [{type:"bar", label:def.n, data:vals.map(conv), backgroundColor:vals.map((v,k)=>alfa(v>=0?pos:neg,k)), borderWidth:0}];
-    chaves = `<span><i style="background:${pos}"></i>Fonte (emite mais do que remove)</span><span><i style="background:${neg}"></i>Sumidouro</span>`;
+    chaves = `<span><i style="background:${pos}"></i>${t("chave.fonte")}</span><span><i style="background:${neg}"></i>${t("chave.sumid")}</span>`;
   } else {
     const c = cor(def.cg || def.sw);
     ds = [{type:"bar", label:def.n, data:vals.map(conv), backgroundColor:vals.map((v,k)=>alfa(c,k)), borderWidth:0}];
   }
   $("sv-chaves").innerHTML = chaves; $("sv-chaves").hidden = !chaves;
   desenhar("var", "g-var", {type: def.estoque ? "line" : "bar", data:{labels:ANOS, datasets:ds}, options:o});
-  $("g-var").setAttribute("aria-label", `${def.n} em ${nomeDe(E.sel.tipo,E.sel.id)}, ${ANOS[0]} a ${ANOS.at(-1)}. Em ${E.ano}: ${nf(conv(vals[i]), e.d)} ${e.u}.`);
+  $("g-var").setAttribute("aria-label", t("aria.var",{v:def.n, n:nomeDe(E.sel.tipo,E.sel.id), a0:ANOS[0], a1:ANOS.at(-1), a:E.ano, x:nf(conv(vals[i]), e.d), u:e.u}));
 }
 function desenhar(chave, canvasId, cfg){ if(G[chave]) G[chave].destroy(); G[chave] = new Chart($(canvasId), cfg); }
 
@@ -913,12 +923,12 @@ function desenhar(chave, canvasId, cfg){ if(G[chave]) G[chave].destroy(); G[chav
 async function ranking(){
   const {tipo,id} = E.sel, def = VAR[E.v];
   let filho, filtro, tit;
-  if(tipo==="brasil"){ filho="uf"; filtro=()=>true; tit="Estados"; }
-  else if(tipo==="uf"){ filho="municipio"; filtro=c=>Math.floor(c/100000)===id; tit="Municípios do estado"; }
-  else if(tipo==="bioma"){ filho="uf_bioma"; filtro=c=>c%10===id; tit="Estados dentro do bioma"; }
-  else if(tipo==="municipio"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/10)===id; tit="Partes do município por bioma"; }
-  else if(tipo==="uf_bioma"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/1000000)===Math.floor(id/10) && c%10===id%10; tit="Municípios nesta parte"; }
-  else if(REC[tipo] && CAT.tipos[tipo] && CAT.tipos[tipo].n>1){ filho=tipo; filtro=()=>true; tit=`Maiores do Brasil — ${REC[tipo].n.toLowerCase()}`; }
+  if(tipo==="brasil"){ filho="uf"; filtro=()=>true; tit=t("rank.brasil"); }
+  else if(tipo==="uf"){ filho="municipio"; filtro=c=>Math.floor(c/100000)===id; tit=t("rank.uf"); }
+  else if(tipo==="bioma"){ filho="uf_bioma"; filtro=c=>c%10===id; tit=t("rank.bioma"); }
+  else if(tipo==="municipio"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/10)===id; tit=t("rank.municipio"); }
+  else if(tipo==="uf_bioma"){ filho="municipio_bioma"; filtro=c=>Math.floor(c/1000000)===Math.floor(id/10) && c%10===id%10; tit=t("rank.uf_bioma"); }
+  else if(REC[tipo] && CAT.tipos[tipo] && CAT.tipos[tipo].n>1){ filho=tipo; filtro=()=>true; tit=t("rank.maiores",{r:REC[tipo].n.toLowerCase()}); }
   else { $("cx-rank").hidden = true; return; }
   $("cx-rank").hidden = false;
   let lista;
@@ -932,20 +942,20 @@ async function ranking(){
   lista.sort((a,b)=>b[1]-a[1]);
   const top = lista.slice(0,10), maxAbs = Math.max(...top.map(x=>Math.abs(x[1])), 1e-9), e = escala(maxAbs, E.v);
   $("rank-tit").textContent = tit;
-  $("rank-nota").textContent = `${def.n}, ${E.ano} · ${e.u}${lista.length>10?` · 10 maiores de ${lista.length}`:""}`;
+  $("rank-nota").textContent = `${def.n}, ${E.ano} · ${e.u}${lista.length>10?` · ${t("rank.top",{n:lista.length})}`:""}`;
   const c = cor(def.sw);
-  $("rank").innerHTML = top.map(([cid,v],k)=>`<button type="button" data-t="${filho}" data-i="${cid}"><span class="pos num">${k+1}</span><span class="nm"><span>${nomeDe(filho,cid)}</span><span class="bar"><i style="width:${Math.max(2,Math.abs(v)/maxAbs*100)}%;background:${v<0?cor("--p-rem"):c}"></i></span></span><span class="vl num">${fmt(v,e)}</span></button>`).join("") || `<span class="nota">Sem sub-recortes.</span>`;
+  $("rank").innerHTML = top.map(([cid,v],k)=>`<button type="button" data-t="${filho}" data-i="${cid}"><span class="pos num">${k+1}</span><span class="nm"><span>${nomeDe(filho,cid)}</span><span class="bar"><i style="width:${Math.max(2,Math.abs(v)/maxAbs*100)}%;background:${v<0?cor("--p-rem"):c}"></i></span></span><span class="vl num">${fmt(v,e)}</span></button>`).join("") || `<span class="nota">${t("rank.sem")}</span>`;
   $("rank").querySelectorAll("button").forEach(b=>b.onclick=()=>selecionar(b.dataset.t,+b.dataset.i,true));
 }
 const MESES_ABNT = ["jan.","fev.","mar.","abr.","maio","jun.","jul.","ago.","set.","out.","nov.","dez."];
-const dataBR = d => d.toLocaleDateString("pt-BR");
-const dataABNT = d => `${d.getDate()} ${MESES_ABNT[d.getMonth()]} ${d.getFullYear()}`;
+const dataBR = d => d.toLocaleDateString(LOCALES[LANG]);
+const dataABNT = d => LANG==="pt" ? `${d.getDate()} ${MESES_ABNT[d.getMonth()]} ${d.getFullYear()}` : d.toLocaleDateString(LOCALES[LANG], {day:"numeric", month:"short", year:"numeric"});
 const URL_SITE = "https://ybyra-br.github.io/plataforma/";
 function citacao(s){
-  $("cit").textContent = `Silva-Junior, C. H. L. (2026). Emissões e Remoções de CO₂ por recorte territorial — modelo YbYrá-BR ${VD} (plataforma v${VERSAO}${CAT.ficticio ? ", prévia com dados fictícios" : ""}). Projeto YbYrá-BR, CNPq 401741/2023-0. Disponível em: ${URL_SITE}. Acesso em: ${dataABNT(new Date())}.`;
+  $("cit").textContent = `Silva-Junior, C. H. L. (2026). ${t("cit.titulo")} — ${t("rel.modelo")} ${VD} (${t("cit.plataforma")} v${VERSAO}${CAT.ficticio ? t("cit.ficticio") : ""}). ${t("topo.proj")} YbYrá-BR, CNPq 401741/2023-0. ${t("cit.disp")}: ${URL_SITE}${LANG==="pt"?"":"?lang="+LANG}. ${t("cit.acesso")}: ${dataABNT(new Date())}.`;
 }
 async function copiarTexto(txt, botao){
-  const ok = ()=>{ const t = botao.textContent; botao.textContent = "Copiado"; setTimeout(()=>botao.textContent=t,1500); };
+  const ok = ()=>{ const ant = botao.textContent; botao.textContent = t("copiado"); setTimeout(()=>botao.textContent=ant,1500); };
   try{ await navigator.clipboard.writeText(txt); ok(); }
   catch(e){ const ta = $("area-copia"); ta.hidden = false; ta.value = txt; ta.select(); try{document.execCommand("copy"); ok();}catch(_){} ta.hidden = true; }
 }
@@ -967,34 +977,35 @@ async function relatorio(){
   const proc = PROC.filter(p=>!p.neg).map(p=>[p.n, s[p.k][i]]).sort((a,b)=>b[1]-a[1]);
   const principal = proc[0], partP = bruta[i] ? principal[1]/bruta[i]*100 : 0;
   const pico = ANOS[bruta.indexOf(Math.max(...bruta))], acum = bruta.reduce((a,b)=>a+b,0);
-  const local = tipo==="brasil" ? "no Brasil" : `em ${nome}`;
-  const resumo = `Em ${E.ano}, a emissão bruta de CO₂ ${local} foi de ${f(bruta[i])} ${e.u}${i>0?`, ${bruta[i]>=bruta[i-1]?"aumento":"queda"} de ${pct(bruta[i],bruta[i-1]).replace("-","")} em relação a ${E.ano-1}`:""}. ${principal[0]} foi o principal processo, com ${nf(partP,0)}% da emissão bruta. A vegetação secundária removeu ${f(rem[i])} ${e.u}, e a emissão líquida ficou em ${f(liq[i])} ${e.u}. Entre ${ANOS[0]} e ${ANOS.at(-1)}, a maior emissão bruta ocorreu em ${pico}, e o total acumulado no período foi de ${fmt(acum,escala(acum,"bruta"))} ${escala(acum,"bruta").u.replace(" ano⁻¹","")}.`;
-  const cab = ["Ano", ...PROC.map(p=>p.n), "Bruta", "Líquida"];
+  const ea = escala(acum,"bruta");
+  const resumo = t("resumo", {ano:E.ano, brasil:tipo==="brasil", nome, bruta:f(bruta[i]), u:e.u, var: i>0 ? pct(bruta[i],bruta[i-1]).replace("-","") : "", sobe: i>0 && bruta[i]>=bruta[i-1],
+    proc:principal[0], part:nf(partP,0), rem:f(rem[i]), liq:f(liq[i]), a0:ANOS[0], a1:ANOS.at(-1), pico, acum:fmt(acum,ea), uacum:ea.u.replace(t("u.ano"),"")});
+  const cab = [t("rel.ano"), ...PROC.map(p=>p.n), t("rel.bruta"), t("rel.liq")];
   const linhas = ANOS.map((a,k)=>`<tr class="${a===E.ano?"at":""}"><td>${a}</td>${PROC.map(p=>`<td>${f(p.neg?-Math.abs(s[p.k][k]):s[p.k][k])}</td>`).join("")}<td>${f(bruta[k])}</td><td>${f(liq[k])}</td></tr>`).join("");
   const rk = [...$("rank").querySelectorAll("button")].map(b=>`<li>${b.querySelector(".nm span").textContent} — ${b.querySelector(".vl").textContent}</li>`).join("");
   const sf = escala(Math.max(...s.agc_sf_co2), "agc_sf_co2"), pr = escala(Math.max(...s.agc0_mgc), "agc0_mgc");
   const g = YBV.agora(), dg = new Date(g.replace("Z", ":00Z"));
-  const quando = `${dg.toLocaleDateString("pt-BR")} às ${dg.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",timeZoneName:"short"})}`;
+  const quando = `${dg.toLocaleDateString(LOCALES[LANG])} ${t("as")} ${dg.toLocaleTimeString(LOCALES[LANG],{hour:"2-digit",minute:"2-digit",timeZoneName:"short"})}`;
   $("rel-conteudo").innerHTML = `
-    <div class="cabrel"><img class="y claro" src="img/ybyra-logo-240.png" alt="Projeto YbYrá-BR"><img class="y escuro" src="img/ybyra-logo-branco-240.png" alt="Projeto YbYrá-BR"><div><strong>Projeto YbYrá-BR</strong><br><span class="meta">Emissões e Remoções de CO₂</span></div>
-      <div class="ap">Apoio<img src="img/cnpq-128.png" alt="CNPq">Processo 401741/2023-0</div></div>
-    <div><p class="meta">${TIPO_NOME[tipo]} · ano de referência ${E.ano} · série ${ANOS[0]}–${ANOS.at(-1)} · modelo YbYrá-BR ${VD}</p><h1>Relatório de emissões e remoções de CO₂ — ${nome}</h1></div>
-    ${SOLIC.nome||SOLIC.inst||SOLIC.obj ? `<p class="solic"><b>Solicitado por:</b> ${[SOLIC.nome, SOLIC.inst].filter(Boolean).map(esc).join(" — ") || "não informado"}${SOLIC.obj?` · <b>Objetivo:</b> ${esc(SOLIC.obj)}`:""}</p>` : ""}
-    ${CAT.ficticio ? `<p class="aviso"><span><b>Dados fictícios.</b> Relatório gerado na prévia da plataforma; os valores não representam resultados do modelo.</span></p>` : ""}
+    <div class="cabrel"><img class="y claro" src="img/ybyra-logo-240.png" alt="${t("topo.proj")} YbYrá-BR"><img class="y escuro" src="img/ybyra-logo-branco-240.png" alt="${t("topo.proj")} YbYrá-BR"><div><strong>${t("topo.proj")} YbYrá-BR</strong><br><span class="meta">${t("topo.tit")}</span></div>
+      <div class="ap">${t("apoio").split("<br>")[0]}<img src="img/cnpq-128.png" alt="CNPq">${t("apoio").split("<br>")[1]}</div></div>
+    <div><p class="meta">${TIPO_NOME[tipo]} · ${t("rel.ref")} ${E.ano} · ${t("rel.serie")} ${ANOS[0]}–${ANOS.at(-1)} · ${t("rel.modelo")} ${VD}</p><h1>${t("rel.h1",{n:nome})}</h1></div>
+    ${SOLIC.nome||SOLIC.inst||SOLIC.obj ? `<p class="solic"><b>${t("rel.solic")}:</b> ${[SOLIC.nome, SOLIC.inst].filter(Boolean).map(esc).join(" — ") || t("rel.naoinf")}${SOLIC.obj?` · <b>${t("rel.obj")}:</b> ${esc(t("obj."+SOLIC.obj))}`:""}</p>` : ""}
+    ${CAT.ficticio ? `<p class="aviso"><span>${t("rel.ficticio")}</span></p>` : ""}
     <p>${resumo}</p>
     <div class="kpis">${$("kpis").innerHTML}</div>
-    <h2>Emissões e remoções por processo</h2>
+    <h2>${t("proc.tit")}</h2>
     <div class="chaves">${$("chaves").innerHTML}</div>
     <div class="grafico"><canvas id="rg-proc"></canvas></div>
-    <h2>Estoques de carbono acima do solo</h2>
-    <div class="dois"><div><h4>Vegetação secundária</h4><span class="u">${sf.u}</span><div class="grafico peq"><canvas id="rg-sf"></canvas></div></div>
-      <div><h4>Floresta primária</h4><span class="u">${pr.u}</span><div class="grafico peq"><canvas id="rg-p"></canvas></div></div></div>
-    <h2>Série anual (${e.u})</h2>
+    <h2>${t("est.tit")}</h2>
+    <div class="dois"><div><h4>${t("est.sf")}</h4><span class="u">${sf.u}</span><div class="grafico peq"><canvas id="rg-sf"></canvas></div></div>
+      <div><h4>${t("est.p")}</h4><span class="u">${pr.u}</span><div class="grafico peq"><canvas id="rg-p"></canvas></div></div></div>
+    <h2>${t("rel.serieanual",{u:e.u})}</h2>
     <div class="tabw"><table><thead><tr>${cab.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${linhas}</tbody></table></div>
     ${rk?`<h2>${$("rank-tit").textContent}</h2><p class="meta">${$("rank-nota").textContent}</p><ol class="lista">${rk}</ol>`:""}
     <div class="verif" id="rel-verif"></div>
-    <p class="aviso-rel"><b>Aviso importante.</b> Os valores são estimativas técnico-científicas do modelo YbYrá-BR ${VD}, sujeitas às incertezas dos dados de origem; não constituem cálculo de créditos de carbono, certificação de reduções de emissões nem laudo pericial. A interpretação e a aplicação dos dados são de responsabilidade do usuário. Termos de uso: ${URL_SITE}termos.html</p>
-    <p class="rod">Área do recorte: ${nf(s.area_ha[i]/100,0)} km². Fonte: modelo YbYrá-BR ${VD} (coleção emissions_removals_${CAT.versao_modelo}, dados atualizados em ${dataBR(new Date(CAT.gerado_em))}); somente CO₂. Plataforma v${VERSAO}. Relatório gerado e dados acessados em ${quando}.<br>${$("cit").textContent}</p>`;
+    <p class="aviso-rel">${t("rel.aviso",{v:VD, url:URL_SITE+"termos.html"+(LANG==="pt"?"":"?lang="+LANG)})}</p>
+    <p class="rod">${t("rel.rod",{area:nf(s.area_ha[i]/100,0), v:VD, m:CAT.versao_modelo, d:dataBR(new Date(CAT.gerado_em)), p:VERSAO, q:quando})}<br>${$("cit").textContent}</p>`;
   await verificacaoRelatorio({v: VD.slice(1), t: tipo, i: id, a: E.ano, g}, s);
   $("relatorio").hidden = false; $("relatorio").scrollTop = 0;
   $("imprimir-rel").hidden = NA_PREVIA; $("fechar-rel").focus();
@@ -1008,24 +1019,24 @@ async function verificacaoRelatorio(p, s){
   const el = $("rel-verif");
   try{
     p.c = await YBV.codigo(p, s);
-    const url = new URL("verificar.html", URL_SITE).href + "#" + YBV.paraURL(p);
+    const url = new URL("verificar.html", URL_SITE).href + (LANG==="pt" ? "" : "?lang="+LANG) + "#" + YBV.paraURL(p);
     let qr = "";
     try{ const q = qrcode(0, "M"); q.addData(url); q.make(); qr = q.createSvgTag({cellSize:3, margin:0, scalable:true}); }catch(e){}
-    el.innerHTML = `${qr?`<div class="qr" aria-hidden="true">${qr}</div>`:""}<div class="tx"><b>Verificação de autenticidade</b><br>
-      Código <code>${YBV.curto(p.c)}</code> · código completo <code>${YBV.completo(p)}</code><br>
-      Leia o QR code ou acesse <span class="lk">${new URL("verificar.html", URL_SITE).href}</span> e informe o código completo para conferir os valores deste relatório com os dados oficiais da versão ${VD}.</div>`;
+    el.innerHTML = `${qr?`<div class="qr" aria-hidden="true">${qr}</div>`:""}<div class="tx"><b>${t("rel.verif")}</b><br>
+      ${t("rel.codigo")} <code>${YBV.curto(p.c)}</code> · ${t("rel.completo")} <code>${YBV.completo(p)}</code><br>
+      ${t("rel.verif.txt",{url:`<span class="lk">${new URL("verificar.html", URL_SITE).href}${LANG==="pt"?"":"?lang="+LANG}</span>`, v:VD})}</div>`;
   }catch(e){ el.remove(); }
 }
 /* pré-relatório (campos opcionais, só impressos) e estatística anônima */
 const SOLIC = {nome:"", inst:"", obj:""};
-const esc = t => String(t).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const esc = x => String(x).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 $("abrir-rel").onclick = ()=>{ $("pre-rel").hidden = false; $("rel-nome").focus(); };
 $("pre-rel-cancelar").onclick = ()=>{ $("pre-rel").hidden = true; $("abrir-rel").focus(); };
 $("form-rel").onsubmit = async ev=>{ ev.preventDefault();
   SOLIC.nome = $("rel-nome").value.trim(); SOLIC.inst = $("rel-inst").value.trim(); SOLIC.obj = $("rel-obj").value;
   $("pre-rel").hidden = true; await relatorio();
-  contar(`relatorio/${E.sel.tipo}/${E.sel.id}`, `Relatório · ${TIPO_NOME[E.sel.tipo]} · ${SOLIC.obj || "objetivo não informado"}`);
-  if(SOLIC.obj) contar(`objetivo/${SOLIC.obj}`, `Objetivo do relatório: ${SOLIC.obj}`); };
+  contar(`relatorio/${E.sel.tipo}/${E.sel.id}`, `Relatório · ${E.sel.tipo} · ${SOLIC.obj || "sem objetivo"} · ${LANG}`);
+  if(SOLIC.obj) contar(`objetivo/${SOLIC.obj}`, `Objetivo do relatório: ${I18N.pt["obj."+SOLIC.obj]}`); };
 /* contagem anônima de uso (GoatCounter, sem cookies e sem guardar IP); desligada enquanto GOATCOUNTER = "" */
 const GOATCOUNTER = "";
 function contar(path, title){ try{ if(window.goatcounter && goatcounter.count) goatcounter.count({path, title, event:true}); }catch(e){} }
@@ -1064,8 +1075,11 @@ function marcar(){
   $("ano").value = E.ano; $("ano-v").textContent = E.ano;
 }
 const OK = `<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>`;
-$("lista-base").innerHTML = [...new Set(BASES.map(b=>b.g))].map(g=>`<div class="grp">${g}</div>`+BASES.filter(b=>b.g===g).map(b=>`<button type="button" class="op" role="radio" data-b="${b.k}">${b.n}${OK}</button>`).join("")).join("");
-$("lista-base").querySelectorAll(".op").forEach(o=>o.onclick=()=>{ E.base = o.dataset.b; marcar(); aplicarBase(); try{localStorage.setItem("ybyra-base2",E.base);}catch(_){} });
+function montarBases(){
+  $("lista-base").innerHTML = [...new Set(BASES.map(b=>b.g))].map(g=>`<div class="grp">${g}</div>`+BASES.filter(b=>b.g===g).map(b=>`<button type="button" class="op" role="radio" data-b="${b.k}">${b.n}${OK}</button>`).join("")).join("");
+  $("lista-base").querySelectorAll(".op").forEach(o=>o.onclick=()=>{ E.base = o.dataset.b; marcar(); aplicarBase(); try{localStorage.setItem("ybyra-base2",E.base);}catch(_){} });
+}
+montarBases();
 function popCamadas(abrir){ $("pop-camadas").hidden = !abrir; $("b-camadas").setAttribute("aria-expanded", abrir); if(abrir) $("lista-base").querySelector('[aria-checked="true"]')?.focus(); }
 $("b-camadas").onclick = e=>{ e.stopPropagation(); popCamadas($("pop-camadas").hidden); };
 document.addEventListener("click", e=>{ if(!$("pop-camadas").hidden && !e.target.closest(".camadas")) popCamadas(false); });
@@ -1115,9 +1129,9 @@ addEventListener("keydown",e=>{
 let INDICE = [];
 const ORDEM_BUSCA = ["brasil","uf","bioma","amazonia_legal","matopiba","municipio","terra_indigena","unidade_conservacao","territorio_quilombola","bacia_nivel1","bacia_nivel2"];
 function montarIndice(){
-  INDICE = [["brasil",1,"Brasil"]];
+  INDICE = [["brasil",1,t("nome.brasil")]];
   for(const r of RECS){ if(r.k==="brasil" || !CAT.tipos[r.k]) continue;
-    for(const e of (IDX[r.fonte] || [])) INDICE.push([r.k, e[0], e[1]]); }
+    for(const e of (IDX[r.fonte] || [])) INDICE.push([r.k, e[0], nomeDe(r.k, e[0])]); }
   INDICE.forEach(x=>x.push(x[2].normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()));
 }
 let sugAtual = [], sugI = 0;
@@ -1126,7 +1140,7 @@ function sugerir(q){
   if(!q){ abrirLista(false); return; }
   sugAtual = INDICE.filter(x=>x[3].includes(q)).sort((a,b)=>(a[3].startsWith(q)?0:1)-(b[3].startsWith(q)?0:1) || ORDEM_BUSCA.indexOf(a[0])-ORDEM_BUSCA.indexOf(b[0])).slice(0,12);
   sugI = 0;
-  ul.innerHTML = sugAtual.map((x,k)=>`<li role="option" aria-selected="${k===0}" data-k="${k}">${x[2]}<span>${TIPO_NOME[x[0]]}</span></li>`).join("") || `<li aria-disabled="true">Nada encontrado</li>`;
+  ul.innerHTML = sugAtual.map((x,k)=>`<li role="option" aria-selected="${k===0}" data-k="${k}">${x[2]}<span>${TIPO_NOME[x[0]]}</span></li>`).join("") || `<li aria-disabled="true">${t("busca.nada")}</li>`;
   abrirLista(true);
   ul.querySelectorAll("li[data-k]").forEach(li=>li.onmousedown=e=>{ e.preventDefault(); escolher(+li.dataset.k); });
 }
@@ -1142,12 +1156,12 @@ $("busca").onkeydown = e=>{
 $("busca").onblur = ()=>setTimeout(()=>abrirLista(false),150);
 
 /* aparência: automática (sistema) → clara → escura; escolha salva no navegador */
-const TEMAS = {auto:{n:"automática (segue o sistema)", ic:'<circle cx="8" cy="8" r="5.5"/><path class="ch" d="M8 2.5a5.5 5.5 0 0 1 0 11Z"/>'},
-  light:{n:"clara", ic:'<circle cx="8" cy="8" r="2.8"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>'},
-  dark:{n:"escura", ic:'<path d="M13.2 10.2A5.6 5.6 0 0 1 5.8 2.8a5.6 5.6 0 1 0 7.4 7.4Z"/>'}};
+const TEMAS = {auto:{get n(){ return t("tema.auto"); }, ic:'<circle cx="8" cy="8" r="5.5"/><path class="ch" d="M8 2.5a5.5 5.5 0 0 1 0 11Z"/>'},
+  light:{get n(){ return t("tema.light"); }, ic:'<circle cx="8" cy="8" r="2.8"/><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>'},
+  dark:{get n(){ return t("tema.dark"); }, ic:'<path d="M13.2 10.2A5.6 5.6 0 0 1 5.8 2.8a5.6 5.6 0 1 0 7.4 7.4Z"/>'}};
 function temaAtual(){ return document.documentElement.dataset.theme || "auto"; }
-function marcarTema(){ const t = TEMAS[temaAtual()], b = $("b-tema"); b.querySelector("svg").innerHTML = t.ic;
-  b.setAttribute("aria-label", `Aparência: ${t.n}. Tocar para mudar`); b.title = `Aparência: ${t.n}`;
+function marcarTema(){ const tm = TEMAS[temaAtual()], b = $("b-tema"); b.querySelector("svg").innerHTML = tm.ic;
+  b.setAttribute("aria-label", `${t("tema")}: ${tm.n}. ${t("tema.mudar")}`); b.title = `${t("tema")}: ${tm.n}`;
   const esc = temaAtual()==="auto" ? null : (temaAtual()==="dark" ? "#000000" : "#f2f2f7");
   document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{ if(esc){ m.dataset.orig ??= m.content; m.content = esc; } else if(m.dataset.orig) m.content = m.dataset.orig; }); }
 $("b-tema").onclick = ()=>{ const ordem = ["auto","light","dark"], prox = ordem[(ordem.indexOf(temaAtual())+1)%3];
@@ -1164,6 +1178,28 @@ function aoMudarTema(){ if(!mapa) return; mapa.setPaintProperty("fundo","backgro
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", aoMudarTema);
 new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:true, attributeFilter:["data-theme"]});
 
+/* ---------- idioma ---------- */
+function textosVersao(){
+  if(!CAT) return;
+  $("versao-topo").textContent = `· ${t("topo.dados")} ${VD}`;
+  $("versao-nota").innerHTML = t("versao.nota",{v:VD, d:dataBR(new Date(CAT.gerado_em)), p:VERSAO});
+}
+function linksIdioma(){
+  const q = LANG==="pt" ? "" : "?lang="+LANG;
+  document.querySelectorAll('a[href^="termos.html"]').forEach(a=>a.setAttribute("href", "termos.html"+q));
+}
+function aplicarIdiomaEstatico(){
+  document.title = t("doc.titulo"); traduzirDOM(); $("sel-idioma").value = LANG; linksIdioma(); marcarTema();
+}
+async function mudarIdioma(l){
+  definirIdioma(l); aplicarIdiomaEstatico();
+  if(!CAT) return;
+  textosVersao(); montarVars(); montarRecortes(); montarIndice(); montarBases(); marcar(); creditos();
+  await colorir(); await painel();
+}
+$("sel-idioma").onchange = e=>mudarIdioma(e.target.value);
+aplicarIdiomaEstatico();
+
 /* ---------- início ---------- */
 (async function(){
   try{ await Promise.race([document.fonts.load('400 1em Inter'), new Promise(r=>setTimeout(r,1500))]); }catch(e){}
@@ -1175,8 +1211,7 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
     const [cat, idx] = await Promise.all([j("catalogo.json"), fetch("geo/indice.json").then(r=>r.json())]);
     try{ E.base = localStorage.getItem("ybyra-base2") || E.base; if(!BASE[E.base]) E.base = "cinza"; E.proj = localStorage.getItem("ybyra-proj") || E.proj; }catch(e){}
     CAT = cat; IDX = idx; VD = "v" + (CAT.versao_dados || vAtual || String(CAT.versao_modelo).replace(/^v/,"").replace(/_/g,"."));
-    $("versao-topo").textContent = `· dados ${VD}`;
-    $("versao-nota").innerHTML = `Dados: modelo YbYrá-BR ${VD} (atualizados em ${dataBR(new Date(CAT.gerado_em))}) · plataforma v${VERSAO} · <a href="termos.html">Termos de uso e privacidade</a>`;
+    textosVersao();
     for(const [f, lista] of Object.entries(IDX)){ NOMES[f] = new Map(lista.map(e=>[e[0], e[1]])); for(const e of lista) BBOX[f+":"+e[0]] = e.slice(2,6); }
     $("aviso-ficticio").hidden = !CAT.ficticio; ANOS = CAT.tipos.brasil.anos; E.ano = ANOS.at(-1);
     $("ano").min = ANOS[0]; $("ano").max = ANOS.at(-1);
@@ -1184,7 +1219,7 @@ new MutationObserver(aoMudarTema).observe(document.documentElement,{attributes:t
     await iniciarMapa();
     await colorir(); destacar(); await painel();
     $("carregando").remove();
-  }catch(err){ console.error(err); $("carregando").textContent = "Não foi possível carregar os dados. Recarregue a página."; }
+  }catch(err){ console.error(err); $("carregando").textContent = t("erro.carregar"); }
 })();
 </script>
 </body>

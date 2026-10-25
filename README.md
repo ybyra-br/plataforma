@@ -32,6 +32,7 @@ As estatísticas de estados, biomas e do Brasil são a soma exata das zonas muni
 - Busca por nome em todos os recortes.
 - Série anual por processo, indicadores do ano, estoques e ranking dos sub-recortes.
 - Relatório para impressão, com código de verificação de autenticidade ([verificar relatório](https://ybyra-br.github.io/plataforma/verificar.html)), cópia da série em CSV e citação pronta.
+- Português, inglês e espanhol (seletor na barra superior ou `?lang=pt|en|es`).
 - Aparência clara, escura ou automática; uso por teclado e leitores de tela.
 
 ## Dados
